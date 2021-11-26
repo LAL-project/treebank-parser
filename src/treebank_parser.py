@@ -133,7 +133,7 @@ if args.verbose != None:
 
 # Print some debugging information regarding parameters
 
-print(f"Output log messages? '{args.verbose}'")
+print("--------------------------------------")
 print(f"File to be parsed:   '{args.inputfile}'")
 print(f"File to create:      '{args.outputfile}'")
 print(f"Input file's format: '{args.format}'")
@@ -148,6 +148,7 @@ for action in action_type.get_all_actions_int():
 	meaning = action_type.get_action_meaning_str(action)
 	key = action_type.get_action_key_str(action)
 	print(f"    {meaning}?", key in args.actions)
+print("--------------------------------------")
 
 if args.format == formats.get_format_key_str(formats.CoNLLU):
 	import conllu.parser
