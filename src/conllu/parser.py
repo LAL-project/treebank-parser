@@ -39,6 +39,7 @@ This module contains a single class `CoNLLU_parser`.
 """
 
 import logging
+import time
 
 import action_type
 from conllu.line_parser import line_parser
@@ -83,7 +84,9 @@ class CoNLLU_parser:
 			head_vector.append(head_int)
 		
 		# make the lal.graphs.rooted_tree() object
+		logging.debug(f"make a rooted tree from the head vector {head_vector=}")
 		rt = self._lal.graphs.from_head_vector_to_rooted_tree(head_vector)
+		logging.debug("made a rooted tree from the head vector")
 		
 		# -- apply actions --
 		
@@ -100,8 +103,8 @@ class CoNLLU_parser:
 				logging.debug(f"Tree has root? {rt.has_root()}.")
 				
 				if rt.has_root() and rt.get_root() == word_id:
-					logging.error(f"Removing the root may lead to critical errors.")
-					logging.error(f"    It is strongly suggested to rerun the program with '--laldebug'.")
+					logging.warning(f"Removing the root of the tree.")
+					logging.warning(f"This will make the structure become a forest.")
 				
 				logging.debug(f"Tree has {rt.get_num_nodes()}. Word to be removed: {word_id=}")
 				if word_id >= rt.get_num_nodes():
@@ -118,15 +121,20 @@ class CoNLLU_parser:
 		
 		if rt.get_num_nodes() > 0:
 			if not rt.is_rooted_tree():
-				logging.critical(f"Trying to produce a head vector of a graph that:")
-				logging.critical(f"    is a tree?  {rt.is_tree()}")
-				logging.critical(f"    has a root? {rt.has_root()}")
-			
-			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
-			self._head_vector_collection.append(hv)
-			
-			self._current_tree.clear()
-			self._reading_tree = False
+				# do not store the head vector of this graph since it is not a
+				# valid rooted tree
+				logging.warning(f"This graph is not a rooted tree. This graph is ignored.")
+			else:
+				# store the head vector of this rooted tree
+				hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
+				self._head_vector_collection.append(hv)
+		
+		# it is ¡very! important to reset the state of the parser:
+		# clear the current tree's contents and finish reading the tree.
+		self._current_tree.clear()
+		self._reading_tree = False
+		
+		rt.clear()
 	
 	def __init__(self, args):
 		r"""
@@ -169,6 +177,9 @@ class CoNLLU_parser:
 		
 		linenumber = 1
 		with open(self._args.inputfile, 'r') as f:
+			logging.info(f"Input file {self._args.inputfile} has been opened correctly.")
+			
+			begin = time.perf_counter()
 			for line in f:
 				type_of_line = line_type.classify(line)
 				
@@ -208,6 +219,10 @@ class CoNLLU_parser:
 			# Finished reading file.
 			# If there was some tree being read, store it.
 			if self._reading_tree: self._finish_reading_tree()
+			end = time.perf_counter()
+			
+			logging.info(f"Finished parsing the whole input file {self._args.inputfile}.")
+			logging.info(f"    In {end - begin:.3f} s.")
 	
 	def dump_contents(self):
 		r"""
@@ -215,5 +230,12 @@ class CoNLLU_parser:
 		"""
 		
 		with open(self._args.outputfile, 'w') as f:
+			logging.info(f"Output file {self._args.outputfile} has been opened correctly.")
+			
+			begin = time.perf_counter()
 			for hv in self._head_vector_collection:
 				f.write(hv + '\n')
+			end = time.perf_counter()
+			
+			logging.info(f"Finished writing the head vectors into {self._args.outputfile}.")
+			logging.info(f"    In {end - begin:.3f} s.")
