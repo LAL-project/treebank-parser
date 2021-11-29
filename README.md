@@ -112,7 +112,7 @@ All the parameters that the application needs can be queried using the `--help` 
 	                        levels: * 1 -- messages from 0 and 'warning' messages; * 2 -- messages from 1 and 'info' messages; * 3 --
 	                        messages from 2 and 'debug' messages;
 	  --laldebug            Use the debug compilation of LAL ('import laldebug as lal'). The script will run more slowly, but errors
-	                        will be more likely to be caught. Default: import lal.
+	                        will be more likely to be caught. Default: 'import lal'.
 	  --actions [action [action ...]]
 	                        Type of actions to be run on the input data for every tree. Choices:
 	                        ['RemovePunctuationMarks', 'RemoveFunctionWords'].
