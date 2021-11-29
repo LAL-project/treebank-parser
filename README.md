@@ -12,11 +12,7 @@ For example, the head vector
     
 represents the simple structure of a _star tree_:
 
-
-
-This other head vector has a slightly more complicated structure,
-
-
+![](figures/star.png)
 
 Those familiar with the Universal Dependencies format are already accostumed to dealing with _heads_. Consider the following phrase (taken from [UD English](https://github.com/UniversalDependencies/UD_English-PUD/blob/master/en_pud-ud-test.conllu)).
 
@@ -38,6 +34,12 @@ Those familiar with the Universal Dependencies format are already accostumed to 
 The head vector of this sentence can be found at the 7th column:
 
 	3 3 5 5 0 11 11 7 11 11 5 5
+
+One way to visualize it is:
+
+![](figures/sentence.png)
+
+(figures made with [IPE](https://ipe.otfried.org/) and the [ipe.embedviz](https://github.com/lluisalemanypuig/ipe.embedviz) ipelet)
 
 ## Dependencies
 
