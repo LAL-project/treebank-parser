@@ -106,14 +106,14 @@ All the parameters that the application needs can be queried using the `--help` 
 	  -o outfile, --outputfile outfile
 	                        Name of the output .heads file.
 	  -f format, --format format
-	                        The format of the input treebank. Choices: dict_values(['CoNLLU'])
+	                        The format of the input treebank. Choices: ['CoNLLU']
 	  --verbose VERBOSE     Output logging messages showing the progress of the script. The higher thedebugging level the more
 	                        messages will be displayed. Default level: 0 -- display only 'error' and 'critical' messages. Debugging
 	                        levels: * 1 -- messages from 0 and 'warning' messages; * 2 -- messages from 1 and 'info' messages; * 3 --
 	                        messages from 2 and 'debug' messages;
-	  --laldebug            Use the debug compilation of LAL (import laldebug as lal). The script will run more slowly, but errors
+	  --laldebug            Use the debug compilation of LAL ('import laldebug as lal'). The script will run more slowly, but errors
 	                        will be more likely to be caught. Default: import lal.
 	  --actions [action [action ...]]
 	                        Type of actions to be run on the input data for every tree. Choices:
-	                        dict_values(['RemovePunctuationMarks', 'RemoveFunctionWords']).
+	                        ['RemovePunctuationMarks', 'RemoveFunctionWords'].
 

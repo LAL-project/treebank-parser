@@ -78,7 +78,7 @@ parser.add_argument(
 	type = str,
 	required = True,
 	choices = formats.get_all_formats_key_str(),
-	help = f"The format of the input treebank. Choices: {formats.get_all_formats_key_str()}"
+	help = f"The format of the input treebank. Choices: {list(formats.get_all_formats_key_str())}"
 )
 parser.add_argument(
 	'--verbose',
@@ -100,7 +100,7 @@ parser.add_argument(
 	default = False,
 	action = 'store_true',
 	required = False,
-	help = f"Use the debug compilation of LAL (import laldebug as lal). The script will run more slowly, but errors will be more likely to be caught. Default: import lal."
+	help = f"Use the debug compilation of LAL ('import laldebug as lal'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import lal'."
 )
 parser.add_argument(
 	'--actions',
@@ -110,7 +110,7 @@ parser.add_argument(
 	type = str,
 	required = False,
 	nargs = '*',
-	help = f"Type of actions to be run on the input data for every tree. Actions are not applied in any particular order. Choices: {action_type.get_all_actions_key_str()}."
+	help = f"Type of actions to be run on the input data for every tree. Actions are not applied in any particular order. Choices: {list(action_type.get_all_actions_key_str())}."
 )
 args = parser.parse_args()
 
