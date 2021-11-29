@@ -43,7 +43,7 @@ One way to visualize it is:
 
 ## Dependencies
 
-The application is built on (and thus, depends on) the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library). 
+The application is built on (and thus, depends on) the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library). The library must be installed on the system and Python should be able to find it in its path.
 
 ## Usage of the application
 
