@@ -67,7 +67,7 @@ parser.add_argument(
 )
 parser.add_argument(
 	'-o', '--outputfile',
-	metavar = 'file',
+	metavar = 'outfile',
 	type = str,
 	required = True,
 	help = 'Name of the output .heads file.'
@@ -110,7 +110,7 @@ parser.add_argument(
 	type = str,
 	required = False,
 	nargs = '*',
-	help = f"Type of actions to be run on the input data for every tree. Choices: {action_type.get_all_actions_key_str()}."
+	help = f"Type of actions to be run on the input data for every tree. Actions are not applied in any particular order. Choices: {action_type.get_all_actions_key_str()}."
 )
 args = parser.parse_args()
 
