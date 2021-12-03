@@ -48,6 +48,8 @@ format_key_str = {
 	CoNLLU : "CoNLLU",
 }
 
+CoNLLU_str = format_key_str[CoNLLU]
+
 #--------------------------------------------------------------------------
 
 format_description_str = {
@@ -56,16 +58,14 @@ format_description_str = {
 		mandatory and optional parameters. These are listed below.",
 }
 
+CoNLLU_descr_str = format_description_str[CoNLLU]
+
 #--------------------------------------------------------------------------
 
 format_help_str = {
 	CoNLLU : "Command to parse a CoNLL-U-formatted file.",
 }
 
-#--------------------------------------------------------------------------
-
-CoNLLU_str = format_key_str[CoNLLU]
-CoNLLU_descr_str = format_description_str[CoNLLU]
 CoNLLU_help_str = format_help_str[CoNLLU]
 
 #--------------------------------------------------------------------------

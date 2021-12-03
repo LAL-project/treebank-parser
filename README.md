@@ -83,12 +83,12 @@ Format parameters:
 Optional interesting parameters:
 
 - `--laldebug`: execute the program using the debug compilation of LAL.
-- `--verbose`: set the level of verbosity of the program; the higher the value, the more messages the application will output. These messages are of X kinds:
+- `--verbose l`: set the level of verbosity of the program; the higher the value, the more messages the application will output. These messages are of X kinds:
 	- `CRITICAL` error messages (always displayed),
 	- `ERROR` messages (always displayed),
-	- `WARNING` messages (displayed at `>= 1`),
-	- `INFO` messages (displayed at `>= 2`),
-	- `DEBUG` messages (displayed at `>= 3`).
+	- `WARNING` messages (displayed at `l >= 1`),
+	- `INFO` messages (displayed at `l >= 2`),
+	- `DEBUG` messages (displayed at `l >= 3`).
 
 ### Full parameter documentation
 
@@ -123,6 +123,8 @@ All the parameters that the application needs can be queried using the `--help` 
 All the parameters accepted by the CoNLL-U format parser can be queried using the `CoNLLU --help` parameter. The output is the following:
 
 	usage: treebank_parser.py CoNLLU [-h] [--RemoveFunctionWords] [--RemovePunctuationMarks]
+	                                 [--DiscardSentencesShorter length_in_words]
+	                                 [--DiscardSentencesLonger length_in_words]
 	
 	The parser of a CoNLL-U-formatted file. This command has special mandatory and optional
 	parameters. These are listed below.
@@ -130,6 +132,19 @@ All the parameters accepted by the CoNLL-U format parser can be queried using th
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  --RemoveFunctionWords
-	                        Remove function words from each sentence.
+	                        Remove function words from each sentence. A function word is identified by
+	                        the values 'ADP','AUX','CCONJ','DET','NUM','PART','PRON','SCONJ' in the
+	                        corresponding UPOS field. See the documentation of function
+	                        'is_function_word' of the 'conllu.line_parser.line_parser' class for more
+	                        details on the origins of this classification.
 	  --RemovePunctuationMarks
-	                        Remove punctuation marks from each sentence.
+	                        Remove punctuation marks from each sentence. A punctuation mark is
+	                        identified by the value 'PUNCT' in the corresponding UPOS field.
+	  --DiscardSentencesShorter length_in_words
+	                        Discard sentences of less than or equal to a given length (in words). This
+	                        criterion is applied after removing punctuation marks and/or function
+	                        words.
+	  --DiscardSentencesLonger length_in_words
+	                        Discard sentences of more than or equal to a given length (in words). This
+	                        criterion is applied after removing punctuation marks and/or function
+	                        words.

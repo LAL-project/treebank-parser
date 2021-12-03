@@ -59,6 +59,20 @@ class CoNLLU_parser:
 	(see main CLI).
 	"""
 	
+	def _should_discard_tree(self, rt):
+		r"""
+		Returns whether or not a rooted tree `rt` should be discarded according
+		to the functions in `self._sentence_action_functions`.
+		
+		Parameters
+		==========
+		- `rt`: rooted tree.
+		"""
+		if rt.get_num_nodes() == 0: return True
+		for f in self._sentence_action_functions:
+			if f(rt): return True
+		return False
+	
 	def _finish_reading_tree(self):
 		r"""
 		This function is used to convert the contents of the member 'current_tree'
@@ -86,7 +100,7 @@ class CoNLLU_parser:
 		
 		num_removed = 0
 		for idx, word in self._current_tree.items():
-			for f in self._action_functions:
+			for f in self._word_action_functions:
 				# word does not meet criterion
 				if not f(word): continue
 				
@@ -113,15 +127,18 @@ class CoNLLU_parser:
 		
 		# -- store the head vector --
 		
-		if rt.get_num_nodes() > 0:
-			if not rt.is_rooted_tree():
-				# do not store the head vector of this graph since it is not a
-				# valid rooted tree
-				logging.warning(f"This graph is not a rooted tree. This graph is ignored.")
-			else:
-				# store the head vector of this rooted tree
-				hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
-				self._head_vector_collection.append(hv)
+		if not rt.is_rooted_tree():
+			# 'rt' is not a valid rooted tree. We do not know how to store this
+			# as a head vector.
+			logging.warning(f"This graph is not a rooted tree. This graph is ignored.")
+		
+		elif not self._should_discard_tree(rt):
+			# The rooted tree should not be discarded. Its number of vertices
+			# (words) is 1 or more and is not too short, nor too long.
+			
+			# Store the head vector of this rooted tree
+			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
+			self._head_vector_collection.append(hv)
 		
 		# it is ¡very! important to reset the state of the parser:
 		# clear the current tree's contents and finish reading the tree.
@@ -152,16 +169,29 @@ class CoNLLU_parser:
 			import lal
 			self._lal = lal
 		
-		# make lambdas for all actions passed as parameter
-		self._action_functions = []
+		# make lambdas for all actions applied on a word
+		self._word_action_functions = []
 		
 		# Remove punctuation marks
 		if args.RemovePunctuationMarks:
-			self._action_functions.append( lambda w: w.is_punctuation_mark() )
-		
+			self._word_action_functions.append( lambda w: w.is_punctuation_mark() )
 		# Remove function words
 		if args.RemoveFunctionWords:
-			self._action_functions.append( lambda w: w.is_function_word() )
+			self._word_action_functions.append( lambda w: w.is_function_word() )
+		
+		# make lambdas for all actions applied on a sentence
+		self._sentence_action_functions = []
+		
+		# Discard short sentences
+		if args.DiscardSentencesShorter != -1:
+			self._sentence_action_functions.append(
+				lambda rt: rt.get_num_nodes() <= args.DiscardSentencesShorter
+			)
+		# Discard long sentences
+		if args.DiscardSentencesLonger != -1:
+			self._sentence_action_functions.append(
+				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
+			)
 	
 	def parse(self):
 		r"""

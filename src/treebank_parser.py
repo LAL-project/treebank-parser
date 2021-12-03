@@ -119,6 +119,26 @@ def add_arguments_CoNLLU_parser(parser):
 		required = False,
 		help = conllu.action_type.RemovePunctuationMarks_help_str
 	)
+	
+	# discard short sentences
+	parser.add_argument(
+		'--' + conllu.action_type.DiscardSentencesShorter_str,
+		default = -1,
+		type = int,
+		metavar = "length_in_words",
+		required = False,
+		help = conllu.action_type.DiscardSentencesShorter_help_str
+	)
+	
+	# discard short sentences
+	parser.add_argument(
+		'--' + conllu.action_type.DiscardSentencesLonger_str,
+		default = -1,
+		type = int,
+		metavar = "length_in_words",
+		required = False,
+		help = conllu.action_type.DiscardSentencesLonger_help_str
+	)
 
 def create_format_subparsers(subparser):
 	r"""
