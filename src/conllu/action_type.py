@@ -34,7 +34,7 @@
 
 r"""
 This module encodes the types of actions that can be performed in the processing
-of a CoNLL treebank.
+of a CoNLL-U-formatted treebank.
 
 Each action is performed on every syntactic dependency tree.
 
@@ -44,7 +44,7 @@ Action types
 - `RemoveFunctionWords` : remove function words
 
 Actions can be retrieved as 'key' strings for the command line interface,
-and also as 'meaning' strings with a self explanatory message (useful for,
+and also as 'help' strings with a self explanatory message (useful for,
     e.g., error messages, help messages from command line).
 
 Members of this module
@@ -52,8 +52,8 @@ Members of this module
 - `action_key_str`: a dictionary relating each action type (listed above) with
 a so-called `key` string. These are particularly useful to design the command
 line interface so that users can pass actions as parameters.
-- `action_meaning_str`: a dictionary relating each action type (listed above) with
-a so-called `meaning` string. These strings are more useful in displaying messages
+- `action_help_str`: a dictionary relating each action type (listed above) with
+a so-called `help` string. These strings are more useful in displaying messages
 on the command line for users to read.
 """
 
@@ -65,42 +65,23 @@ action_key_str = {
 	RemoveFunctionWords : "RemoveFunctionWords",
 }
 
-aciton_meaning_str = {
-	RemovePunctuationMarks : "Remove punctuation marks",
-	RemoveFunctionWords : "Remove function words",
+action_help_str = {
+	RemovePunctuationMarks : "Remove punctuation marks from each sentence.",
+	RemoveFunctionWords : "Remove function words from each sentence.",
 }
 
-def get_all_actions_int():
-	r"""
-	Return all actions as integers.
-	"""
-	return [RemovePunctuationMarks, RemoveFunctionWords]
+#--------------------------------------------------------------------------
+
+RemovePunctuationMarks_str = action_key_str[RemovePunctuationMarks]
+RemoveFunctionWords_str = action_key_str[RemoveFunctionWords]
+
+RemovePunctuationMarks_help_str = action_help_str[RemovePunctuationMarks]
+RemoveFunctionWords_help_str = action_help_str[RemoveFunctionWords]
 
 #--------------------------------------------------------------------------
-def get_action_key_str(a):
-	r"""
-	Return an action's key strings.
-	"""
-	return action_key_str[a]
-def get_all_actions_key_str():
-	r"""
-	Return all actions as key strings.
-	"""
-	return action_key_str.values()
-
-#--------------------------------------------------------------------------
-def get_action_meaning_str(a):
-	r"""
-	Return an action's meaning strings.
-	"""
-	return aciton_meaning_str[a]
-def get_all_actions_meaning_str():
-	r"""
-	Return all actions as meaning strings.
-	"""
-	return aciton_meaning_str.values()
 
 if __name__ == "__main__":
 	# TESTS
-	assert( len(get_all_actions_int()) == len(get_all_actions_key_str()) )
-	assert( len(get_all_actions_key_str()) == len(get_all_actions_meaning_str()) )
+	print("Testing...")
+	assert( len(action_key_str) == len(action_help_str) )
+	

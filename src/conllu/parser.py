@@ -41,9 +41,9 @@ This module contains a single class `CoNLLU_parser`.
 import logging
 import time
 
-import action_type
 from conllu.line_parser import line_parser
 import conllu.line_type as line_type
+import conllu.action_type as action_type
 
 class CoNLLU_parser:
 	r"""
@@ -58,12 +58,6 @@ class CoNLLU_parser:
 	This class also applies some preprocessing specified by the user via arguments
 	(see main CLI).
 	"""
-	
-	def _has_action(self, action):
-		r"""
-		Is the given action `action` in the arguments?
-		"""
-		return action_type.get_action_key_str(action) in self._args.actions
 	
 	def _finish_reading_tree(self):
 		r"""
@@ -143,14 +137,15 @@ class CoNLLU_parser:
 		self._current_tree = {}
 		self._reading_tree = False
 		self._head_vector_collection = []
-		self._args = args
 		self._tree_starts_at = 0 # the file line number where the current tree starts
+		self._input_file = args.inputfile
+		self._output_file = args.outputfile
 		
 		# utilities for logging
 		self._donotknow_msg = "Do not know how to process this. This line will be ignored."
 		
 		# import correct build of LAL
-		if self._args.laldebug:
+		if args.laldebug:
 			import laldebug as lal
 			self._lal = lal
 		else:
@@ -161,11 +156,11 @@ class CoNLLU_parser:
 		self._action_functions = []
 		
 		# Remove punctuation marks
-		if self._has_action(action_type.RemovePunctuationMarks):
+		if args.RemovePunctuationMarks:
 			self._action_functions.append( lambda w: w.is_punctuation_mark() )
 		
 		# Remove function words
-		if self._has_action(action_type.RemoveFunctionWords):
+		if args.RemoveFunctionWords:
 			self._action_functions.append( lambda w: w.is_function_word() )
 	
 	def parse(self):
@@ -176,8 +171,8 @@ class CoNLLU_parser:
 		"""
 		
 		linenumber = 1
-		with open(self._args.inputfile, 'r') as f:
-			logging.info(f"Input file {self._args.inputfile} has been opened correctly.")
+		with open(self._input_file, 'r') as f:
+			logging.info(f"Input file {self._input_file} has been opened correctly.")
 			
 			begin = time.perf_counter()
 			for line in f:
@@ -221,7 +216,7 @@ class CoNLLU_parser:
 			if self._reading_tree: self._finish_reading_tree()
 			end = time.perf_counter()
 			
-			logging.info(f"Finished parsing the whole input file {self._args.inputfile}.")
+			logging.info(f"Finished parsing the whole input file {self._input_file}.")
 			logging.info(f"    In {end - begin:.3f} s.")
 	
 	def dump_contents(self):
@@ -229,13 +224,13 @@ class CoNLLU_parser:
 		Dump all the head vectors to the output file.
 		"""
 		
-		with open(self._args.outputfile, 'w') as f:
-			logging.info(f"Output file {self._args.outputfile} has been opened correctly.")
+		with open(self._output_file, 'w') as f:
+			logging.info(f"Output file {self._output_file} has been opened correctly.")
 			
 			begin = time.perf_counter()
 			for hv in self._head_vector_collection:
 				f.write(hv + '\n')
 			end = time.perf_counter()
 			
-			logging.info(f"Finished writing the head vectors into {self._args.outputfile}.")
+			logging.info(f"Finished writing the head vectors into {self._output_file}.")
 			logging.info(f"    In {end - begin:.3f} s.")

@@ -42,45 +42,36 @@ Formats
 
 CoNLLU = 0
 
+#--------------------------------------------------------------------------
+
 format_key_str = {
 	CoNLLU : "CoNLLU",
 }
 
-aciton_meaning_str = {
-	CoNLLU : "CoNLL-U",
+#--------------------------------------------------------------------------
+
+format_description_str = {
+	CoNLLU :
+		"The parser of a CoNLL-U-formatted file. This command has special\
+		mandatory and optional parameters. These are listed below.",
 }
 
-def get_all_formats_int():
-	r"""
-	Return all formats as integers.
-	"""
-	return [CoNLLU]
+#--------------------------------------------------------------------------
+
+format_help_str = {
+	CoNLLU : "Command to parse a CoNLL-U-formatted file.",
+}
 
 #--------------------------------------------------------------------------
-def get_format_key_str(a):
-	r"""
-	Return an format's key strings.
-	"""
-	return format_key_str[a]
-def get_all_formats_key_str():
-	r"""
-	Return all formats as key strings.
-	"""
-	return format_key_str.values()
+
+CoNLLU_str = format_key_str[CoNLLU]
+CoNLLU_descr_str = format_description_str[CoNLLU]
+CoNLLU_help_str = format_help_str[CoNLLU]
 
 #--------------------------------------------------------------------------
-def get_format_meaning_str(a):
-	r"""
-	Return an format's meaning strings.
-	"""
-	return aciton_meaning_str[a]
-def get_all_formats_meaning_str():
-	r"""
-	Return all formats as meaning strings.
-	"""
-	return aciton_meaning_str.values()
 
 if __name__ == "__main__":
 	# TESTS
-	assert( len(get_all_formats_int()) == len(get_all_formats_key_str()) )
-	assert( len(get_all_formats_key_str()) == len(get_all_formats_meaning_str()) )
+	print("Testing...")
+	assert( len(format_key_str) == len(format_description_str) )
+	assert( len(format_description_str) == len(format_help_str) )

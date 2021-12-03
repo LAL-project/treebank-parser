@@ -51,23 +51,23 @@ This application has no GUI (Graphical User Interface). Usage of the command lin
 
 ### Examples of usage
 
-In the following examples, the input file is always the `CoNLL-U`-formatted file `catalan.conllu`, and the output file is always `catalan.heads`:
+In the following examples, the input file is always the `CoNLL-U`-formatted file `catalan.conllu`, and the output file is always `catalan.heads`. Notice that the order of the parameters is important! The `CoNLLU` keyword must go after the parameters of the treebank parser program (in the examples, `-i` and `-o`) and before the preprocessing flags (in the examples, `--RemovePunctuationMarks` and `--RemoveFunctionWords`).
 
 - Convert the input treebank file into head vectors
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads -f CoNLLU
+		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU
 
 - Remove punctuation marks from the sentences in the input treebank file
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads -f CoNLLU --actions RemovePunctuationMarks
+		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemovePunctuationMarks
 
 - Remove function words from the sentences in the input treebank file
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads -f CoNLLU --actions RemoveFunctionWords
+		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords
 
 - Remove function words AND punctuation marks from the sentences in the input treebank file
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads -f CoNLLU --actions RemoveFunctionWords RemovePunctuationMarks
+		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords --RemovePunctuationMarks
 
 ### Parameters (summary)
 
@@ -75,13 +75,12 @@ Required parameters:
 
 - `-i infile, --inputfile infile`: specifies the input treebank file that is to be parsed.
 - `-o outfile, --outputfile outfile`: specifies the name of the output file, namely, the file containing the head vectors.
-- `-f format, --format format`: the format of the input treebank file. Read the help below to see the list of supported formats.
+
+Format parameters:
+
+- `CoNLLU`: parse a CoNLL-U-formatted file.
 
 Optional interesting parameters:
-
-- `--actions`: list of actions to be performed on each **individual** syntactic dependency structure. Read the help below to see the list of supported actions. These actions are not applied in any particular order.
-
-Other optional parameters:
 
 - `--laldebug`: execute the program using the debug compilation of LAL.
 - `--verbose`: set the level of verbosity of the program; the higher the value, the more messages the application will output. These messages are of X kinds:
@@ -95,9 +94,14 @@ Other optional parameters:
 
 All the parameters that the application needs can be queried using the `--help` parameter. The output is the following:
 
-	usage: treebank_parser.py [-h] -i infile -o file -f format [--verbose VERBOSE] [--laldebug] [--actions [action [action ...]]]
+	usage: treebank_parser.py [-h] -i infile -o outfile [--verbose VERBOSE] [--laldebug] {CoNLLU} ...
+
+	Parse a treebank file and extract the sentences as head vectors. The format of the treebank file
+	is specified with a positional parameter (see the list of positional arguments within "{}" below).
 	
-	Parse a CoNLL-formatted file and extract the sentences as head vectors.
+	positional arguments:
+	  {CoNLLU}              Choose a format command for the input treebank file.
+	    CoNLLU              Command to parse a CoNLL-U-formatted file.
 	
 	optional arguments:
 	  -h, --help            show this help message and exit
@@ -105,15 +109,27 @@ All the parameters that the application needs can be queried using the `--help` 
 	                        Name of the input treebank file to be parsed.
 	  -o outfile, --outputfile outfile
 	                        Name of the output .heads file.
-	  -f format, --format format
-	                        The format of the input treebank. Choices: ['CoNLLU']
-	  --verbose VERBOSE     Output logging messages showing the progress of the script. The higher thedebugging level the more
-	                        messages will be displayed. Default level: 0 -- display only 'error' and 'critical' messages. Debugging
-	                        levels: * 1 -- messages from 0 and 'warning' messages; * 2 -- messages from 1 and 'info' messages; * 3 --
-	                        messages from 2 and 'debug' messages;
-	  --laldebug            Use the debug compilation of LAL ('import laldebug as lal'). The script will run more slowly, but errors
-	                        will be more likely to be caught. Default: 'import lal'.
-	  --actions [action [action ...]]
-	                        Type of actions to be run on the input data for every tree. Choices:
-	                        ['RemovePunctuationMarks', 'RemoveFunctionWords'].
+	  --verbose VERBOSE     Output logging messages showing the progress of the script. The higher the
+	                        debugging level the more messages will be displayed. Default level: 0 --
+	                        display only 'error' and 'critical' messages. Debugging levels: * 1 --
+	                        messages from 0 plus 'warning' messages; * 2 -- messages from 1 plus
+	                        'info' messages; * 3 -- messages from 2 plus 'debug' messages;
+	  --laldebug            Use the debug compilation of LAL ('import laldebug as lal'). The script
+	                        will run more slowly, but errors will be more likely to be caught.
+	                        Default: 'import lal'.
 
+#### CoNLL-U parameter documentation
+
+All the parameters accepted by the CoNLL-U format parser can be queried using the `CoNLLU --help` parameter. The output is the following:
+
+	usage: treebank_parser.py CoNLLU [-h] [--RemoveFunctionWords] [--RemovePunctuationMarks]
+	
+	The parser of a CoNLL-U-formatted file. This command has special mandatory and optional
+	parameters. These are listed below.
+	
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  --RemoveFunctionWords
+	                        Remove function words from each sentence.
+	  --RemovePunctuationMarks
+	                        Remove punctuation marks from each sentence.
