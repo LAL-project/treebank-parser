@@ -63,7 +63,9 @@ CoNLLU_descr_str = format_description_str[CoNLLU]
 #--------------------------------------------------------------------------
 
 format_help_str = {
-	CoNLLU : "Command to parse a CoNLL-U-formatted file.",
+	CoNLLU :
+		"Command to parse a CoNLL-U-formatted file. For further information\
+		on this format's detailed specification, see https://universaldependencies.org/format.html.",
 }
 
 CoNLLU_help_str = format_help_str[CoNLLU]
