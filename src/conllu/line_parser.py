@@ -38,6 +38,8 @@ This file contains just one class `line_parser` and some tests.
 The `line_parser` class parses the contents of a line in a CoNLLU-formatted file.
 """
 
+import logging
+
 class line_parser:
 	r"""
 	This class implements an algorithm to parse word lines from the Conll-U format.
@@ -111,6 +113,15 @@ class line_parser:
 		Parses the line this object was initialized with.
 		"""
 		list_of_fields = self._line_str.split(self._sep)
+		
+		# ensure that this CoNLL-U
+		if len(list_of_fields) != 10:
+			logging.error( "Amount of fields in line")
+			logging.error(f"    '{self._line_str}'")
+			logging.error( "is not 10 as specified in the CoNLL-U format.")
+			logging.error( "See: https://universaldependencies.org/format.html")
+			assert(len(list_of_fields) == 10)
+		
 		self._ID = list_of_fields[0]
 		self._FORM = list_of_fields[1]
 		self._LEMMA = list_of_fields[2]
