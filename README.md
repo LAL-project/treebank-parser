@@ -45,7 +45,7 @@ One way to visualize it is:
 
 The application is built on (and thus, depends on) the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library). The library must be installed on the system and Python should be able to find it in its path.
 
-## Usage of the application
+## Usage of the Command Line Interface (CLI)
 
 This application has no GUI (Graphical User Interface). Usage of the command line is required.
 
@@ -55,19 +55,19 @@ In the following examples, the input file is always the `CoNLL-U`-formatted file
 
 - Convert the input treebank file into head vectors
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU
+		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU
 
 - Remove punctuation marks from the sentences in the input treebank file
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemovePunctuationMarks
+		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemovePunctuationMarks
 
 - Remove function words from the sentences in the input treebank file
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords
+		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords
 
 - Remove function words AND punctuation marks from the sentences in the input treebank file
 
-		python3 treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords --RemovePunctuationMarks
+		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords --RemovePunctuationMarks
 
 ### Parameters (summary)
 
