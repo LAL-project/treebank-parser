@@ -73,10 +73,10 @@ action_key_str = {
 	DiscardSentencesLonger : "DiscardSentencesLonger",
 }
 
-RemovePunctuationMarks_str = action_key_str[RemovePunctuationMarks]
-RemoveFunctionWords_str = action_key_str[RemoveFunctionWords]
-DiscardSentencesShorter_str = action_key_str[DiscardSentencesShorter]
-DiscardSentencesLonger_str = action_key_str[DiscardSentencesLonger]
+RemovePunctuationMarks_key_str = action_key_str[RemovePunctuationMarks]
+RemoveFunctionWords_key_str = action_key_str[RemoveFunctionWords]
+DiscardSentencesShorter_key_str = action_key_str[DiscardSentencesShorter]
+DiscardSentencesLonger_key_str = action_key_str[DiscardSentencesLonger]
 
 #--------------------------------------------------------------------------
 
