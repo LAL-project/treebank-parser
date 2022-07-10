@@ -64,13 +64,13 @@ RemoveFunctionWords = 1
 DiscardSentencesShorter = 2
 DiscardSentencesLonger = 3
 
-#--------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 action_key_str = {
-	RemovePunctuationMarks : "RemovePunctuationMarks",
-	RemoveFunctionWords : "RemoveFunctionWords",
-	DiscardSentencesShorter : "DiscardSentencesShorter",
-	DiscardSentencesLonger : "DiscardSentencesLonger",
+	RemovePunctuationMarks: "RemovePunctuationMarks",
+	RemoveFunctionWords: "RemoveFunctionWords",
+	DiscardSentencesShorter: "DiscardSentencesShorter",
+	DiscardSentencesLonger: "DiscardSentencesLonger",
 }
 
 RemovePunctuationMarks_key_str = action_key_str[RemovePunctuationMarks]
@@ -78,13 +78,13 @@ RemoveFunctionWords_key_str = action_key_str[RemoveFunctionWords]
 DiscardSentencesShorter_key_str = action_key_str[DiscardSentencesShorter]
 DiscardSentencesLonger_key_str = action_key_str[DiscardSentencesLonger]
 
-#--------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 action_help_str = {
-	RemovePunctuationMarks : "Remove punctuation marks from each sentence. A punctuation mark is identified by the value 'PUNCT' in the corresponding UPOS field.",
-	RemoveFunctionWords : "Remove function words from each sentence. A function word is identified by the values 'ADP','AUX','CCONJ','DET','NUM','PART','PRON','SCONJ' in the corresponding UPOS field. See the documentation of function 'is_function_word' of the 'conllu.line_parser.line_parser' class for more details on the origins of this classification.",
-	DiscardSentencesShorter : "Discard sentences of less than or equal to a given length (in words). This criterion is applied after removing punctuation marks and/or function words.",
-	DiscardSentencesLonger : "Discard sentences of more than or equal to a given length (in words). This criterion is applied after removing punctuation marks and/or function words.",
+	RemovePunctuationMarks: "Remove punctuation marks from each sentence. A punctuation mark is identified by the value 'PUNCT' in the corresponding UPOS field.",
+	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP','AUX','CCONJ','DET','NUM','PART','PRON','SCONJ' in the corresponding UPOS field. See the documentation of function 'is_function_word' of the 'conllu.line_parser.line_parser' class for more details on the origins of this classification.",
+	DiscardSentencesShorter: "Discard sentences of less than or equal to a given length (in words). This criterion is applied after removing punctuation marks and/or function words.",
+	DiscardSentencesLonger: "Discard sentences of more than or equal to a given length (in words). This criterion is applied after removing punctuation marks and/or function words.",
 }
 
 RemovePunctuationMarks_help_str = action_help_str[RemovePunctuationMarks]
@@ -92,7 +92,7 @@ RemoveFunctionWords_help_str = action_help_str[RemoveFunctionWords]
 DiscardSentencesShorter_help_str = action_help_str[DiscardSentencesShorter]
 DiscardSentencesLonger_help_str = action_help_str[DiscardSentencesLonger]
 
-#--------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 if __name__ == "__main__":
 	# TESTS

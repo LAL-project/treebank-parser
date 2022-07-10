@@ -78,5 +78,3 @@ if __name__ == "__main__":
 
 	# launch the treebank parser
 	argument_parser.launch_with_args(args)
-
-	
