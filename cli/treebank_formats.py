@@ -48,7 +48,7 @@ format_key_str = {
 	CoNLLU : "CoNLLU",
 }
 
-CoNLLU_str = format_key_str[CoNLLU]
+CoNLLU_key_str = format_key_str[CoNLLU]
 
 #--------------------------------------------------------------------------
 

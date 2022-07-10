@@ -135,7 +135,7 @@ def create_format_subparsers(subparser):
 	"""
 	# create a subparser for CoNLL
 	parser_CoNLLU = subparser.add_parser(
-		name = formats.CoNLLU_str,
+		name = formats.CoNLLU_key_str,
 		description = formats.CoNLLU_descr_str,
 		help = formats.CoNLLU_help_str
 	)
@@ -148,7 +148,7 @@ def make_actions_list(args):
 	Returns a list of all the actions as integers
 	"""
 	
-	if args.treebank_format == formats.CoNLLU_str:
+	if args.treebank_format == formats.CoNLLU_key_str:
 		if args.RemovePunctuationMarks:
 			yield conllu.action_type.RemovePunctuationMarks_key_str
 		if args.RemoveFunctionWords:
@@ -226,7 +226,7 @@ def launch_with_args(args):
 	"""
 	print("--------------------------------------")
 
-	if args.treebank_format == formats.CoNLLU_str:
+	if args.treebank_format == formats.CoNLLU_key_str:
 		import conllu.parser
 		p = conllu.parser.CoNLLU_parser(args)
 		p.parse()
