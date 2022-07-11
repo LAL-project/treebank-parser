@@ -85,6 +85,13 @@ def add_arguments_main_parser(parser):
 		required = False,
 		help = f"Use the debug compilation of LAL ('import laldebug as lal'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import lal'."
 	)
+	parser.add_argument(
+		'--quiet',
+		default = False,
+		action = 'store_true',
+		required = False,
+		help = f"Disable non-logging messages."
+	)
 
 def add_arguments_CoNLLU_parser(parser):
 	r"""
@@ -192,6 +199,7 @@ def launch_with_args(args):
 		format = "[%(levelname)s] %(asctime)s : %(message)s",
 		datefmt = '%Y-%m-%d %H:%M:%S'
 	)
+	
 	if args.verbose != None:
 		if args.verbose == 0:
 			logging.disable(logging.WARNING)
@@ -203,28 +211,24 @@ def launch_with_args(args):
 			logging.disable(logging.NOTSET)
 
 	# Print some debugging information regarding parameters
-	print("--------------------------------------")
-	print(f"File to be parsed:   '{args.inputfile}'")
-	print(f"File to create:      '{args.outputfile}'")
-	print(f"Input file's format: '{args.treebank_format}'")
-	print(f"Verbosity level:     '{args.verbose}'")
-	logging.critical("Critical messages will be shown.")
-	logging.error("   Error messages will be shown.")
-	logging.warning(" Warning messages will be shown.")
-	logging.info("    Info messages will be shown.")
-	logging.debug("   Debug messages will be shown.")
+	if not args.quiet:
+		print("--------------------------------------")
+		print(f"File to be parsed:   '{args.inputfile}'")
+		print(f"File to create:      '{args.outputfile}'")
+		print(f"Input file's format: '{args.treebank_format}'")
+		print(f"Verbosity level:     '{args.verbose}'")
+		logging.critical("Critical messages will be shown.")
+		logging.error("   Error messages will be shown.")
+		logging.warning(" Warning messages will be shown.")
+		logging.info("    Info messages will be shown.")
+		logging.debug("   Debug messages will be shown.")
 
 	# construct a list with all the actions
 	actions = list(make_actions_list(args))
 
-	print(f"Actions to be performed ({len(actions)}):", actions)
-	"""
-	for action in action_type.get_all_actions_int():
-		meaning = action_type.get_action_meaning_str(action)
-		key = action_type.get_action_key_str(action)
-		print(f"    {meaning}?", key in args.actions)
-	"""
-	print("--------------------------------------")
+	if not args.quiet:
+		print(f"Actions to be performed ({len(actions)}):", actions)
+		print("--------------------------------------")
 
 	if args.treebank_format == formats.CoNLLU_key_str:
 		import conllu.parser
