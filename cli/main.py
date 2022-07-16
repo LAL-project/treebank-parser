@@ -77,14 +77,16 @@ def make_actions_list(args):
 	Returns a list of all the actions as strings for display purposes
 	"""
 	
+	print(args)
+
 	if args.treebank_format == treebank_formats.CoNLLU_key_str:
 		if args.RemovePunctuationMarks:
 			yield conllu_action_type.RemovePunctuationMarks_key_str
 		if args.RemoveFunctionWords:
 			yield conllu_action_type.RemoveFunctionWords_key_str
-		if args.DiscardSentencesShorter:
+		if args.DiscardSentencesShorter != -1:
 			yield conllu_action_type.DiscardSentencesShorter_key_str
-		if args.DiscardSentencesLonger:
+		if args.DiscardSentencesLonger != -1:
 			yield conllu_action_type.DiscardSentencesLonger_key_str
 
 
