@@ -33,16 +33,16 @@
 ################################################################################
 
 r"""
-This script contains 
+This script contains functions that create an argument parser object.
+
+This object is to be used by the main command line interface.
 """
 
 import argparse
-import logging
 import sys
 
-import treebank_formats as formats
-
-import conllu.action_type
+from treebank_parser import treebank_formats as formats
+from treebank_parser.conllu import action_type as conllu_action_type
 
 def add_arguments_main_parser(parser):
 	r"""
@@ -100,40 +100,40 @@ def add_arguments_CoNLLU_parser(parser):
 	
 	# remove function words
 	parser.add_argument(
-		'--' + conllu.action_type.RemoveFunctionWords_key_str,
+		'--' + conllu_action_type.RemoveFunctionWords_key_str,
 		default = False,
 		action = 'store_true',
 		required = False,
-		help = conllu.action_type.RemoveFunctionWords_help_str
+		help = conllu_action_type.RemoveFunctionWords_help_str
 	)
 	
 	# remove punctuation marks
 	parser.add_argument(
-		'--' + conllu.action_type.RemovePunctuationMarks_key_str,
+		'--' + conllu_action_type.RemovePunctuationMarks_key_str,
 		default = False,
 		action = 'store_true',
 		required = False,
-		help = conllu.action_type.RemovePunctuationMarks_help_str
+		help = conllu_action_type.RemovePunctuationMarks_help_str
 	)
 	
 	# discard short sentences
 	parser.add_argument(
-		'--' + conllu.action_type.DiscardSentencesShorter_key_str,
+		'--' + conllu_action_type.DiscardSentencesShorter_key_str,
 		default = -1,
 		type = int,
 		metavar = "length_in_words",
 		required = False,
-		help = conllu.action_type.DiscardSentencesShorter_help_str
+		help = conllu_action_type.DiscardSentencesShorter_help_str
 	)
 	
 	# discard short sentences
 	parser.add_argument(
-		'--' + conllu.action_type.DiscardSentencesLonger_key_str,
+		'--' + conllu_action_type.DiscardSentencesLonger_key_str,
 		default = -1,
 		type = int,
 		metavar = "length_in_words",
 		required = False,
-		help = conllu.action_type.DiscardSentencesLonger_help_str
+		help = conllu_action_type.DiscardSentencesLonger_help_str
 	)
 
 def create_format_subparsers(subparser):
@@ -149,17 +149,6 @@ def create_format_subparsers(subparser):
 	add_arguments_CoNLLU_parser(parser_CoNLLU)
 
 # ------------------------------------------------------------------------------
-
-def make_actions_list(args):
-	r"""
-	Returns a list of all the actions as integers
-	"""
-	
-	if args.treebank_format == formats.CoNLLU_key_str:
-		if args.RemovePunctuationMarks:
-			yield conllu.action_type.RemovePunctuationMarks_key_str
-		if args.RemoveFunctionWords:
-			yield conllu.action_type.RemoveFunctionWords_key_str
 
 def create_parser():
 	r"""
@@ -184,56 +173,3 @@ def create_parser():
 	create_format_subparsers(subparsers)
 
 	return parser
-
-def launch_with_args(args):
-	r"""
-	Run the treebank parser with the configuration encoded in 'args'.
-
-	'args' is the object returned by a call to the method 'parse_args'
-	of an object of type argparse.ArgumentParser.
-	"""
-
-	# configure logging
-	logging.basicConfig(
-		level = logging.DEBUG,
-		format = "[%(levelname)s] %(asctime)s : %(message)s",
-		datefmt = '%Y-%m-%d %H:%M:%S'
-	)
-	
-	if args.verbose != None:
-		if args.verbose == 0:
-			logging.disable(logging.WARNING)
-		elif args.verbose == 1:
-			logging.disable(logging.INFO)
-		elif args.verbose == 2:
-			logging.disable(logging.DEBUG)
-		else:
-			logging.disable(logging.NOTSET)
-
-	# Print some debugging information regarding parameters
-	if not args.quiet:
-		print("--------------------------------------")
-		print(f"File to be parsed:   '{args.inputfile}'")
-		print(f"File to create:      '{args.outputfile}'")
-		print(f"Input file's format: '{args.treebank_format}'")
-		print(f"Verbosity level:     '{args.verbose}'")
-		logging.critical("Critical messages will be shown.")
-		logging.error("   Error messages will be shown.")
-		logging.warning(" Warning messages will be shown.")
-		logging.info("    Info messages will be shown.")
-		logging.debug("   Debug messages will be shown.")
-
-	# construct a list with all the actions
-	actions = list(make_actions_list(args))
-
-	if not args.quiet:
-		print(f"Actions to be performed ({len(actions)}):", actions)
-		print("--------------------------------------")
-
-	if args.treebank_format == formats.CoNLLU_key_str:
-		import conllu.parser
-		p = conllu.parser.CoNLLU_parser(args)
-		p.parse()
-		p.dump_contents()
-	else:
-		logging.error(f"Unhandled format '{args.format}'")

@@ -41,11 +41,11 @@ This module contains a single class `CoNLLU_parser`.
 import logging
 import time
 
-from conllu.line_parser import line_parser
-import conllu.line_type as line_type
-import conllu.action_type as action_type
+from treebank_parser.conllu import line_parser
+from treebank_parser.conllu import line_type
+from treebank_parser.conllu import action_type
 
-class CoNLLU_parser:
+class parser:
 	r"""
 	This class implements a parsing algorithm for CoNLLU-formatted files. It uses
 	the modules `conllu.line_parser` and `conllu.line_type` to easily parse the
@@ -224,7 +224,7 @@ class CoNLLU_parser:
 						self._reading_tree = True
 						logging.debug(f"Start reading tree at line {linenumber}")
 					
-					lp = line_parser(line, linenumber)
+					lp = line_parser.line_parser(line, linenumber)
 					lp.parse_line()
 					
 					ignore = False

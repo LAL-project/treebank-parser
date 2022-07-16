@@ -55,19 +55,19 @@ In the following examples, the input file is always the `CoNLL-U`-formatted file
 
 - Convert the input treebank file into head vectors
 
-		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU
+		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU
 
 - Remove punctuation marks from the sentences in the input treebank file
 
-		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemovePunctuationMarks
+		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemovePunctuationMarks
 
 - Remove function words from the sentences in the input treebank file
 
-		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords
+		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords
 
 - Remove function words AND punctuation marks from the sentences in the input treebank file
 
-		python3 cli/treebank_parser.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords --RemovePunctuationMarks
+		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords --RemovePunctuationMarks
 
 ### Parameters (summary)
 
@@ -94,7 +94,7 @@ Optional interesting parameters:
 
 All the parameters that the application needs can be queried using the `--help` parameter. The output is the following:
 
-	usage: treebank_parser.py [-h] -i infile -o outfile [--verbose VERBOSE] [--laldebug] {CoNLLU} ...
+	usage: main.py [-h] -i infile -o outfile [--verbose VERBOSE] [--laldebug] {CoNLLU} ...
 
 	Parse a treebank file and extract the sentences as head vectors. The format of the treebank file
 	is specified with a positional parameter (see the list of positional arguments within "{}" below).
@@ -122,9 +122,9 @@ All the parameters that the application needs can be queried using the `--help` 
 
 All the parameters accepted by the CoNLL-U format parser can be queried using the `CoNLLU --help` parameter. The output is the following:
 
-	usage: treebank_parser.py CoNLLU [-h] [--RemoveFunctionWords] [--RemovePunctuationMarks]
-	                                 [--DiscardSentencesShorter length_in_words]
-	                                 [--DiscardSentencesLonger length_in_words]
+	usage: main.py CoNLLU [-h] [--RemoveFunctionWords] [--RemovePunctuationMarks]
+	                           [--DiscardSentencesShorter length_in_words]
+	                           [--DiscardSentencesLonger length_in_words]
 	
 	The parser of a CoNLL-U-formatted file. This command has special mandatory and optional
 	parameters. These are listed below.
