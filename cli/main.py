@@ -50,13 +50,14 @@ to read the usage of this script. Run with
 
 Usage examples:
 
-	python3 cli/main.py -i catalan.conllu -o catalan.heads --lal CoNLLU
-	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 --lal CoNLLU
-	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 --lal CoNLLU --RemoveFunctionWords
-	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 --lal CoNLLU --RemoveFunctionWords --DiscardSentencesShorter 3
+	python3 cli/main.py -i catalan.conllu -o catalan.heads --laldebug CoNLLU
+	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 --laldebug CoNLLU
+	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 CoNLLU --RemoveFunctionWords
+	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 CoNLLU --RemoveFunctionWords --DiscardSentencesShorter 3
 """
 
 import sys
+import logging
 
 # set up paths before actual cli's start up
 import os
@@ -65,30 +66,11 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent.absolute()) + "/..")
 del os, pathlib
 # finish setting up path
 
-
-import logging
-
 import argument_parser
 from treebank_parser import treebank_formats
 from treebank_parser.conllu import action_type as conllu_action_type
 
-def make_actions_list(args):
-	r"""
-	Returns a list of all the actions as strings for display purposes
-	"""
-	
-	print(args)
-
-	if args.treebank_format == treebank_formats.CoNLLU_key_str:
-		if args.RemovePunctuationMarks:
-			yield conllu_action_type.RemovePunctuationMarks_key_str
-		if args.RemoveFunctionWords:
-			yield conllu_action_type.RemoveFunctionWords_key_str
-		if args.DiscardSentencesShorter != -1:
-			yield conllu_action_type.DiscardSentencesShorter_key_str
-		if args.DiscardSentencesLonger != -1:
-			yield conllu_action_type.DiscardSentencesLonger_key_str
-
+from cli import run_cli
 
 # create the parser object
 parser = argument_parser.create_parser()
@@ -106,56 +88,4 @@ if len(sys.argv) == 2:
 else:
 	args = parser.parse_args(sys.argv[1:])
 
-# Run the treebank parser with the configuration encoded in 'args'.
-# 'args' is the object returned by a call to the method 'parse_args'
-# of an object of type argparse.ArgumentParser.
-
-# configure logging
-logging.basicConfig(
-	level = logging.DEBUG,
-	format = "[%(levelname)s] %(asctime)s : %(message)s",
-	datefmt = '%Y-%m-%d %H:%M:%S'
-)
-
-if args.verbose != None:
-	if args.verbose == 0:
-		logging.disable(logging.WARNING)
-	elif args.verbose == 1:
-		logging.disable(logging.INFO)
-	elif args.verbose == 2:
-		logging.disable(logging.DEBUG)
-	else:
-		logging.disable(logging.NOTSET)
-
-# Print some debugging information regarding parameters
-if not args.quiet:
-	print("--------------------------------------")
-	print(f"File to be parsed:   '{args.inputfile}'")
-	print(f"File to create:      '{args.outputfile}'")
-	print(f"Input file's format: '{args.treebank_format}'")
-	print(f"Verbosity level:     '{args.verbose}'")
-	logging.critical("Critical messages will be shown.")
-	logging.error("   Error messages will be shown.")
-	logging.warning(" Warning messages will be shown.")
-	logging.info("    Info messages will be shown.")
-	logging.debug("   Debug messages will be shown.")
-
-# construct a list with all the actions
-actions = list(make_actions_list(args))
-
-if not args.quiet:
-	print(f"Actions to be performed ({len(actions)}):", actions)
-	print("--------------------------------------")
-
-proceed_to_run_parser = True
-if args.treebank_format == treebank_formats.CoNLLU_key_str:
-	from treebank_parser.conllu import parser
-else:
-	logging.error(f"Unhandled format '{args.format}'")
-	proceed_to_run_parser = False
-
-if proceed_to_run_parser:
-	# the treebank format was handled correctly
-	p = parser.parser(args)
-	p.parse()
-	p.dump_contents()
+run_cli.run(args)
