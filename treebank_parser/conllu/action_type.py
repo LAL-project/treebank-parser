@@ -32,6 +32,8 @@
 # 
 ######################################################################
 
+from treebank_parser import type_strings
+
 r"""
 This module encodes the types of actions that can be performed in the processing
 of a CoNLL-U-formatted treebank.
@@ -92,9 +94,39 @@ RemoveFunctionWords_help_str = action_help_str[RemoveFunctionWords]
 DiscardSentencesShorter_help_str = action_help_str[DiscardSentencesShorter]
 DiscardSentencesLonger_help_str = action_help_str[DiscardSentencesLonger]
 
+# ------------------------------------------------------------------------------
+
+action_text_str = {
+    RemovePunctuationMarks: "Remove Punctuation Marks",
+	RemoveFunctionWords: "Remove Function Words",
+	DiscardSentencesShorter: "Discard Sentences Shorter",
+	DiscardSentencesLonger: "Discard Sentences Longer",
+}
+
+RemovePunctuationMarks_text_str = action_text_str[RemovePunctuationMarks]
+RemoveFunctionWords_text_str = action_text_str[RemoveFunctionWords]
+DiscardSentencesShorter_text_str = action_text_str[DiscardSentencesShorter]
+DiscardSentencesLonger_text_str = action_text_str[DiscardSentencesLonger]
+
+# ------------------------------------------------------------------------------
+
+action_param_str = {
+    RemovePunctuationMarks: type_strings.None_type_str,
+	RemoveFunctionWords: type_strings.None_type_str,
+	DiscardSentencesShorter: type_strings.Integer_type_str,
+	DiscardSentencesLonger: type_strings.Integer_type_str,
+}
+
+RemovePunctuationMarks_param_str = action_param_str[RemovePunctuationMarks]
+RemoveFunctionWords_param_str = action_param_str[RemoveFunctionWords]
+DiscardSentencesShorter_param_str = action_param_str[DiscardSentencesShorter]
+DiscardSentencesLonger_param_str = action_param_str[DiscardSentencesLonger]
+
 # -------------------------------------------------------------------------
 
 if __name__ == "__main__":
 	# TESTS
 	print("Testing...")
 	assert( len(action_key_str) == len(action_help_str) )
+	assert( len(action_help_str) == len(action_text_str) )
+	assert( len(action_text_str) == len(action_param_str) )

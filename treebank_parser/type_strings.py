@@ -32,56 +32,5 @@
 # 
 ######################################################################
 
-r"""
-The different formats that can be parsed.
-
-Formats
-=======
-- `CoNLLU`: CoNLL-U format (see https://universaldependencies.org/format.html)
-"""
-
-CoNLLU = 0
-
-# -------------------------------------------------------------------------
-
-format_key_str = {
-	CoNLLU: "CoNLLU",
-}
-
-CoNLLU_key_str = format_key_str[CoNLLU]
-
-# -------------------------------------------------------------------------
-
-format_text_str = {
-    CoNLLU: "CoNLL-U",
-}
-
-CoNLLU_text_str = format_text_str[CoNLLU]
-
-# -------------------------------------------------------------------------
-
-format_description_str = {
-	CoNLLU:
-		"The parser of a CoNLL-U-formatted file. This command has special\
-		mandatory and optional parameters. These are listed below.",
-}
-
-CoNLLU_descr_str = format_description_str[CoNLLU]
-
-# -------------------------------------------------------------------------
-
-format_help_str = {
-	CoNLLU:
-		"Command to parse a CoNLL-U-formatted file. For further information\
-		on this format's detailed specification, see https://universaldependencies.org/format.html.",
-}
-
-CoNLLU_help_str = format_help_str[CoNLLU]
-
-# -------------------------------------------------------------------------
-
-if __name__ == "__main__":
-	# TESTS
-	print("Testing...")
-	assert( len(format_key_str) == len(format_description_str) )
-	assert( len(format_description_str) == len(format_help_str) )
+None_type_str = ""
+Integer_type_str = "Integer"
