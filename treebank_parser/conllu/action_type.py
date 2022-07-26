@@ -84,9 +84,9 @@ DiscardSentencesLonger_key_str = action_key_str[DiscardSentencesLonger]
 
 action_help_str = {
 	RemovePunctuationMarks: "Remove punctuation marks from each sentence. A punctuation mark is identified by the value 'PUNCT' in the corresponding UPOS field.",
-	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP','AUX','CCONJ','DET','NUM','PART','PRON','SCONJ' in the corresponding UPOS field. See the documentation of function 'is_function_word' of the 'conllu.line_parser.line_parser' class for more details on the origins of this classification.",
-	DiscardSentencesShorter: "Discard sentences of less than or equal to a given length (in words). This criterion is applied after removing punctuation marks and/or function words.",
-	DiscardSentencesLonger: "Discard sentences of more than or equal to a given length (in words). This criterion is applied after removing punctuation marks and/or function words.",
+	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP','AUX','CCONJ','DET','NUM','PART','PRON','SCONJ' in the corresponding UPOS field. The origins of this description are found in a 2022 paper available at arXiv (https://arxiv.org/abs/2007.15342).",
+	DiscardSentencesShorter: "Discard sentences whose length (in words) is less than or equal to a given length. This criterion is applied after removing punctuation marks and/or function words.",
+	DiscardSentencesLonger: "Discard sentences whose length (in words) is greater than or equal to a given length. This criterion is applied after removing punctuation marks and/or function words.",
 }
 
 RemovePunctuationMarks_help_str = action_help_str[RemovePunctuationMarks]
