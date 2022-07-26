@@ -1,0 +1,3 @@
+{
+    "files": ["utils/MyOut.py","HelpMenu.py","UiLoader.py","RunnerButton.py","main.py","ChosenActionsTableItem.py","ActionListItem.py","utils/action_type_module.py","TestButton.py","TreebankFormatSelectorData.py","utils/help_menu_strings.py","form.ui","TreebankFormatSelector.py","ChosenActionsTable.py","ActionListModifier.py","FileChooserButton.py"]
+}

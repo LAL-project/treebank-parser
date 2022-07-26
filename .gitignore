@@ -1,5 +1,7 @@
 __pycache__
 
+*.pyproject.user*
+
 *.conllu
 
 *.heads
