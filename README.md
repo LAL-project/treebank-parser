@@ -55,11 +55,25 @@ The usage can be read by clicking, on the menu bar, `Help` > `How to`. A small p
 
 	How to use this GUI:
 	
-	First, find the treebank input file using the appropriate 'select' button to the right of the intreface. Then, select the output file. You can give any name you want to this file.
+	First, find the treebank input file using the appropriate 'select' button to
+	the right of the intreface. Then, select the output file. You can give any
+	name you want to this file.
 	
-	After this, select the correct format of the input treebank file. If the input file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown button below 'Choose a format'. A list of actions will appear next to that button. Select the action(s) you want to be performed on the treebank and then click 'Add' so that it actually takes effect. The meaning of every actoin will appear if you hover the mouse over them in a tooltip text. If any action needs a value associated to it, the table next to it will indicate in its third column the data type of the value (e.g., 'Integer'). Fill the cell in the second column with an appropriate value of the corresponding data type. If an action does not need a value, the third column will be empty
+	After this, select the correct format of the input treebank file. If the input
+	file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown button below
+	'Choose a format'. A list of actions will appear next to that button. Select
+	the action(s) you want to be performed on the treebank and then click 'Add'
+	so that it actually takes effect. The meaning of every actoin will appear if
+	you hover the mouse over them in a tooltip text. If any action needs a value
+	associated to it, the table next to it will indicate in its third column the
+	data type of the value (e.g., 'Integer'). Fill the cell in the second column
+	with an appropriate value of the corresponding data type. If an action does
+	not need a value, the third column will be empty
 	
-	Once all the actions have been chosen, you can click 'Run' to actually transform the input treebank file into a head vector file. Optionally, you can tell the parser to use a debug compilation of the Linear Arrangement Library by checking the checkbox 'Use laldebug'.
+	Once all the actions have been chosen, you can click 'Run' to actually transform
+	the input treebank file into a head vector file. Optionally, you can tell the
+	parser to use a debug compilation of the Linear Arrangement Library by checking
+	the checkbox 'Use laldebug'.
 
 ### Requirements for running the GUI
 
