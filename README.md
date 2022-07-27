@@ -1,6 +1,6 @@
 # Treebank parser
 
-This repository contains a small python application that parses treebanks and converts them into the _head vector_ format so that LAL (the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library)) can process them.
+This repository contains a small python application that parses treebanks and converts them into the _head vector_ format using LAL (the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library)). It comes with a Command Line Interface (CLI) and a Graphical User Interface (GUI).
 
 ## Head vectors
 
@@ -45,13 +45,39 @@ One way to visualize it is:
 
 The application is built on (and thus, depends on) the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library). The library must be installed on the system and Python should be able to find it in its path.
 
+## Usage of the Graphical User Interface (GUI)
+
+The GUI was designed with simplicity in mind. Here is a screenshot.
+
+![](figures/gui.png)
+
+The usage can be read by clicking, on the menu bar, `Help` > `How to`. A small pop up window will show up on your screen with the following message:
+
+	How to use this GUI:
+	
+	First, find the treebank input file using the appropriate 'select' button to the right of the intreface. Then, select the output file. You can give any name you want to this file.
+	
+	After this, select the correct format of the input treebank file. If the input file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown button below 'Choose a format'. A list of actions will appear next to that button. Select the action(s) you want to be performed on the treebank and then click 'Add' so that it actually takes effect. The meaning of every actoin will appear if you hover the mouse over them in a tooltip text. If any action needs a value associated to it, the table next to it will indicate in its third column the data type of the value (e.g., 'Integer'). Fill the cell in the second column with an appropriate value of the corresponding data type. If an action does not need a value, the third column will be empty
+	
+	Once all the actions have been chosen, you can click 'Run' to actually transform the input treebank file into a head vector file. Optionally, you can tell the parser to use a debug compilation of the Linear Arrangement Library by checking the checkbox 'Use laldebug'.
+
+### Requirements for running the GUI
+
+The GUI was built with [PySide2](https://pypi.org/project/PySide2/). Anaconda users can install it with the following command ([here](https://anaconda.org/conda-forge/pyside2) are listed alternative ways of installing PySide2 with conda.)
+
+	conda install -c conda-forge pyside2
+
+`pip3` users can run the following command in their command line terminal to install PySide2
+
+	pip3 install PySide2
+
 ## Usage of the Command Line Interface (CLI)
 
-This application has no GUI (Graphical User Interface). Usage of the command line is required.
+The usage of the CLI is explained by examples.
 
 ### Examples of usage
 
-In the following examples, the input file is always the `CoNLL-U`-formatted file `catalan.conllu`, and the output file is always `catalan.heads`. Notice that the order of the parameters is important! The `CoNLLU` keyword must go after the parameters of the treebank parser program (in the examples, `-i` and `-o`) and before the preprocessing flags (in the examples, `--RemovePunctuationMarks` and `--RemoveFunctionWords`).
+In the following examples, the input file is always the `CoNLL-U`-formatted file `catalan.conllu`, and the output file is always `catalan.heads`. Notice that the order of the parameters is important! The treebank format keyword (e.g. `CoNLLU`) must go after the parameters of the treebank parser program (in the examples, `-i` and `-o`) and before the preprocessing flags (in the examples, `--RemovePunctuationMarks` and `--RemoveFunctionWords`).
 
 - Convert the input treebank file into head vectors
 
