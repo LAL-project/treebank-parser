@@ -79,11 +79,18 @@ The usage can be read by clicking, on the menu bar, `Help` > `How to`. A small p
 
 The GUI was built with [PySide2](https://pypi.org/project/PySide2/). Anaconda users can install it with the following command ([here](https://anaconda.org/conda-forge/pyside2) are listed alternative ways of installing PySide2 with conda.)
 
-	conda install -c conda-forge pyside2
+	$ conda install -c conda-forge pyside2
 
 `pip3` users can run the following command in their command line terminal to install PySide2
 
-	pip3 install PySide2
+	$ pip3 install PySide2
+
+### Running the GUI
+
+Simply, run the `gui/main.py` file. For example, from the command line:
+
+	$ cd treebank-parser/
+	$ python3 gui/main.py
 
 ## Usage of the Command Line Interface (CLI)
 
@@ -95,19 +102,19 @@ In the following examples, the input file is always the `CoNLL-U`-formatted file
 
 - Convert the input treebank file into head vectors
 
-		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU
+		$ python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU
 
 - Remove punctuation marks from the sentences in the input treebank file
 
-		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemovePunctuationMarks
+		$ python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemovePunctuationMarks
 
 - Remove function words from the sentences in the input treebank file
 
-		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords
+		$ python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords
 
 - Remove function words AND punctuation marks from the sentences in the input treebank file
 
-		python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords --RemovePunctuationMarks
+		$ python3 cli/main.py -i catalan.conllu -o catalan.heads CoNLLU --RemoveFunctionWords --RemovePunctuationMarks
 
 ### Parameters (summary)
 
