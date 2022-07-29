@@ -84,7 +84,7 @@ DiscardSentencesLonger_key_str = action_key_str[DiscardSentencesLonger]
 
 action_help_str = {
 	RemovePunctuationMarks: "Remove punctuation marks from each sentence. A punctuation mark is identified by the value 'PUNCT' in the corresponding UPOS field.",
-	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP','AUX','CCONJ','DET','NUM','PART','PRON','SCONJ' in the corresponding UPOS field. The origins of this description are found in a 2022 paper available at arXiv (https://arxiv.org/abs/2007.15342).",
+	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP', 'AUX', 'CCONJ', 'DET', 'NUM', 'PART', 'PRON', 'SCONJ' in the corresponding UPOS field. The origins of this description are found in a 2022 paper available at arXiv (https://arxiv.org/abs/2007.15342).",
 	DiscardSentencesShorter: "Discard sentences whose length (in words) is less than or equal to a given length. This criterion is applied after removing punctuation marks and/or function words.",
 	DiscardSentencesLonger: "Discard sentences whose length (in words) is greater than or equal to a given length. This criterion is applied after removing punctuation marks and/or function words.",
 }
