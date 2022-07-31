@@ -152,6 +152,7 @@ class gui_treebank_parser(QMainWindow):
 		actionRemoveButton = self.findChild(ActionListModifier, "actionRemoveButton")
 		assert(actionRemoveButton is not None)
 		actionRemoveButton.set_type("remove_action")
+		actionRemoveButton.set_treebankFormatSelector(treebankFormatSelector)
 
 		# chosen actions table should have single selection only
 		print("Setup 'chosenActionTable'")

@@ -87,10 +87,10 @@ class ActionListModifier(QPushButton):
 		print(f"        index of item in list  '{selected_index}'")
 		print(f"        actions chosen so far  '{chosenActionTable.rowCount()}'")
 
-		action_type = action_type_module.get_action_type_module(self.m_treebankFormatSelector.currentText())
-		assert(action_type is not None)
+		action_module = action_type_module.get_action_type_module(self.m_treebankFormatSelector.currentText())
+		assert(action_module is not None)
 
-		type_text = action_type.action_param_str[selected_item.key()]
+		type_text = action_module.action_param_str[selected_item.key()]
 		print(f"    type of action's parameter '{type_text}'")
 
 		# add a row to the table
@@ -109,7 +109,7 @@ class ActionListModifier(QPushButton):
 
 		# set editing options of items
 		actionNameItem.setFlags(~Qt.ItemIsEditable)
-		actionNameItem.setToolTip(action_type.action_help_str[selected_item.key()])
+		actionNameItem.setToolTip(action_module.action_help_str[selected_item.key()])
 		if type_text == type_strings.None_type_str:
 			actionValueItem.setFlags(Qt.ItemFlag.NoItemFlags)
 			actionValueItem.setToolTip("This option does not need a value.")
@@ -159,6 +159,8 @@ class ActionListModifier(QPushButton):
 		print( "    Move selected item back to available action list")
 		availableActionList = parent.findChild(QListWidget, "availableActionList")
 		assert(availableActionList is not None)
+
+		action_module = action_type_module.get_action_type_module(self.m_treebankFormatSelector.currentText())
 
 		item_for_key = ActionListItem(selected_item.key(), selected_item.text(), availableActionList)
 		item_for_key.setToolTip(action_module.action_help_str[selected_item.key()])
