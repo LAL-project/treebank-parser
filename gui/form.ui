@@ -292,6 +292,8 @@
     </property>
     <addaction name="how_to"/>
     <addaction name="about"/>
+    <addaction name="separator"/>
+    <addaction name="check_LAL_reachable"/>
    </widget>
    <addaction name="only_menu"/>
   </widget>
@@ -314,6 +316,11 @@
   <action name="actionq2">
    <property name="text">
     <string>q2</string>
+   </property>
+  </action>
+  <action name="check_LAL_reachable">
+   <property name="text">
+    <string>Is LAL reachable?</string>
    </property>
   </action>
  </widget>

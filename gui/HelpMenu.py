@@ -34,12 +34,30 @@
 
 from PySide2.QtWidgets import QMenu
 
+from gui.utils.MyOut import MyOut
 
 class HelpMenu(QMenu):
 	def __init__(self, parent=None):
 		super(HelpMenu, self).__init__(parent)
 		self.triggered.connect(self.process_trigger)
 		self.m_main = parent.parentWidget()
+
+	def check_LAL_is_reachable(self):
+		try:
+			MyOut.info("Trying to import 'lal'...")
+			import lal
+			MyOut.info("    Module was found.")
+			del lal
+		except ModuleNotFoundError:
+			MyOut.error("Module could not be found")
+
+		try:
+			MyOut.info("Trying to import 'laldebug'...")
+			import laldebug as lal
+			MyOut.info("    Module was found.")
+			del lal
+		except ModuleNotFoundError:
+			MyOut.error("Module could not be found")
 
 	def process_trigger(self, action):
 		if action.text() == "How to":
@@ -51,5 +69,7 @@ class HelpMenu(QMenu):
 			# open pop up with info regarding repository, authorship, ...
 			self.m_main.popup__about.show()
 			pass
+		elif action.text() == "Is LAL reachable?":
+			self.check_LAL_is_reachable()
 		else:
 			print(f"Unhandled action {action.text()}")
