@@ -70,7 +70,7 @@ import argument_parser
 from treebank_parser import treebank_formats
 from treebank_parser.conllu import action_type as conllu_action_type
 
-from cli import run_cli
+from cli import run_parser
 
 # create the parser object
 parser = argument_parser.create_parser()
@@ -88,4 +88,4 @@ if len(sys.argv) == 2:
 else:
 	args = parser.parse_args(sys.argv[1:])
 
-run_cli.run(args)
+run_parser.run(args)
