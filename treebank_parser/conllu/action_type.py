@@ -56,9 +56,16 @@ Members of this module
 - `action_key_str`: a dictionary relating each action type (listed above) with
 a so-called `key` string. These are particularly useful to design the command
 line interface so that users can pass actions as parameters.
+
 - `action_help_str`: a dictionary relating each action type (listed above) with
 a so-called `help` string. These strings are more useful in displaying messages
 on the command line for users to read.
+
+- `action_text_str`: a dictionary relating each action type (listed above) with
+a short self-contained string similar to human text.
+
+- `action_param_str`: a dictionary relating each action type to its parameter
+type. If an action has no parameter associated, the type is None.
 """
 
 RemovePunctuationMarks = 0
