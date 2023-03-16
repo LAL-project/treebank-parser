@@ -39,7 +39,6 @@ This object is to be used by the main command line interface.
 """
 
 import argparse
-import sys
 
 from treebank_parser import treebank_formats as formats
 from treebank_parser.conllu import action_type as conllu_action_type
