@@ -58,7 +58,7 @@ def LAL_check():
 	try:
 		import laldebug as lal
 		if lal.version.major > '99.99':
-			errmsg = f"Version of LAL (debug) {lal.version.major} is not compatible with this version of treebank-parser. Version needed: =99.99"
+			errmsg = f"Version of LAL (debug) {lal.version.major} is not compatible with this version of treebank-parser. Version needed: <=99.99"
 			return (4, errmsg)
 		
 		del lal
