@@ -67,10 +67,17 @@ del os, pathlib
 # finish setting up path
 
 import argument_parser
-from treebank_parser import treebank_formats
+
+from treebank_parser import LAL_check
 from treebank_parser.conllu import action_type as conllu_action_type
 
 from cli import run_parser
+
+# check that LAL is reachable and its version is appropriate
+res = LAL_check.LAL_check()
+if res[0] != 0:
+	print(res[1])
+	exit(1)
 
 # create the parser object
 parser = argument_parser.create_parser()

@@ -2,6 +2,8 @@
 
 This repository contains a small python application that parses treebanks and converts them into the _head vector_ format using LAL (the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library)). It comes with a Command Line Interface (CLI) and a Graphical User Interface (GUI).
 
+This branch of _treebank-parser_ uses the [latest LAL](https://github.com/LAL-project/linear-arrangement-library/).
+
 ## Head vectors
 
 The _head vector_ format is very easy to understand: a single head vector can represent the underlying tree structure of a single syntactic dependency structure. It does so in the form of a vector of whole, non-negative numbers. In these vectors, every number occupies a position from `1` to `n` (where `n` is the number of vertices of the tree) and indicates the parent vertex for the vertex at the corresponding position. The number `0` represents the root of the tree (that is, the corresponding vertex has no parent); the other numbers represent the _head_ (or _parent_) of the vertex at the corresponding position in the vector.

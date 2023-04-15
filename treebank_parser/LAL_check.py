@@ -32,37 +32,37 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QMenu
-
-from gui.utils.MyOut import MyOut
-
-from treebank_parser import LAL_check
-
-class HelpMenu(QMenu):
-	def __init__(self, parent=None):
-		super(HelpMenu, self).__init__(parent)
-		self.triggered.connect(self.process_trigger)
-		self.m_main = parent.parentWidget()
-
-	def check_LAL_is_reachable(self):
-		MyOut.info("Checking if LAL can be imported...")
-		res = LAL_check.LAL_check()
-		if res[0] != 0:
-			MyOut.error(res[1])
-		else:
-			MyOut.info("    LAL can be imported successfully.")
-
-	def process_trigger(self, action):
-		if action.text() == "How to":
-			# open pop up with a small set of instructions.
-			print("Pressed how to")
-			self.m_main.popup__how_to.show()
-			pass
-		elif action.text() == "About":
-			# open pop up with info regarding repository, authorship, ...
-			self.m_main.popup__about.show()
-			pass
-		elif action.text() == "Is LAL reachable?":
-			self.check_LAL_is_reachable()
-		else:
-			print(f"Unhandled action {action.text()}")
+def LAL_check():
+	r"""
+	This method checks if LAL is reachable. Also checks if the version of LAL in
+	use is suitable for this version of treebank-parser.
+	
+	This method returns a pair of error code and error message.
+	
+	- If LAL is not reachable ('import lal' failed), returns 1,
+	- If the version of LAL imported is not correct, returns 2,
+	- If LAL (debug) is not reachable ('import laldebug' failed), returns 3,
+	- If the version of LAL (debug) imported is not correct, returns 4.
+	"""
+	
+	try:
+		import lal
+		if lal.version.major > '99.99':
+			errmsg = f"Version of LAL {lal.version.major} is not compatible with this version of treebank-parser. Version needed: <=99.99"
+			return (2, errmsg)
+		
+		del lal
+	except ModuleNotFoundError:
+		return (1, "LAL could not be imported: 'import lal' failed.")
+		
+	try:
+		import laldebug as lal
+		if lal.version.major > '99.99':
+			errmsg = f"Version of LAL (debug) {lal.version.major} is not compatible with this version of treebank-parser. Version needed: =99.99"
+			return (4, errmsg)
+		
+		del lal
+	except ModuleNotFoundError:
+		return (3, "LAL (debug) could not be imported: 'import laldebug' failed.")
+	
+	return (0, "")
