@@ -44,7 +44,7 @@ if __name__ == "__main__":
 from PySide2.QtWidgets import QAbstractItemView, QApplication, QMainWindow
 from PySide2.QtWidgets import QWidget, QTableWidget, QTextEdit, QAction
 from PySide2.QtWidgets import QMenu, QMenuBar, QLabel, QVBoxLayout
-from PySide2 import QtCore
+from PySide2 import QtCore, QtGui
 from PySide2.QtCore import QRect, QFile
 
 from treebank_parser import treebank_formats
@@ -64,9 +64,9 @@ class gui_treebank_parser(QMainWindow):
 	def __init__(self):
 		super(gui_treebank_parser, self).__init__()
 
-		SCRIPT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+		self.SCRIPT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 		UiLoader.loadUi(
-		    os.path.join(SCRIPT_DIRECTORY, 'form.ui'),
+		    os.path.join(self.SCRIPT_DIRECTORY, 'form.ui'),
 			self,
 			{
 			    "TreebankFormatSelector": TreebankFormatSelector,
@@ -159,6 +159,12 @@ class gui_treebank_parser(QMainWindow):
 		chosenActionTable = self.findChild(QTableWidget, "chosenActionTable")
 		assert(chosenActionTable is not None)
 		chosenActionTable.setSelectionMode(QAbstractItemView.SingleSelection)
+		
+		# load icon
+		print("Setup icon logo")
+		icon_image = QtGui.QImage( os.path.join(self.SCRIPT_DIRECTORY, 'icon/icon.svg'), )
+		icon_pixmap = QtGui.QPixmap(icon_image)
+		self.setWindowIcon(QtGui.QIcon(icon_pixmap))
 
 
 if __name__ == "__main__":
