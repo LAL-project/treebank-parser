@@ -44,7 +44,7 @@ the input file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown\n\
 button below 'Choose a format'. A list of actions will appear next to\n\
 that button. Select the action(s) you want to be performed on the treebank\n\
 and then click 'Add' so that it actually takes effect. The meaning of every\n\
-actoin will appear if you hover the mouse over them in a tooltip text.\n\
+action will appear if you hover the mouse over them in a tooltip text.\n\
 If any action needs a value associated to it, the table next to it will\n\
 indicate in its third column the data type of the value (e.g., 'Integer').\n\
 Fill the cell in the second column with an appropriate value of the\n\
