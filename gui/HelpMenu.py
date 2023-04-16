@@ -34,8 +34,6 @@
 
 from PySide2.QtWidgets import QMenu
 
-from gui.utils.MyOut import MyOut
-
 class HelpMenu(QMenu):
 	def __init__(self, parent=None):
 		super(HelpMenu, self).__init__(parent)
@@ -52,7 +50,5 @@ class HelpMenu(QMenu):
 			# open pop up with info regarding repository, authorship, ...
 			self.m_main.popup__about.show()
 			pass
-		elif action.text() == "Is LAL reachable?":
-			self.check_LAL_is_reachable()
 		else:
 			print(f"Unhandled action {action.text()}")

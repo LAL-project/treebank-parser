@@ -327,7 +327,6 @@
     <addaction name="how_to"/>
     <addaction name="about"/>
     <addaction name="separator"/>
-    <addaction name="check_LAL_reachable"/>
    </widget>
    <addaction name="only_menu"/>
   </widget>
