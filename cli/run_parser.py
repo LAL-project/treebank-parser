@@ -91,7 +91,7 @@ def configure_logging(args):
 	output_log.tbp_error = logging.error
 	output_log.tbp_critical = logging.critical
 
-def run(args):
+def run(args, lal_module):
 	# Run the treebank parser with the configuration encoded in 'args'.
 	# 'args' is the object returned by a call to the method 'parse_args'
 	# of an object of type argparse.ArgumentParser.
@@ -112,6 +112,6 @@ def run(args):
 
 	if proceed_to_run_parser:
 		# the treebank format was handled correctly
-		p = parser.parser(args)
+		p = parser.parser(args, lal_module)
 		p.parse()
 		p.dump_contents()

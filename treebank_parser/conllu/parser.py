@@ -93,8 +93,11 @@ class parser:
 		
 		# make the lal.graphs.rooted_tree() object
 		tbp_logging.tbp_debug(f"make a rooted tree from the head vector {head_vector=}")
-		rt = self._lal.graphs.from_head_vector_to_rooted_tree(head_vector)
-		tbp_logging.tbp_debug("made a rooted tree from the head vector")
+		rt = self.LAL_module.graphs.from_head_vector_to_rooted_tree(head_vector)
+		
+		tbp_logging.tbp_debug(f"the graph has {rt.get_num_nodes()} nodes")
+		tbp_logging.tbp_debug(f"the graph has {rt.get_num_edges()} edges")
+		tbp_logging.tbp_debug(f"Is the graph a rooted tree? {rt.is_rooted_tree()}")
 		
 		# -- apply actions --
 		
@@ -125,12 +128,14 @@ class parser:
 				# accumulate amount of removed to calculate future ids
 				num_removed += 1
 		
+		tbp_logging.tbp_debug("All actions have been applied")
+		
 		# -- store the head vector --
 		
 		if not rt.is_rooted_tree():
 			# 'rt' is not a valid rooted tree. We do not know how to store this
 			# as a head vector.
-			tbp_logging.tbp_warning(f"This graph is not a rooted tree. This graph is ignored.")
+			tbp_logging.tbp_warning(f"This graph is not a rooted tree. Ignored.")
 		
 		elif not self._should_discard_tree(rt):
 			# The rooted tree should not be discarded. Its number of vertices
@@ -147,7 +152,7 @@ class parser:
 		
 		rt.clear()
 	
-	def __init__(self, args):
+	def __init__(self, args, lal_module):
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
 		"""
@@ -161,13 +166,8 @@ class parser:
 		# utilities for logging
 		self._donotknow_msg = "Do not know how to process this. This line will be ignored."
 		
-		# import correct build of LAL
-		if args.laldebug:
-			import laldebug as lal
-			self._lal = lal
-		else:
-			import lal
-			self._lal = lal
+		# keep LAL module
+		self.LAL_module = lal_module
 		
 		# make lambdas for all actions applied on a word
 		self._word_action_functions = []

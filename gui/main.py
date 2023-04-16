@@ -41,7 +41,7 @@ if __name__ == "__main__":
 	sys.path.insert(0, str(pathlib.Path(__file__).parent.absolute()) + "/..")
 	del pathlib
 
-from PySide2.QtWidgets import QAbstractItemView, QApplication, QMainWindow
+from PySide2.QtWidgets import QAbstractItemView, QApplication, QMainWindow, QCheckBox
 from PySide2.QtWidgets import QWidget, QTableWidget, QTextEdit, QAction
 from PySide2.QtWidgets import QMenu, QMenuBar, QLabel, QVBoxLayout
 from PySide2 import QtCore, QtGui
@@ -49,7 +49,7 @@ from PySide2.QtCore import QRect, QFile
 
 from treebank_parser import treebank_formats
 
-from gui import UiLoader
+from gui import UiLoader, argument_parser
 from gui.utils import help_menu_strings
 from gui.TreebankFormatSelector import TreebankFormatSelector
 from gui.TreebankFormatSelectorData import TreebankFormatSelectorData
@@ -108,7 +108,8 @@ class gui_treebank_parser(QMainWindow):
 			help_menu_strings.ABOUT_STR,
 			QtCore.Qt.AlignHCenter)
 
-	def do_basic_setup(self):
+	def do_basic_setup(self, args):
+		# setup GUI
 		self.setWindowTitle("Treebank parser")
 
 		print("Set up popups...")
@@ -166,11 +167,26 @@ class gui_treebank_parser(QMainWindow):
 		icon_pixmap = QtGui.QPixmap(icon_image)
 		self.setWindowIcon(QtGui.QIcon(icon_pixmap))
 
+		# load LAL and keep the module in a variable
+		if args.laldebug:
+			import laldebug as lal
+			print("Loaded LAL (debug)")
+			self.findChild(QCheckBox, "lalDebugCheckBox").setChecked(True)
+			self.findChild(QCheckBox, "lalReleaseCheckBox").setChecked(False)
+		else:
+			import lal
+			print("Loaded LAL")
+			self.findChild(QCheckBox, "lalDebugCheckBox").setChecked(False)
+			self.findChild(QCheckBox, "lalReleaseCheckBox").setChecked(True)
+		self.LAL_module = lal
 
 if __name__ == "__main__":
+	parser = argument_parser.create_parser()
+	args = parser.parse_args(sys.argv[1:])
+	
 	QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 	app = QApplication([])
 	widget = gui_treebank_parser()
-	widget.do_basic_setup()
+	widget.do_basic_setup(args)
 	widget.show()
 	sys.exit(app.exec_())

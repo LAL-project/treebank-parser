@@ -239,7 +239,20 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="laldebugCheckBox">
+         <widget class="QCheckBox" name="lalReleaseCheckBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Use lal</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="lalDebugCheckBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Use laldebug</string>
           </property>

@@ -81,14 +81,6 @@ class RunnerButton(QPushButton):
 		argument_list += ["-o"]
 		argument_list += [output_file]
 
-		laldebugCheckBox = parent.findChild(QCheckBox, "laldebugCheckBox")
-		assert(laldebugCheckBox is not None)
-		if laldebugCheckBox.isChecked():
-			MyOut.info("Use laldebug...")
-			argument_list += ["--laldebug"]
-		else:
-			MyOut.info("Use (non-debug) lal...")
-
 		# verbose flags
 		loggingLevelSpinBox = parent.findChild(QSpinBox, "loggingLevelSpinBox")
 		argument_list += ["--verbose", str(loggingLevelSpinBox.value())]
@@ -158,7 +150,7 @@ class RunnerButton(QPushButton):
 		
 		parser = argument_parser.create_parser()
 		args = parser.parse_args(argument_list)
-		run_parser.run(args)
+		run_parser.run(args, parent.parentWidget().LAL_module)
 
 		MyOut.info("    Done")
 		MyOut.log_separator()

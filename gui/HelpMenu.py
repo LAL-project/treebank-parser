@@ -36,21 +36,11 @@ from PySide2.QtWidgets import QMenu
 
 from gui.utils.MyOut import MyOut
 
-from treebank_parser import LAL_check
-
 class HelpMenu(QMenu):
 	def __init__(self, parent=None):
 		super(HelpMenu, self).__init__(parent)
 		self.triggered.connect(self.process_trigger)
 		self.m_main = parent.parentWidget()
-
-	def check_LAL_is_reachable(self):
-		MyOut.info("Checking if LAL can be imported...")
-		res = LAL_check.LAL_check()
-		if res[0] != 0:
-			MyOut.error(res[1])
-		else:
-			MyOut.info("    LAL can be imported successfully.")
 
 	def process_trigger(self, action):
 		if action.text() == "How to":
