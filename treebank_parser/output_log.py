@@ -45,19 +45,19 @@ parser library. These can be overridden by users of the treebank parser library.
 """
 
 def _print_info(s):
-	print(s)
+	print(f"INFO : {s}")
 
 def _print_debug(s):
-	print(s)
+	print(f"DEBUG : {s}")
 
 def _print_warning(s):
-	print(s)
+	print(f"WARNING : {s}")
 
 def _print_error(s):
-	print(s)
+	print(f"ERROR : {s}")
 
 def _print_critical(s):
-	print(s)
+	print(f"CRITICAL : {s}")
 
 info = _print_info
 debug = _print_debug
