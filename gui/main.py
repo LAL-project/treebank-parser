@@ -42,10 +42,9 @@ if __name__ == "__main__":
 	del pathlib
 
 from PySide2.QtWidgets import QAbstractItemView, QApplication, QMainWindow, QCheckBox
-from PySide2.QtWidgets import QWidget, QTableWidget, QTextEdit, QAction
-from PySide2.QtWidgets import QMenu, QMenuBar, QLabel, QVBoxLayout
+from PySide2.QtWidgets import QWidget, QTableWidget, QTextEdit
+from PySide2.QtWidgets import QLabel, QVBoxLayout
 from PySide2 import QtCore, QtGui
-from PySide2.QtCore import QRect, QFile
 
 from treebank_parser import treebank_formats
 
