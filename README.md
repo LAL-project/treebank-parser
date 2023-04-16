@@ -94,6 +94,13 @@ Simply, run the `gui/main.py` file. For example, from the command line:
 	$ cd treebank-parser/
 	$ python3 gui/main.py
 
+#### Running the GUI with 'laldebug'
+
+The GUI loads the release distribution of LAL by default. To make the GUI load the debug distribution, simply execute
+
+	$ cd treebank-parser/
+	$ python3 gui/main.py --laldebug
+
 ## Usage of the Command Line Interface (CLI)
 
 The usage of the CLI is explained by examples.
