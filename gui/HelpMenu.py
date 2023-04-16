@@ -43,7 +43,6 @@ class HelpMenu(QMenu):
 	def process_trigger(self, action):
 		if action.text() == "How to":
 			# open pop up with a small set of instructions.
-			print("Pressed how to")
 			self.m_main.popup__how_to.show()
 			pass
 		elif action.text() == "About":
