@@ -38,12 +38,12 @@ Parser of CoNLLU-formatted files.
 This module contains a single class `CoNLLU_parser`.
 """
 
-import logging
 import time
 
 from treebank_parser.conllu import line_parser
 from treebank_parser.conllu import line_type
 from treebank_parser.conllu import action_type
+import treebank_parser.output_log as tbp_logging
 
 class parser:
 	r"""
@@ -92,9 +92,9 @@ class parser:
 			head_vector.append(head_int)
 		
 		# make the lal.graphs.rooted_tree() object
-		logging.debug(f"make a rooted tree from the head vector {head_vector=}")
+		tbp_logging.tbp_debug(f"make a rooted tree from the head vector {head_vector=}")
 		rt = self._lal.graphs.from_head_vector_to_rooted_tree(head_vector)
-		logging.debug("made a rooted tree from the head vector")
+		tbp_logging.tbp_debug("made a rooted tree from the head vector")
 		
 		# -- apply actions --
 		
@@ -107,17 +107,17 @@ class parser:
 				# calculate the (actual) id of the word to be removed
 				word_id = int(word.get_ID()) - num_removed - 1
 				
-				logging.debug(f"Remove {word_id}. Original ID: {word.get_ID()}")
-				logging.debug(f"Tree has root? {rt.has_root()}.")
+				tbp_logging.tbp_debug(f"Remove {word_id}. Original ID: {word.get_ID()}")
+				tbp_logging.tbp_debug(f"Tree has root? {rt.has_root()}.")
 				
 				if rt.has_root() and rt.get_root() == word_id:
-					logging.warning(f"Removing the root of the tree.")
-					logging.warning(f"This will make the structure become a forest.")
+					tbp_logging.tbp_warning(f"Removing the root of the tree.")
+					tbp_logging.tbp_warning(f"This will make the structure become a forest.")
 				
-				logging.debug(f"Tree has {rt.get_num_nodes()}. Word to be removed: {word_id=}")
+				tbp_logging.tbp_debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
 				if word_id >= rt.get_num_nodes():
-					logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
-					logging.critical(f"    Please, rerun the program with '--laldebug --verbose 3' for further debugging.")
+					tbp_logging.tbp_critical(f"Trying to remove a non-existent vertex. The program should crash now.")
+					tbp_logging.tbp_critical(f"    Please, rerun the program with '--laldebug --verbose 3' for further debugging.")
 				
 				# remove the node
 				rt.remove_node(word_id, True)
@@ -130,7 +130,7 @@ class parser:
 		if not rt.is_rooted_tree():
 			# 'rt' is not a valid rooted tree. We do not know how to store this
 			# as a head vector.
-			logging.warning(f"This graph is not a rooted tree. This graph is ignored.")
+			tbp_logging.tbp_warning(f"This graph is not a rooted tree. This graph is ignored.")
 		
 		elif not self._should_discard_tree(rt):
 			# The rooted tree should not be discarded. Its number of vertices
@@ -202,7 +202,7 @@ class parser:
 		
 		linenumber = 1
 		with open(self._input_file, 'r') as f:
-			logging.info(f"Input file {self._input_file} has been opened correctly.")
+			tbp_logging.tbp_info(f"Input file {self._input_file} has been opened correctly.")
 			
 			begin = time.perf_counter()
 			for line in f:
@@ -222,7 +222,7 @@ class parser:
 					# this line has actual information about the tree.
 					if not self._reading_tree:
 						self._reading_tree = True
-						logging.debug(f"Start reading tree at line {linenumber}")
+						tbp_logging.tbp_debug(f"Start reading tree at line {linenumber}")
 					
 					lp = line_parser.line_parser(line, linenumber)
 					lp.parse_line()
@@ -246,8 +246,8 @@ class parser:
 			if self._reading_tree: self._finish_reading_tree()
 			end = time.perf_counter()
 			
-			logging.info(f"Finished parsing the whole input file {self._input_file}.")
-			logging.info(f"    In {end - begin:.3f} s.")
+			tbp_logging.tbp_info(f"Finished parsing the whole input file {self._input_file}.")
+			tbp_logging.tbp_info(f"    In {end - begin:.3f} s.")
 	
 	def dump_contents(self):
 		r"""
@@ -255,12 +255,12 @@ class parser:
 		"""
 		
 		with open(self._output_file, 'w') as f:
-			logging.info(f"Output file {self._output_file} has been opened correctly.")
+			tbp_logging.tbp_info(f"Output file {self._output_file} has been opened correctly.")
 			
 			begin = time.perf_counter()
 			for hv in self._head_vector_collection:
 				f.write(hv + '\n')
 			end = time.perf_counter()
 			
-			logging.info(f"Finished writing the head vectors into {self._output_file}.")
-			logging.info(f"    In {end - begin:.3f} s.")
+			tbp_logging.tbp_info(f"Finished writing the head vectors into {self._output_file}.")
+			tbp_logging.tbp_info(f"    In {end - begin:.3f} s.")

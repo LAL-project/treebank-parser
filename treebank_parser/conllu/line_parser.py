@@ -38,7 +38,7 @@ This file contains just one class `line_parser` and some tests.
 The `line_parser` class parses the contents of a line in a CoNLLU-formatted file.
 """
 
-import logging
+import treebank_parser.output_log as tbp_logging
 
 class line_parser:
 	r"""
@@ -116,10 +116,10 @@ class line_parser:
 		
 		# ensure that this CoNLL-U
 		if len(list_of_fields) != 10:
-			logging.error( "Amount of fields in line")
-			logging.error(f"    '{self._line_str}'")
-			logging.error( "is not 10 as specified in the CoNLL-U format.")
-			logging.error( "See: https://universaldependencies.org/format.html")
+			tbp_logging.tbp_error( "Amount of fields in line")
+			tbp_logging.tbp_error(f"    '{self._line_str}'")
+			tbp_logging.tbp_error( "is not 10 as specified in the CoNLL-U format.")
+			tbp_logging.tbp_error( "See: https://universaldependencies.org/format.html")
 			assert(len(list_of_fields) == 10)
 		
 		self._ID = list_of_fields[0]

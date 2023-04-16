@@ -36,7 +36,7 @@ import sys
 import logging
 
 from cli import argument_parser
-from treebank_parser import treebank_formats
+from treebank_parser import treebank_formats, output_log
 from treebank_parser.conllu import action_type as conllu_action_type
 
 def make_actions_list(args):
@@ -54,11 +54,7 @@ def make_actions_list(args):
 		if args.DiscardSentencesLonger != -1:
 			yield conllu_action_type.DiscardSentencesLonger_key_str
 
-def run(args):
-	# Run the treebank parser with the configuration encoded in 'args'.
-	# 'args' is the object returned by a call to the method 'parse_args'
-	# of an object of type argparse.ArgumentParser.
-
+def configure_logging(args):
 	# configure logging
 	logging.basicConfig(
 		level = logging.DEBUG,
@@ -88,7 +84,18 @@ def run(args):
 		logging.warning(" Warning messages will be shown.")
 		logging.info("    Info messages will be shown.")
 		logging.debug("   Debug messages will be shown.")
+	
+	output_log.tbp_info = logging.info
+	output_log.tbp_debug = logging.debug
+	output_log.tbp_warning = logging.warning
+	output_log.tbp_error = logging.error
+	output_log.tbp_critical = logging.critical
 
+def run(args):
+	# Run the treebank parser with the configuration encoded in 'args'.
+	# 'args' is the object returned by a call to the method 'parse_args'
+	# of an object of type argparse.ArgumentParser.
+	
 	# construct a list with all the actions
 	actions = list(make_actions_list(args))
 

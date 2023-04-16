@@ -65,12 +65,26 @@ class MyOut:
 		# log message
 		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Error: {str}")
 
-	def internal_error(str):
+	def critical(str):
 		# use current time for the error message
 		now = datetime.now()
 		current_time = now.strftime("%H:%M:%S")
 		# log message
-		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Internal error: {str}")
+		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Critical: {str}")
+	
+	def warning(str):
+		# use current time for the error message
+		now = datetime.now()
+		current_time = now.strftime("%H:%M:%S")
+		# log message
+		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Warning: {str}")
+	
+	def debug(str):
+		# use current time for the error message
+		now = datetime.now()
+		current_time = now.strftime("%H:%M:%S")
+		# log message
+		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Debug: {str}")
 
 
 MyOut.tab = ""

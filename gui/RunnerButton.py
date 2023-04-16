@@ -32,11 +32,11 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QPushButton, QLineEdit, QCheckBox
+from PySide2.QtWidgets import QPushButton, QLineEdit, QCheckBox, QSpinBox
 
 from typing import cast
 
-from treebank_parser import treebank_formats, type_strings
+from treebank_parser import treebank_formats, type_strings, output_log
 from cli import argument_parser, run_parser
 
 from gui.ChosenActionsTable import ChosenActionsTable
@@ -89,8 +89,9 @@ class RunnerButton(QPushButton):
 		else:
 			MyOut.info("Use (non-debug) lal...")
 
-		# some more flags
-		argument_list += ["--quiet", "--verbose", 0]
+		# verbose flags
+		loggingLevelSpinBox = parent.findChild(QSpinBox, "loggingLevelSpinBox")
+		argument_list += ["--verbose", str(loggingLevelSpinBox.value())]
 
 		# retrieve format selector
 		treebankFormatSelector = parent.findChild(TreebankFormatSelector, "treebankFormatSelector")
@@ -111,9 +112,9 @@ class RunnerButton(QPushButton):
 
 		action_module = action_type_module.get_action_type_module(treebank_format)
 		assert(action_module is not None)
-
+		
 		argument_list += [treebank_formats.format_key_str[format_key]]
-
+		
 		# retrieve chosen actions table
 		chosenActionTable = parent.findChild(ChosenActionsTable, "chosenActionTable")
 		assert(chosenActionTable is not None)
@@ -144,11 +145,17 @@ class RunnerButton(QPushButton):
 			argument_list += ["--" + action_module.action_key_str[action_key]]
 			if action_value_type == type_strings.Integer_type_str:
 				argument_list += [str(action_value)]
-
+		
 		print(f"Complete list of arguments: '{argument_list}'")
 
 		MyOut.info("Running treebank parser...")
-
+		
+		output_log.tbp_info = MyOut.info
+		output_log.tbp_debug = MyOut.debug
+		output_log.tbp_warning = MyOut.warning
+		output_log.tbp_error = MyOut.error
+		output_log.tbp_critical = MyOut.critical
+		
 		parser = argument_parser.create_parser()
 		args = parser.parse_args(argument_list)
 		run_parser.run(args)

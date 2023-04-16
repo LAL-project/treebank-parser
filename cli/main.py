@@ -95,4 +95,5 @@ if len(sys.argv) == 2:
 else:
 	args = parser.parse_args(sys.argv[1:])
 
+run_parser.configure_logging(args)
 run_parser.run(args)
