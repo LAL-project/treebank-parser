@@ -81,10 +81,6 @@ class RunnerButton(QPushButton):
 		argument_list += ["-o"]
 		argument_list += [output_file]
 
-		# verbose flags
-		loggingLevelSpinBox = parent.findChild(QSpinBox, "loggingLevelSpinBox")
-		argument_list += ["--verbose", str(loggingLevelSpinBox.value())]
-
 		# retrieve format selector
 		treebankFormatSelector = parent.findChild(TreebankFormatSelector, "treebankFormatSelector")
 		assert(treebankFormatSelector is not None)
@@ -141,12 +137,24 @@ class RunnerButton(QPushButton):
 		print(f"Complete list of arguments: '{argument_list}'")
 
 		MyOut.info("Running treebank parser...")
-		
-		output_log.tbp_info = MyOut.info
-		output_log.tbp_debug = MyOut.debug
-		output_log.tbp_warning = MyOut.warning
-		output_log.tbp_error = MyOut.error
-		output_log.tbp_critical = MyOut.critical
+
+		# verbose flags
+		verbose_level = parent.findChild(QSpinBox, "loggingLevelSpinBox").value()
+
+		output_log.tbp_info = MyOut.nothing
+		output_log.tbp_debug = MyOut.nothing
+		output_log.tbp_warning = MyOut.nothing
+		output_log.tbp_error = MyOut.nothing
+		output_log.tbp_critical = MyOut.nothing
+		if verbose_level >= 0:
+			output_log.tbp_error = MyOut.error
+			output_log.tbp_critical = MyOut.critical
+		if verbose_level >= 1:
+			output_log.tbp_warning = MyOut.warning
+		if verbose_level >= 2:
+			output_log.tbp_info = MyOut.info
+		if verbose_level >= 3:
+			output_log.tbp_debug = MyOut.debug
 		
 		parser = argument_parser.create_parser()
 		args = parser.parse_args(argument_list)

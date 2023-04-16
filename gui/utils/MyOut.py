@@ -51,40 +51,41 @@ class MyOut:
 	def log_separator():
 		MyOut.message_logger.append("---------------------------")
 
-	def info(str):
-		# use current time for the error message
+	def get_current_time():
 		now = datetime.now()
-		current_time = now.strftime("%H:%M:%S")
+		return now.strftime("%Y-%m-%d %H:%M:%S")
+
+	def info(str):
+		# use current time for the message
+		current_time = MyOut.get_current_time()
 		# log message
-		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} {str}")
+		MyOut.message_logger.append(f"[INFO] {current_time}{MyOut.tab} : {str}")
 
 	def error(str):
-		# use current time for the error message
-		now = datetime.now()
-		current_time = now.strftime("%H:%M:%S")
+		# use current time for the message
+		current_time = MyOut.get_current_time()
 		# log message
-		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Error: {str}")
+		MyOut.message_logger.append(f"[ERROR] {current_time}{MyOut.tab} : {str}")
 
 	def critical(str):
-		# use current time for the error message
-		now = datetime.now()
-		current_time = now.strftime("%H:%M:%S")
+		# use current time for the message
+		current_time = MyOut.get_current_time()
 		# log message
-		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Critical: {str}")
+		MyOut.message_logger.append(f"[CRITICAL] {current_time}{MyOut.tab} : {str}")
 	
 	def warning(str):
-		# use current time for the error message
-		now = datetime.now()
-		current_time = now.strftime("%H:%M:%S")
+		# use current time for the message
+		current_time = MyOut.get_current_time()
 		# log message
-		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Warning: {str}")
+		MyOut.message_logger.append(f"[WARNING] {current_time}{MyOut.tab} : {str}")
 	
 	def debug(str):
-		# use current time for the error message
-		now = datetime.now()
-		current_time = now.strftime("%H:%M:%S")
+		# use current time for the message
+		current_time = MyOut.get_current_time()
 		# log message
-		MyOut.message_logger.append(f"[{current_time}]{MyOut.tab} Debug: {str}")
+		MyOut.message_logger.append(f"[DEBUG] {current_time}{MyOut.tab} : {str}")
 
+	def nothing(str):
+		pass
 
 MyOut.tab = ""
