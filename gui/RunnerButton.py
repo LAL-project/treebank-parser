@@ -141,20 +141,20 @@ class RunnerButton(QPushButton):
 		# verbose flags
 		verbose_level = parent.findChild(QSpinBox, "loggingLevelSpinBox").value()
 
-		output_log.tbp_info = MyOut.nothing
-		output_log.tbp_debug = MyOut.nothing
-		output_log.tbp_warning = MyOut.nothing
-		output_log.tbp_error = MyOut.nothing
-		output_log.tbp_critical = MyOut.nothing
+		output_log.info = MyOut.nothing
+		output_log.debug = MyOut.nothing
+		output_log.warning = MyOut.nothing
+		output_log.error = MyOut.nothing
+		output_log.critical = MyOut.nothing
 		if verbose_level >= 0:
-			output_log.tbp_error = MyOut.error
-			output_log.tbp_critical = MyOut.critical
+			output_log.error = MyOut.error
+			output_log.critical = MyOut.critical
 		if verbose_level >= 1:
-			output_log.tbp_warning = MyOut.warning
+			output_log.warning = MyOut.warning
 		if verbose_level >= 2:
-			output_log.tbp_info = MyOut.info
+			output_log.info = MyOut.info
 		if verbose_level >= 3:
-			output_log.tbp_debug = MyOut.debug
+			output_log.debug = MyOut.debug
 		
 		parser = argument_parser.create_parser()
 		args = parser.parse_args(argument_list)

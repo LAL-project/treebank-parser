@@ -85,11 +85,11 @@ def configure_logging(args):
 		logging.info("    Info messages will be shown.")
 		logging.debug("   Debug messages will be shown.")
 	
-	output_log.tbp_info = logging.info
-	output_log.tbp_debug = logging.debug
-	output_log.tbp_warning = logging.warning
-	output_log.tbp_error = logging.error
-	output_log.tbp_critical = logging.critical
+	output_log.info = logging.info
+	output_log.debug = logging.debug
+	output_log.warning = logging.warning
+	output_log.error = logging.error
+	output_log.critical = logging.critical
 
 def run(args, lal_module):
 	# Run the treebank parser with the configuration encoded in 'args'.
