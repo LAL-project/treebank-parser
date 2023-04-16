@@ -35,26 +35,29 @@
 HOW_TO_STR = "\
 How to use this GUI:\n\
 \n\
-First, find the treebank input file using the appropriate 'select'\n\
-button to the right of the intreface. Then, select the output file.\n\
-You can give any name you want to this file.\n\
+First, find the treebank input file using the appropriate 'select' button to the\n\
+right of the intreface. Then, select the output file. You can give any name you\n\
+want to this file.\n\
 \n\
-After this, select the correct format of the input treebank file. If\n\
-the input file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown\n\
-button below 'Choose a format'. A list of actions will appear next to\n\
-that button. Select the action(s) you want to be performed on the treebank\n\
-and then click 'Add' so that it actually takes effect. The meaning of every\n\
-action will appear if you hover the mouse over them in a tooltip text.\n\
-If any action needs a value associated to it, the table next to it will\n\
-indicate in its third column the data type of the value (e.g., 'Integer').\n\
-Fill the cell in the second column with an appropriate value of the\n\
-corresponding data type. If an action does not need a value, the third\n\
-column will be empty\n\
+After this, select the correct format of the input treebank file. If the input\n\
+file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown button below\n\
+'Choose a format'. A list of actions will appear next to that button. Select the\n\
+action(s) you want to be performed on the treebank and then click 'Add' so that\n\
+it actually takes effect. The meaning of every action will appear if you hover\n\
+the mouse over them in a tooltip text. If any action needs a value associated to\n\
+it, the table next to it will indicate in its third column the data type of the\n\
+value (e.g., 'Integer'). Fill the cell in the second column with an appropriate\n\
+value of the corresponding data type. If an action does not need a value, the\n\
+third column will be empty\n\
 \n\
-Once all the actions have been chosen, you can click 'Run' to actually\n\
-transform the input treebank file into a head vector file. Optionally,\n\
-you can tell the parser to use a debug compilation of the Linear Arrangement\n\
-Library by checking the checkbox 'Use laldebug'.\n\
+Once all the actions have been chosen, you can click 'Run' to actually transform\n\
+the input treebank file into a head vector file.\n\
+\n\
+Optionally, the GUI can be run with either the release or the debug distribution\n\
+of LAL. The build of LAL that will be run can be seen in the checkboxes next to\n\
+the 'Run' button. Finally, you can set up the verbosity level of the messages\n\
+displayed while parsing the trebank. Hover the mouse over the 'Logging messages\n\
+level' to see what value works best for you.\
 "
 
 
