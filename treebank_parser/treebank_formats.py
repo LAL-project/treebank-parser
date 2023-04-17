@@ -45,7 +45,7 @@ CoNLLU = 0
 # -------------------------------------------------------------------------
 
 format_key_str = {
-	CoNLLU: "CoNLLU",
+	CoNLLU: "CoNLL-U",
 }
 
 CoNLLU_key_str = format_key_str[CoNLLU]
