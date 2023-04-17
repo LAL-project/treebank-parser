@@ -33,6 +33,6 @@
 ################################################################################
 
 def is_version_of_LAL_correct(lal):
-	if lal.version.major != '99.99':
-		return (False, f"LAL version {lal.version.major} is not compatible with the development branch of treebank-parser. The development branch of treebank-parser needs LAL (development) 99.99.")
+	if lal.version.major != '23.01':
+		return (False, f"LAL version {lal.version.major} is not compatible with version 23.01 of treebank-parser. This version needs LAL 23.01.")
 	return (True, "")
