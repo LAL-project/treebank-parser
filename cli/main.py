@@ -88,11 +88,18 @@ if len(sys.argv) == 2:
 else:
 	args = parser.parse_args(sys.argv[1:])
 
+# configure logging
 run_parser.configure_logging(args)
 
 if args.laldebug:
 	import laldebug as lal
 else:
 	import lal
+
+from treebank_parser import version_lal
+r = version_lal.is_version_of_LAL_correct(lal)
+if not r[0]:
+	logging.critical(r[1])
+	exit(1)
 
 run_parser.run(args, lal)

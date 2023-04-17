@@ -107,7 +107,7 @@ class gui_treebank_parser(QMainWindow):
 			help_menu_strings.ABOUT_STR,
 			QtCore.Qt.AlignHCenter)
 
-	def do_basic_setup(self, args):
+	def do_basic_setup(self, args, lal):
 		# setup GUI
 		self.setWindowTitle("Treebank parser")
 
@@ -166,15 +166,11 @@ class gui_treebank_parser(QMainWindow):
 		icon_pixmap = QtGui.QPixmap(icon_image)
 		self.setWindowIcon(QtGui.QIcon(icon_pixmap))
 
-		# load LAL and keep the module in a variable
+		# keep LAL module in a variable
 		if args.laldebug:
-			import laldebug as lal
-			print("Loaded LAL (debug)")
 			self.findChild(QCheckBox, "lalDebugCheckBox").setChecked(True)
 			self.findChild(QCheckBox, "lalReleaseCheckBox").setChecked(False)
 		else:
-			import lal
-			print("Loaded LAL")
 			self.findChild(QCheckBox, "lalDebugCheckBox").setChecked(False)
 			self.findChild(QCheckBox, "lalReleaseCheckBox").setChecked(True)
 		self.LAL_module = lal
@@ -183,9 +179,22 @@ if __name__ == "__main__":
 	parser = argument_parser.create_parser()
 	args = parser.parse_args(sys.argv[1:])
 	
+	if args.laldebug:
+		import laldebug as lal
+		print("Loaded LAL (debug)")
+	else:
+		import lal
+		print("Loaded LAL")
+	
+	from treebank_parser import version_lal
+	r = version_lal.is_version_of_LAL_correct(lal)
+	if not r[0]:
+		print(r[1])
+		exit(1)
+	
 	QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 	app = QApplication([])
 	widget = gui_treebank_parser()
-	widget.do_basic_setup(args)
+	widget.do_basic_setup(args, lal)
 	widget.show()
 	sys.exit(app.exec_())
