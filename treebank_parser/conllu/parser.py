@@ -127,6 +127,9 @@ class parser:
 				
 				# accumulate amount of removed to calculate future ids
 				num_removed += 1
+
+                                # no need to evaluate more functions
+				break
 		
 		tbp_logging.debug("All actions have been applied")
 		
