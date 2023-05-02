@@ -104,7 +104,7 @@ class parser:
 		num_removed = 0
 		for idx, word in self._current_tree.items():
 			for f in self._word_action_functions:
-				# word does not meet criterion
+				# word does not meet criterion for removal
 				if not f(word): continue
 				
 				# calculate the (actual) id of the word to be removed
@@ -127,6 +127,9 @@ class parser:
 				
 				# accumulate amount of removed to calculate future ids
 				num_removed += 1
+				
+				# no need to evaluate more functions
+				break
 		
 		tbp_logging.debug("All actions have been applied")
 		
