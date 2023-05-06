@@ -43,7 +43,7 @@ import argparse
 from treebank_parser import treebank_formats as formats
 from treebank_parser.conllu import action_type as conllu_action_type
 
-from argument_parser_CoNLLU import add_arguments_CoNLLU_parser
+from cli.argument_parser_CoNLLU import add_arguments_CoNLLU_parser
 
 def add_arguments_main_parser(parser):
 	r"""
