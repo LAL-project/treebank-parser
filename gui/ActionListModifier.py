@@ -32,14 +32,14 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QPushButton, QListWidget
-from PySide2.QtWidgets import QTableWidget
+from PySide2.QtWidgets import QPushButton, QListWidget, QTableWidget, QComboBox
 from PySide2.QtCore import Qt
 
 from typing import cast
 
 from gui.ActionListItem import ActionListItem
 from gui.ChosenActionsTableItem import ChosenActionsTableItem
+from gui.ChosenActionsTableComboBox import ChosenActionsTableComboBox
 from gui.utils import action_type_module
 from treebank_parser import type_strings
 
@@ -99,32 +99,55 @@ class ActionListModifier(QPushButton):
 
 		# ----------------------------
 		# add the items
+		
+		if type_text == type_strings.None_type_str or type_text == type_strings.Integer_type_str:
+			# name column
+			actionNameItem = ChosenActionsTableItem(selected_item.key(), selected_item.text())
+			# value column
+			actionValueItem = ChosenActionsTableItem(selected_item.key(), "")
+			# type of value column
+			actionValueTypeItem = ChosenActionsTableItem(selected_item.key(), "")
 
-		# name column
-		actionNameItem = ChosenActionsTableItem(selected_item.key(), selected_item.text())
-		# value column
-		actionValueItem = ChosenActionsTableItem(selected_item.key(), "")
-		# type of value column
-		actionValueTypeItem = ChosenActionsTableItem(selected_item.key(), "")
-
-		# set editing options of items
-		actionNameItem.setFlags(~Qt.ItemIsEditable)
-		actionNameItem.setToolTip(action_module.action_help_str[selected_item.key()])
-		if type_text == type_strings.None_type_str:
-			actionValueItem.setFlags(Qt.ItemFlag.NoItemFlags)
-			actionValueItem.setToolTip("This option does not need a value.")
-			actionValueTypeItem.setFlags(Qt.ItemFlag.NoItemFlags)
-			actionValueTypeItem.setToolTip("This cell is empty because this option does not need a value.")
-		elif type_strings.Integer_type_str:
+			# set editing options of items
+			actionNameItem.setFlags(~Qt.ItemIsEditable)
+			actionNameItem.setToolTip(action_module.action_help_str[selected_item.key()])
+			if type_text == type_strings.None_type_str:
+				actionValueItem.setFlags(Qt.ItemFlag.NoItemFlags)
+				actionValueItem.setToolTip("This option does not need a value.")
+				actionValueTypeItem.setFlags(Qt.ItemFlag.NoItemFlags)
+				actionValueTypeItem.setToolTip("This cell is empty because this action does not need a value.")
+			
+			elif type_text == type_strings.Integer_type_str:
+				#actionValueTypeItem.setFlags(...) # no need to set flags
+				actionValueItem.setToolTip(f"This option needs a value of type '{type_text}'.")
+				actionValueTypeItem.setFlags(~Qt.ItemFlag.ItemIsEditable)
+				actionValueTypeItem.setText(type_text)
+				actionValueTypeItem.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
+			
+			chosenActionTable.setItem(current_row, 0, actionNameItem)
+			chosenActionTable.setItem(current_row, 1, actionValueItem)
+			chosenActionTable.setItem(current_row, 2, actionValueTypeItem)
+		
+		elif type_text == type_strings.Choice_type_str:
+			
+			# name column
+			actionNameItem = ChosenActionsTableItem(selected_item.key(), selected_item.text())
+			# value column
+			actionValueItem = ChosenActionsTableComboBox(selected_item.key(), selected_item.text(), current_row, 1)
+			actionValueItem.addItems( [""] + action_module.action_choices_list[selected_item.key()] )
+			# type of value column
+			actionValueTypeItem = ChosenActionsTableItem(selected_item.key(), type_text)
+			
+			print("This is a choice!")
 			#actionValueTypeItem.setFlags(...) # no need to set flags
 			actionValueItem.setToolTip(f"This option needs a value of type '{type_text}'.")
 			actionValueTypeItem.setFlags(~Qt.ItemFlag.ItemIsEditable)
-			actionValueTypeItem.setText(type_text)
+			
 			actionValueTypeItem.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
-
-		chosenActionTable.setItem(current_row, 0, actionNameItem)
-		chosenActionTable.setItem(current_row, 1, actionValueItem)
-		chosenActionTable.setItem(current_row, 2, actionValueTypeItem)
+			
+			chosenActionTable.setItem(current_row, 0, actionNameItem)
+			chosenActionTable.setCellWidget(current_row, 1, actionValueItem)
+			chosenActionTable.setItem(current_row, 2, actionValueTypeItem)
 
 		chosenActionTable.resizeColumnToContents(0)
 

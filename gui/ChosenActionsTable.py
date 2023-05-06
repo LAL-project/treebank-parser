@@ -32,18 +32,19 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QTableWidget
+from PySide2.QtWidgets import QTableWidget, QComboBox
 from PySide2.QtGui import QBrush, QColor
 
 from typing import cast
 
 from gui.ChosenActionsTableItem import ChosenActionsTableItem
+from gui.ChosenActionsTableComboBox import ChosenActionsTableComboBox
 from gui.utils.MyOut import MyOut
 from treebank_parser import type_strings
 
 
 def msg_non_numeric_value(item_text, col_text):
-	return f"The value '{item_text}' for option '{col_text}' has to be a numerical value."
+	return f"The value '{item_text}' for option '{col_text}' has to be an integer numerical value."
 
 
 def msg_nonvalid_numeric_value(item_text, col_text):
@@ -51,88 +52,102 @@ def msg_nonvalid_numeric_value(item_text, col_text):
 
 
 class ChosenActionsTable(QTableWidget):
-	edit_cell = 0
-	regular_check = 1
-
 	def __init__(self, parent=None):
 		super(ChosenActionsTable, self).__init__(parent)
 		self.itemChanged.connect(self.contents_item_changed)
 
-	def check_integer_value(self, col0, item, col2, origin):
-		item_txt = item.text()
-		try:
-			numeric_value = int(item_txt)
-		except ValueError:
-			numeric_value = None
-
+	def check_integer_value(self, col0, item, col2):
+		print("Checking...")
+		
 		# clear selection to avoid a "recursive" call to this method
 		self.clearSelection()
+		
+		item_txt = item.text()
+		try:
+			numerical_value = int(item_txt)
+		except ValueError:
+			numerical_value = None
 
-		if (numeric_value is None) or (numeric_value is not None and numeric_value < 0):
+		if (numerical_value is None) or (numerical_value is not None and numerical_value < 0):
 			# paint the background
 			item.setBackground(QBrush(QColor(255,0,0)))
 			# option text
 			col0_text = col0.text()
 
-			# log appropriate error messages depending on the origin
-			if origin == ChosenActionsTable.edit_cell:
-				MyOut.error("When editing a cell in the chosen actions table")
-
-			if numeric_value is None:
+			if numerical_value is None:
 				MyOut.error(msg_non_numeric_value(item_txt, col0_text))
-			elif numeric_value < 0:
+			elif numerical_value < 0:
 				MyOut.error(msg_nonvalid_numeric_value(item_txt, col0_text))
 
 			MyOut.log_separator()
 			return False
-
-		# successful check: set the background back to normal
-		item.setBackground(QBrush(QColor(255,255,255)))
+		
 		return True
+	
+	def check_choice_value(self, item0, item1, item2):
+		item1 = cast(ChosenActionsTableComboBox, item1)
+		return item1.check_value()
 
-	def check_value(self, col0, item, col2, origin):
+	def check_value(self, item0, item1, item2):
 		# nothing to do for 'None'
-		if col2.text() == type_strings.None_type_str:
+		if item2.text() == type_strings.None_type_str:
 			return True
+		
 		# check for Integer values.
-		if col2.text() == type_strings.Integer_type_str:
-			return self.check_integer_value(col0, item, col2, origin)
-
+		if item2.text() == type_strings.Integer_type_str:
+			print("Checking integer type...")
+			return self.check_integer_value(item0, item1, item2)
+		
+		# check for Choice values.
+		if item2.text() == type_strings.Choice_type_str:
+			print("Checking choice type...")
+			return self.check_choice_value(item0, item1, item2)
+		
 		# unhandled type :(
-		print("Internal error: Unhandled value type '{col2.text()}'")
+		print("Internal error: Unhandled value type '{item2.text()}'")
 		return False
 
 	def check_all_items_value(self):
-		reg_check = ChosenActionsTable.regular_check
+		
 		for r in range(0, self.rowCount()):
-			col0 = self.item(r, 0)
-			col1 = self.item(r, 1)
-			col2 = self.item(r, 2)
-			if not self.check_value(col0, col1, col2, reg_check):
+			item0 = self.item(r, 0)
+			
+			item1 = self.item(r, 1)
+			if item1 is None:
+				item1 = self.cellWidget(r, 1)
+			
+			item2 = self.item(r, 2)
+			
+			if not self.check_value(item0, item1, item2):
 				return False
+		
 		return True
 
-	def contents_item_changed(self, item):
-		item = cast(ChosenActionsTableItem, item)
-
-		# we want to process only those cases of edited items
-		# that have been edited by the user, not by other parts
-		# of the program. If currentItem() is not "None" then
-		# ther has been some item edited by the user.
-		if not item.isSelected():
+	def contents_item_changed(self, item1):
+		if item1.column() != 1:
+			# this item is not the one we want to keep track of
 			return
-
-		col0 = self.item(item.row(), 0)
-		col2 = self.item(item.row(), 2)
+		
+		item0 = self.item(item1.row(), 0)
+		item2 = self.item(item1.row(), 2)
+		
+		if item0 is None or item2 is None:
+			# then this item has not yet been created, nothing to do
+			return
+		
+		if item2.text() == type_strings.Choice_type_str:
+			item1 = cast(ChosenActionsTableComboBox, item1)
+		else:
+			item1 = cast(ChosenActionsTableItem, item1)
 
 		print( "An item's value was changed by the user")
-		print(f"    original option:   '{col0.text()}'")
-		print(f"    item's key:        '{item.key()}'")
-		print(f"    item's row:        '{item.row()}'")
-		print(f"    item's col:        '{item.column()}'")
-		print(f"    item's value:      '{item.text()}'")
-		print(f"    item's value type: '{col2.text()}'")
+		print(f"    original option:   '{item0.text()}'")
+		print(f"    item's key:        '{item0.key()}'")
+		print(f"    item's row:        '{item0.row()}'")
+		print(f"    item's col:        '{item0.column()}'")
+		print(f"    item's value:      '{item1.text()}'")
+		print(f"    item's value type: '{item2.text()}'")
 
 		# no need to inspect the returned value
-		self.check_value(col0, item, col2, ChosenActionsTable.edit_cell)
+		self.check_value(item0, item1, item2)
 

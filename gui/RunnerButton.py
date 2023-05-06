@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QPushButton, QLineEdit, QSpinBox
+from PySide2.QtWidgets import QPushButton, QLineEdit, QSpinBox, QComboBox
 
 from typing import cast
 
@@ -41,6 +41,7 @@ from cli import argument_parser, run_parser
 
 from gui.ChosenActionsTable import ChosenActionsTable
 from gui.ChosenActionsTableItem import ChosenActionsTableItem
+from gui.ChosenActionsTableComboBox import ChosenActionsTableComboBox
 from gui.TreebankFormatSelector import TreebankFormatSelector
 from gui.utils.MyOut import MyOut
 from gui.utils import action_type_module
@@ -117,22 +118,32 @@ class RunnerButton(QPushButton):
 
 		num_rows = chosenActionTable.rowCount()
 		for r in range(0, num_rows):
-			col0 = cast(ChosenActionsTableItem, chosenActionTable.item(r, 0))
-			action_key = col0.key()
+			item0 = cast(ChosenActionsTableItem, chosenActionTable.item(r, 0))
+			action_key = item0.key()
+			
+			item2 = cast(ChosenActionsTableItem, chosenActionTable.item(r, 2))
+			action_value_type = item2.text()
+			
+			action_value = None
+			if action_value_type == type_strings.Integer_type_str:
+				item1 = chosenActionTable.item(r, 1)
+				action_value = cast(ChosenActionsTableItem, item1).text()
+				
+			elif action_value_type == type_strings.Choice_type_str:
+				item1 = chosenActionTable.cellWidget(r, 1)
+				action_value = cast(ChosenActionsTableComboBox, item1).text()
 
-			col1 = cast(ChosenActionsTableItem, chosenActionTable.item(r, 1))
-			action_value = col1.text()
-
-			col2 = cast(ChosenActionsTableItem, chosenActionTable.item(r, 2))
-			action_value_type = col2.text()
-
-			print(f"Found action '{col0.text()}'")
+			print(f"Found action '{item0.text()}'")
 			print(f"    Of key '{action_key}'")
 			print(f"    Of value type '{action_value_type}'")
+			print(f"    Of value '{action_value}'")
 
 			argument_list += ["--" + action_module.action_key_str[action_key]]
 			if action_value_type == type_strings.Integer_type_str:
 				argument_list += [str(action_value)]
+			
+			elif action_value_type == type_strings.Choice_type_str:
+				argument_list += [action_value]
 		
 		print(f"Complete list of arguments: '{argument_list}'")
 
