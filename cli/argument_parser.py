@@ -43,6 +43,8 @@ import argparse
 from treebank_parser import treebank_formats as formats
 from treebank_parser.conllu import action_type as conllu_action_type
 
+from argument_parser_CoNLLU import add_arguments_CoNLLU_parser
+
 def add_arguments_main_parser(parser):
 	r"""
 	Adds the necessary arguments to the main CLI parser (not for the
@@ -92,49 +94,6 @@ def add_arguments_main_parser(parser):
 		help = f"Disable non-logging messages."
 	)
 
-def add_arguments_CoNLLU_parser(parser):
-	r"""
-	Adds the necessary arguments to `parser` for CoNLL-U-formatted treebanks.
-	"""
-	
-	# remove function words
-	parser.add_argument(
-		'--' + conllu_action_type.RemoveFunctionWords_key_str,
-		default = False,
-		action = 'store_true',
-		required = False,
-		help = conllu_action_type.RemoveFunctionWords_help_str
-	)
-	
-	# remove punctuation marks
-	parser.add_argument(
-		'--' + conllu_action_type.RemovePunctuationMarks_key_str,
-		default = False,
-		action = 'store_true',
-		required = False,
-		help = conllu_action_type.RemovePunctuationMarks_help_str
-	)
-	
-	# discard short sentences
-	parser.add_argument(
-		'--' + conllu_action_type.DiscardSentencesShorter_key_str,
-		default = -1,
-		type = int,
-		metavar = "length_in_words",
-		required = False,
-		help = conllu_action_type.DiscardSentencesShorter_help_str
-	)
-	
-	# discard short sentences
-	parser.add_argument(
-		'--' + conllu_action_type.DiscardSentencesLonger_key_str,
-		default = -1,
-		type = int,
-		metavar = "length_in_words",
-		required = False,
-		help = conllu_action_type.DiscardSentencesLonger_help_str
-	)
-
 def create_format_subparsers(subparser):
 	r"""
 	Adds to the subparser the necessary subparsers 
@@ -167,7 +126,7 @@ def create_parser():
 		required = True,
 		dest = 'treebank_format'
 	)
-
+	
 	# create the necessary subparsers for every treebank format implemented
 	create_format_subparsers(subparsers)
 
