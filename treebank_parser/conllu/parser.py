@@ -62,16 +62,22 @@ class parser:
 	def _should_discard_tree(self, rt):
 		r"""
 		Returns whether or not a rooted tree `rt` should be discarded according
-		to the functions in `self._sentence_action_functions`.
+		to the functions in `self._sentence_discard_functions`.
 		
 		Parameters
 		==========
 		- `rt`: rooted tree.
 		"""
 		if rt.get_num_nodes() == 0: return True
-		for f in self._sentence_action_functions:
+		for f in self._sentence_discard_functions:
 			if f(rt): return True
 		return False
+	
+	def _postprocess_tree(self, rt):
+		for f in self._sentence_postprocess_functions:
+			rt = f(rt)
+		
+		return rt
 	
 	def _finish_reading_tree(self):
 		r"""
@@ -103,7 +109,7 @@ class parser:
 		
 		num_removed = 0
 		for idx, word in self._current_tree.items():
-			for f in self._word_action_functions:
+			for f in self._word_functions:
 				# word does not meet criterion for removal
 				if not f(word): continue
 				
@@ -144,6 +150,8 @@ class parser:
 			# The rooted tree should not be discarded. Its number of vertices
 			# (words) is 1 or more and is not too short, nor too long.
 			
+			rt = self._postprocess_tree(rt)
+			
 			# Store the head vector of this rooted tree
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self._head_vector_collection.append(hv)
@@ -154,6 +162,51 @@ class parser:
 		self._reading_tree = False
 		
 		rt.clear()
+	
+	def _make_functions(self, args):
+		# ----------------------------------------------------------------------
+		# make lambdas for all actions applied on a word
+		self._word_functions = []
+		
+		# Remove punctuation marks
+		if args.RemovePunctuationMarks:
+			self._word_functions.append( lambda w: w.is_punctuation_mark() )
+		# Remove function words
+		if args.RemoveFunctionWords:
+			self._word_functions.append( lambda w: w.is_function_word() )
+		
+		# ----------------------------------------------------------------------
+		# make lambdas for all actions that discard sentences
+		self._sentence_discard_functions = []
+		
+		# Discard short sentences
+		if args.DiscardSentencesShorter != -1:
+			self._sentence_discard_functions.append(
+				lambda rt: rt.get_num_nodes() <= args.DiscardSentencesShorter
+			)
+		# Discard long sentences
+		if args.DiscardSentencesLonger != -1:
+			self._sentence_discard_functions.append(
+				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
+			)
+		
+		# ----------------------------------------------------------------------
+		# make lambdas for postprocessing sentences
+		self._sentence_postprocess_functions = []
+		
+		# Discard short sentences
+		if args.ChunkSyntacticDependencyTree != None:
+			Anderson = self.LAL_module.linarr.algorithms_chunking.Anderson
+			Macutek = self.LAL_module.linarr.algorithms_chunking.Macutek
+			
+			if args.ChunkSyntacticDependencyTree == "Anderson":
+				self._sentence_postprocess_functions.append(
+					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Anderson)
+				)
+			if args.ChunkSyntacticDependencyTree == "Macutek":
+				self._sentence_postprocess_functions.append(
+					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Macutek)
+				)
 	
 	def __init__(self, args, lal_module):
 		r"""
@@ -172,29 +225,8 @@ class parser:
 		# keep LAL module
 		self.LAL_module = lal_module
 		
-		# make lambdas for all actions applied on a word
-		self._word_action_functions = []
-		
-		# Remove punctuation marks
-		if args.RemovePunctuationMarks:
-			self._word_action_functions.append( lambda w: w.is_punctuation_mark() )
-		# Remove function words
-		if args.RemoveFunctionWords:
-			self._word_action_functions.append( lambda w: w.is_function_word() )
-		
-		# make lambdas for all actions applied on a sentence
-		self._sentence_action_functions = []
-		
-		# Discard short sentences
-		if args.DiscardSentencesShorter != -1:
-			self._sentence_action_functions.append(
-				lambda rt: rt.get_num_nodes() <= args.DiscardSentencesShorter
-			)
-		# Discard long sentences
-		if args.DiscardSentencesLonger != -1:
-			self._sentence_action_functions.append(
-				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
-			)
+		# make all functions
+		self._make_functions(args)
 	
 	def parse(self):
 		r"""
