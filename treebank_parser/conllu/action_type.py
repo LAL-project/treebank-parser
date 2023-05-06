@@ -98,7 +98,7 @@ action_help_str = {
 	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP', 'AUX', 'CCONJ', 'DET', 'NUM', 'PART', 'PRON', 'SCONJ' in the corresponding UPOS field. The origins of this description are found in a 2022 paper available at arXiv (https://arxiv.org/abs/2007.15342).",
 	DiscardSentencesShorter: "Discard sentences whose length (in words) is less than or equal to (<=) a given length. This is applied *after* removing punctuation marks and/or function words.",
 	DiscardSentencesLonger: "Discard sentences whose length (in words) is greater than or equal to (>=) a given length. This is applied *after* removing punctuation marks and/or function words.",
-	ChunkTree: "Chunks a syntactic dependency tree using the specified algorithm. This chunking is applied only to those sentences that have not been discarded.",
+	ChunkTree: "Chunks a syntactic dependency tree using the specified algorithm. This is applied only to those sentences that have not been discarded.",
 }
 
 RemovePunctuationMarks_help_str = action_help_str[RemovePunctuationMarks]
