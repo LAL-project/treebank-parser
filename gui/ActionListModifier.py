@@ -90,7 +90,7 @@ class ActionListModifier(QPushButton):
 		action_module = action_type_module.get_action_type_module(self.m_treebankFormatSelector.currentText())
 		assert(action_module is not None)
 
-		type_text = action_module.action_param_str[selected_item.key()]
+		type_text = action_module.action_type_param_str[selected_item.key()]
 		print(f"    type of action's parameter '{type_text}'")
 
 		# add a row to the table
