@@ -34,4 +34,4 @@
 
 None_type_str = ""
 Integer_type_str = "Integer"
-DiscreteValue_type_str = "Discrete value"
+Choice_type_str = "Choice"

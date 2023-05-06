@@ -130,7 +130,7 @@ action_type_param_str = {
 	RemoveFunctionWords: type_strings.None_type_str,
 	DiscardSentencesShorter: type_strings.Integer_type_str,
 	DiscardSentencesLonger: type_strings.Integer_type_str,
-	ChunkTree: type_strings.DiscreteValue_type_str,
+	ChunkTree: type_strings.Choice_type_str,
 }
 
 RemovePunctuationMarks_param_str = action_type_param_str[RemovePunctuationMarks]
