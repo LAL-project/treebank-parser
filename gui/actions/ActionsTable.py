@@ -54,6 +54,7 @@ class ActionsTable(QTableWidget):
 	def __init__(self, parent=None):
 		super(ActionsTable, self).__init__(parent)
 		self.itemChanged.connect(self.contents_item_changed)
+		self.m_just_checked = False
 
 	def check_integer_value(self, item0, item1, item2):
 		# clear selection to avoid a "recursive" call to this method
@@ -78,9 +79,9 @@ class ActionsTable(QTableWidget):
 
 			MyOut.log_separator()
 			return False
-		else:
-			# repaint the background to a normal colour
-			item1.set_color_ok()
+		
+		# repaint the background to 'Ok' colour
+		item1.set_color_ok()
 			
 		return True
 	
@@ -88,6 +89,8 @@ class ActionsTable(QTableWidget):
 		return cast(ActionsTableComboBox, item1).check_value()
 
 	def check_value(self, item0, item1, item2):
+		self.m_just_checked = True
+		
 		# nothing to do for 'None'
 		if item2.text() == type_strings.None_type_str:
 			return True
@@ -105,6 +108,7 @@ class ActionsTable(QTableWidget):
 		return False
 
 	def check_all_items_value(self):
+		self.m_just_checked = True
 		
 		for r in range(0, self.rowCount()):
 			item0 = self.item(r, 0)
@@ -121,6 +125,13 @@ class ActionsTable(QTableWidget):
 		return True
 
 	def contents_item_changed(self, item1):
+		print("Going through: 'contents_item_changed'")
+		print(f"Just checked: '{self.m_just_checked}'")
+		
+		if self.m_just_checked:
+			self.m_just_checked = False
+			return
+		
 		# This method is also called when the items are created. Unfortunately,
 		# when the item at column 0 is created, the other two have not been created
 		# yet. When the item (or widget) at column 1 is created, the second still

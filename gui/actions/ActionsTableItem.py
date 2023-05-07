@@ -45,10 +45,10 @@ class ActionsTableItem(QTableWidgetItem):
 	
 	def __init__(self, key, text):
 		super(ActionsTableItem, self).__init__(text)
-
+		self.setText(text)
 		self.m_key = key
 		self.m_default_color = self.background()
-		self.setText(text)
+		self.m_contains_error = False
 
 	def set_key(self, key):
 		self.m_key = key
@@ -56,8 +56,13 @@ class ActionsTableItem(QTableWidgetItem):
 	def key(self):
 		return self.m_key
 	
+	def contains_error(self):
+		return m_contains_error
+	
 	def set_color_error(self):
 		self.setBackground(QBrush(QColor(255,0,0)))
+		self.m_contains_error = True
 
 	def set_color_ok(self):
 		self.setBackground(self.m_default_color)
+		self.m_contains_error = False
