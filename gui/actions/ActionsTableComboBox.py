@@ -38,9 +38,22 @@ from PySide2.QtWidgets import QComboBox
 from gui.utils.MyOut import MyOut
 
 
-class ChosenActionsTableComboBox(QComboBox):
+class ActionsTableComboBox(QComboBox):
+	r"""
+	This class is used to create a combobox inside the Actions Table.
+	The goal is to be able to run, automatically, a check of its value every
+	time it changes (due to an interaction with the user).
+	"""
+	
 	def __init__(self, key, option_text, row, column):
-		super(ChosenActionsTableComboBox, self).__init__()
+		r"""
+		parameters:
+		- key: as usual
+		- option_text: description of the action, used only to display error
+		  messages
+		- row, column: location of this widget in the table
+		"""
+		super(ActionsTableComboBox, self).__init__()
 		
 		self.currentIndexChanged.connect(self.contents_combobox_changed)
 		self.m_key = key

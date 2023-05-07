@@ -37,8 +37,8 @@ from PySide2.QtGui import QBrush, QColor
 
 from typing import cast
 
-from gui.ChosenActionsTableItem import ChosenActionsTableItem
-from gui.ChosenActionsTableComboBox import ChosenActionsTableComboBox
+from gui.actions.ActionsTableItem import ActionsTableItem
+from gui.actions.ActionsTableComboBox import ActionsTableComboBox
 from gui.utils.MyOut import MyOut
 from treebank_parser import type_strings
 
@@ -46,38 +46,34 @@ from treebank_parser import type_strings
 def msg_non_numeric_value(item_text, col_text):
 	return f"The value '{item_text}' for option '{col_text}' has to be an integer numerical value."
 
-
 def msg_nonvalid_numeric_value(item_text, col_text):
 	return f"The value '{item_text}' for option '{col_text}' is not valid: it has to be a positive integer."
 
-
-class ChosenActionsTable(QTableWidget):
+class ActionsTable(QTableWidget):
 	def __init__(self, parent=None):
-		super(ChosenActionsTable, self).__init__(parent)
+		super(ActionsTable, self).__init__(parent)
 		self.itemChanged.connect(self.contents_item_changed)
 
-	def check_integer_value(self, col0, item, col2):
-		print("Checking...")
-		
+	def check_integer_value(self, item0, item1, item2):
 		# clear selection to avoid a "recursive" call to this method
 		self.clearSelection()
 		
-		item_txt = item.text()
+		item1_text = item1.text()
 		try:
-			numerical_value = int(item_txt)
+			numerical_value = int(item1_text)
 		except ValueError:
 			numerical_value = None
 
 		if (numerical_value is None) or (numerical_value is not None and numerical_value < 0):
 			# paint the background
-			item.setBackground(QBrush(QColor(255,0,0)))
+			item1.setBackground(QBrush(QColor(255,0,0)))
 			# option text
-			col0_text = col0.text()
+			item0_text = item0.text()
 
 			if numerical_value is None:
-				MyOut.error(msg_non_numeric_value(item_txt, col0_text))
+				MyOut.error(msg_non_numeric_value(item1_txt, item0_text))
 			elif numerical_value < 0:
-				MyOut.error(msg_nonvalid_numeric_value(item_txt, col0_text))
+				MyOut.error(msg_nonvalid_numeric_value(item1_text, item0_text))
 
 			MyOut.log_separator()
 			return False
@@ -85,8 +81,7 @@ class ChosenActionsTable(QTableWidget):
 		return True
 	
 	def check_choice_value(self, item0, item1, item2):
-		item1 = cast(ChosenActionsTableComboBox, item1)
-		return item1.check_value()
+		return cast(ActionsTableComboBox, item1).check_value()
 
 	def check_value(self, item0, item1, item2):
 		# nothing to do for 'None'
@@ -95,12 +90,10 @@ class ChosenActionsTable(QTableWidget):
 		
 		# check for Integer values.
 		if item2.text() == type_strings.Integer_type_str:
-			print("Checking integer type...")
 			return self.check_integer_value(item0, item1, item2)
 		
 		# check for Choice values.
 		if item2.text() == type_strings.Choice_type_str:
-			print("Checking choice type...")
 			return self.check_choice_value(item0, item1, item2)
 		
 		# unhandled type :(
@@ -124,6 +117,12 @@ class ChosenActionsTable(QTableWidget):
 		return True
 
 	def contents_item_changed(self, item1):
+		# This method is also called when the items are created. Unfortunately,
+		# when the item at column 0 is created, the other two have not been created
+		# yet. When the item (or widget) at column 1 is created, the second still
+		# needs to be created. The issue with this is that we need the item at
+		# column 2 to know what to do when checking for correctness of item 1...
+		
 		if item1.column() != 1:
 			# this item is not the one we want to keep track of
 			return
@@ -136,9 +135,9 @@ class ChosenActionsTable(QTableWidget):
 			return
 		
 		if item2.text() == type_strings.Choice_type_str:
-			item1 = cast(ChosenActionsTableComboBox, item1)
+			item1 = cast(ActionsTableComboBox, item1)
 		else:
-			item1 = cast(ChosenActionsTableItem, item1)
+			item1 = cast(ActionsTableItem, item1)
 
 		print( "An item's value was changed by the user")
 		print(f"    original option:   '{item0.text()}'")

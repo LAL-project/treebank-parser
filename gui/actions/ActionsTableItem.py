@@ -32,12 +32,18 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QListWidgetItem
+from PySide2.QtWidgets import QTableWidgetItem
 
 
-class ActionListItem(QListWidgetItem):
-	def __init__(self, key, text, parent=None):
-		super(ActionListItem, self).__init__(parent)
+class ActionsTableItem(QTableWidgetItem):
+	r"""
+	This class is used to add to every item (except widgets) in the Actions Table
+	the attribute key, which points us to the global value that points to the
+	actual action.
+	"""
+	
+	def __init__(self, key, text):
+		super(ActionsTableItem, self).__init__(text)
 
 		self.m_key = key
 		self.setText(text)

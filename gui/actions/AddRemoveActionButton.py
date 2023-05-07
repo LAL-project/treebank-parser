@@ -37,16 +37,16 @@ from PySide2.QtCore import Qt
 
 from typing import cast
 
-from gui.ActionListItem import ActionListItem
-from gui.ChosenActionsTableItem import ChosenActionsTableItem
-from gui.ChosenActionsTableComboBox import ChosenActionsTableComboBox
+from gui.actions.ActionListItem import ActionListItem
+from gui.actions.ActionsTableItem import ActionsTableItem
+from gui.actions.ActionsTableComboBox import ActionsTableComboBox
 from gui.utils import action_type_module
 from treebank_parser import type_strings
 
 
-class ActionListModifier(QPushButton):
+class AddRemoveActionButton(QPushButton):
 	def __init__(self, parent=None):
-		super(ActionListModifier, self).__init__(parent)
+		super(AddRemoveActionButton, self).__init__(parent)
 
 	def set_treebankFormatSelector(self, treebankFormatSelector):
 		self.m_treebankFormatSelector = treebankFormatSelector
@@ -58,7 +58,7 @@ class ActionListModifier(QPushButton):
 		elif type == "remove_action":
 			self.clicked.connect(self.remove_action)
 		else:
-			print(f"Internal error: wrong type for ActionListModifier button '{type}'")
+			print(f"Internal error: wrong type for AddRemoveActionButton button '{type}'")
 			pass
 
 	def add_action(self):
@@ -100,54 +100,50 @@ class ActionListModifier(QPushButton):
 		# ----------------------------
 		# add the items
 		
+		# item0: item with a self-explanatory text for the action
+		# item1: item/widget to input the parameter for the action
+		# item2: item with a self-explanatory text for the type of this action's
+		#        value
+		
 		if type_text == type_strings.None_type_str or type_text == type_strings.Integer_type_str:
-			# name column
-			actionNameItem = ChosenActionsTableItem(selected_item.key(), selected_item.text())
-			# value column
-			actionValueItem = ChosenActionsTableItem(selected_item.key(), "")
-			# type of value column
-			actionValueTypeItem = ChosenActionsTableItem(selected_item.key(), "")
+			item0 = ActionsTableItem(selected_item.key(), selected_item.text())
+			item1 = ActionsTableItem(selected_item.key(), "")
+			item2 = ActionsTableItem(selected_item.key(), "")
 
 			# set editing options of items
-			actionNameItem.setFlags(~Qt.ItemIsEditable)
-			actionNameItem.setToolTip(action_module.action_help_str[selected_item.key()])
+			item0.setFlags(~Qt.ItemIsEditable)
+			item0.setToolTip(action_module.action_help_str[selected_item.key()])
 			if type_text == type_strings.None_type_str:
-				actionValueItem.setFlags(Qt.ItemFlag.NoItemFlags)
-				actionValueItem.setToolTip("This option does not need a value.")
-				actionValueTypeItem.setFlags(Qt.ItemFlag.NoItemFlags)
-				actionValueTypeItem.setToolTip("This cell is empty because this action does not need a value.")
+				item1.setFlags(Qt.ItemFlag.NoItemFlags)
+				item1.setToolTip("This option does not need a value.")
+				item2.setFlags(Qt.ItemFlag.NoItemFlags)
+				item2.setToolTip("This cell is empty because this action does not need a value.")
 			
 			elif type_text == type_strings.Integer_type_str:
-				#actionValueTypeItem.setFlags(...) # no need to set flags
-				actionValueItem.setToolTip(f"This option needs a value of type '{type_text}'.")
-				actionValueTypeItem.setFlags(~Qt.ItemFlag.ItemIsEditable)
-				actionValueTypeItem.setText(type_text)
-				actionValueTypeItem.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
+				item1.setToolTip(f"This option needs a value of type '{type_text}'.")
+				#item2.setFlags(...) # no need to set flags
+				item2.setFlags(~Qt.ItemFlag.ItemIsEditable)
+				item2.setText(type_text)
+				item2.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
 			
-			chosenActionTable.setItem(current_row, 0, actionNameItem)
-			chosenActionTable.setItem(current_row, 1, actionValueItem)
-			chosenActionTable.setItem(current_row, 2, actionValueTypeItem)
+			chosenActionTable.setItem(current_row, 0, item0)
+			chosenActionTable.setItem(current_row, 1, item1)
+			chosenActionTable.setItem(current_row, 2, item2)
 		
 		elif type_text == type_strings.Choice_type_str:
+			item0 = ActionsTableItem(selected_item.key(), selected_item.text())
 			
-			# name column
-			actionNameItem = ChosenActionsTableItem(selected_item.key(), selected_item.text())
-			# value column
-			actionValueItem = ChosenActionsTableComboBox(selected_item.key(), selected_item.text(), current_row, 1)
-			actionValueItem.addItems( [""] + action_module.action_choices_list[selected_item.key()] )
-			# type of value column
-			actionValueTypeItem = ChosenActionsTableItem(selected_item.key(), type_text)
+			item1 = ActionsTableComboBox(selected_item.key(), selected_item.text(), current_row, 1)
+			item1.addItems( [""] + action_module.action_choices_list[selected_item.key()] )
+			item1.setToolTip(f"This option needs a value of type '{type_text}'.")
 			
-			print("This is a choice!")
-			#actionValueTypeItem.setFlags(...) # no need to set flags
-			actionValueItem.setToolTip(f"This option needs a value of type '{type_text}'.")
-			actionValueTypeItem.setFlags(~Qt.ItemFlag.ItemIsEditable)
+			item2 = ActionsTableItem(selected_item.key(), type_text)
+			item2.setFlags(~Qt.ItemFlag.ItemIsEditable)
+			item2.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
 			
-			actionValueTypeItem.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
-			
-			chosenActionTable.setItem(current_row, 0, actionNameItem)
-			chosenActionTable.setCellWidget(current_row, 1, actionValueItem)
-			chosenActionTable.setItem(current_row, 2, actionValueTypeItem)
+			chosenActionTable.setItem(current_row, 0, item0)
+			chosenActionTable.setCellWidget(current_row, 1, item1)
+			chosenActionTable.setItem(current_row, 2, item2)
 
 		chosenActionTable.resizeColumnToContents(0)
 
@@ -172,7 +168,7 @@ class ActionListModifier(QPushButton):
 			return
 
 		selected_item = chosenActionTable.item(selected_row, 0)
-		selected_item = cast(ChosenActionsTableItem, selected_item)
+		selected_item = cast(ActionsTableItem, selected_item)
 
 		print( "    Selected item from chosen actions list")
 		print(f"        item key:  {selected_item.key()}")

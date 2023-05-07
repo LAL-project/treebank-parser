@@ -32,45 +32,14 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QComboBox, QListWidget, QTableWidget
 
-from gui.ActionListItem import ActionListItem
-from gui.utils import action_type_module
+class TreebankFormatComboBoxItem:
+	def __init__(self, text, key):
+		self.m_text = text
+		self.m_key = key
 
+	def text(self):
+		return self.m_text
 
-class TreebankFormatSelector(QComboBox, object):
-	def __init__(self, parent=None):
-		super(TreebankFormatSelector, self).__init__(parent)
-		self.m_current_index = 0
-		self.currentIndexChanged.connect(self.choose_treebank_format)
-
-	def choose_treebank_format(self):
-		# do nothing if there was no change in the index
-		if self.currentIndex() == self.m_current_index:
-			return
-
-		self.m_current_index = self.currentIndex()
-
-		availableActionList = self.parentWidget().findChild(QListWidget, "availableActionList")
-		assert(availableActionList is not None)
-		chosenActionTable = self.parentWidget().findChild(QTableWidget, "chosenActionTable")
-		assert(chosenActionTable is not None)
-
-		text = self.currentText()
-
-		# if the selection is empty, then empty the list and table
-		if availableActionList.count() > 0:
-			availableActionList.clear()
-		if chosenActionTable.rowCount() > 0:
-			chosenActionTable.clear()
-
-		action_module = action_type_module.get_action_type_module(text)
-		if action_module is None:
-			# nothing more to do
-			return
-
-		for key, action_text in action_module.action_text_str.items():
-			item_for_key = ActionListItem(key, action_text, availableActionList)
-			item_for_key.setToolTip(action_module.action_help_str[key])
-
-			availableActionList.addItem(item_for_key)
+	def key(self):
+		return self.m_key

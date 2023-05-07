@@ -101,7 +101,7 @@
          </widget>
         </item>
         <item>
-         <widget class="TreebankFormatSelector" name="treebankFormatSelector">
+         <widget class="TreebankFormatComboBox" name="treebankFormatSelector">
           <item>
            <property name="text">
             <string/>
@@ -161,14 +161,14 @@
          </widget>
         </item>
         <item>
-         <widget class="ActionListModifier" name="actionAddButton">
+         <widget class="AddRemoveActionButton" name="actionAddButton">
           <property name="text">
            <string>Add</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="ActionListModifier" name="actionRemoveButton">
+         <widget class="AddRemoveActionButton" name="actionRemoveButton">
           <property name="text">
            <string>Remove</string>
           </property>
@@ -199,7 +199,7 @@
          </widget>
         </item>
         <item>
-         <widget class="ChosenActionsTable" name="chosenActionTable">
+         <widget class="ActionsTable" name="chosenActionTable">
           <property name="minimumSize">
            <size>
             <width>600</width>
@@ -232,7 +232,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="RunnerButton" name="runTreebankParser">
+         <widget class="RunParserButton" name="runTreebankParser">
           <property name="text">
            <string>Run</string>
           </property>
@@ -359,7 +359,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TreebankFormatSelector</class>
+   <class>TreebankFormatComboBox</class>
    <extends>QComboBox</extends>
    <header>treebankformatselector.h</header>
   </customwidget>
@@ -369,17 +369,17 @@
    <header>filechooserbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>ActionListModifier</class>
+   <class>AddRemoveActionButton</class>
    <extends>QPushButton</extends>
    <header>actionlistmodifier.h</header>
   </customwidget>
   <customwidget>
-   <class>ChosenActionsTable</class>
+   <class>ActionsTable</class>
    <extends>QTableWidget</extends>
    <header>chosenactionstable.h</header>
   </customwidget>
   <customwidget>
-   <class>RunnerButton</class>
+   <class>RunParserButton</class>
    <extends>QPushButton</extends>
    <header>runnerbutton.h</header>
   </customwidget>

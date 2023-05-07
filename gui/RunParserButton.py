@@ -39,17 +39,18 @@ from typing import cast
 from treebank_parser import treebank_formats, type_strings, output_log
 from cli import argument_parser, run_parser
 
-from gui.ChosenActionsTable import ChosenActionsTable
-from gui.ChosenActionsTableItem import ChosenActionsTableItem
-from gui.ChosenActionsTableComboBox import ChosenActionsTableComboBox
-from gui.TreebankFormatSelector import TreebankFormatSelector
 from gui.utils.MyOut import MyOut
 from gui.utils import action_type_module
 
+from gui.actions.ActionsTable import ActionsTable
+from gui.actions.ActionsTableItem import ActionsTableItem
+from gui.actions.ActionsTableComboBox import ActionsTableComboBox
+from gui.actions.TreebankFormatComboBox import TreebankFormatComboBox
 
-class RunnerButton(QPushButton):
+
+class RunParserButton(QPushButton):
 	def __init__(self, parent=None):
-		super(RunnerButton, self).__init__(parent)
+		super(RunParserButton, self).__init__(parent)
 		self.clicked.connect(self.run_treebank)
 
 	def run_treebank(self):
@@ -83,7 +84,7 @@ class RunnerButton(QPushButton):
 		argument_list += [output_file]
 
 		# retrieve format selector
-		treebankFormatSelector = parent.findChild(TreebankFormatSelector, "treebankFormatSelector")
+		treebankFormatSelector = parent.findChild(TreebankFormatComboBox, "treebankFormatSelector")
 		assert(treebankFormatSelector is not None)
 
 		MyOut.info("Retrieving treebank format selected...")
@@ -105,7 +106,7 @@ class RunnerButton(QPushButton):
 		argument_list += [treebank_formats.format_key_str[format_key]]
 		
 		# retrieve chosen actions table
-		chosenActionTable = parent.findChild(ChosenActionsTable, "chosenActionTable")
+		chosenActionTable = parent.findChild(ActionsTable, "chosenActionTable")
 		assert(chosenActionTable is not None)
 
 		MyOut.info("Checking correctness in the values of the chosen actions table...")
@@ -118,20 +119,20 @@ class RunnerButton(QPushButton):
 
 		num_rows = chosenActionTable.rowCount()
 		for r in range(0, num_rows):
-			item0 = cast(ChosenActionsTableItem, chosenActionTable.item(r, 0))
+			item0 = cast(ActionsTableItem, chosenActionTable.item(r, 0))
 			action_key = item0.key()
 			
-			item2 = cast(ChosenActionsTableItem, chosenActionTable.item(r, 2))
+			item2 = cast(ActionsTableItem, chosenActionTable.item(r, 2))
 			action_value_type = item2.text()
 			
 			action_value = None
 			if action_value_type == type_strings.Integer_type_str:
 				item1 = chosenActionTable.item(r, 1)
-				action_value = cast(ChosenActionsTableItem, item1).text()
+				action_value = cast(ActionsTableItem, item1).text()
 				
 			elif action_value_type == type_strings.Choice_type_str:
 				item1 = chosenActionTable.cellWidget(r, 1)
-				action_value = cast(ChosenActionsTableComboBox, item1).text()
+				action_value = cast(ActionsTableComboBox, item1).text()
 
 			print(f"Found action '{item0.text()}'")
 			print(f"    Of key '{action_key}'")

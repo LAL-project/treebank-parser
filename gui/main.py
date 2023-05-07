@@ -49,32 +49,35 @@ from PySide2 import QtCore, QtGui
 from treebank_parser import treebank_formats
 
 from gui import UiLoader, argument_parser
+
 from gui.utils import help_menu_strings
-from gui.TreebankFormatSelector import TreebankFormatSelector
-from gui.TreebankFormatSelectorData import TreebankFormatSelectorData
-from gui.FileChooserButton import FileChooserButton
-from gui.ActionListModifier import ActionListModifier
-from gui.ChosenActionsTable import ChosenActionsTable
-from gui.HelpMenu import HelpMenu
-from gui.RunnerButton import RunnerButton
 from gui.utils.MyOut import MyOut
 
-class gui_treebank_parser(QMainWindow):
+from gui.FileChooserButton import FileChooserButton
+from gui.HelpMenu import HelpMenu
+from gui.RunParserButton import RunParserButton
+
+from gui.actions.TreebankFormatComboBox import TreebankFormatComboBox
+from gui.actions.TreebankFormatComboBoxItem import TreebankFormatComboBoxItem
+from gui.actions.AddRemoveActionButton import AddRemoveActionButton
+from gui.actions.ActionsTable import ActionsTable
+
+class GuiTreebankParser(QMainWindow):
 	def __init__(self):
-		super(gui_treebank_parser, self).__init__()
+		super(GuiTreebankParser, self).__init__()
 
 		self.SCRIPT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 		UiLoader.loadUi(
-		    os.path.join(self.SCRIPT_DIRECTORY, 'form.ui'),
+			os.path.join(self.SCRIPT_DIRECTORY, 'form.ui'),
 			self,
 			{
-			    "TreebankFormatSelector": TreebankFormatSelector,
-				"TreebankFormatSelectorData": TreebankFormatSelectorData,
 				"FileChooserButton": FileChooserButton,
-				"ActionListModifier": ActionListModifier,
-				"ChosenActionsTable": ChosenActionsTable,
-				"RunnerButton": RunnerButton,
-				"HelpMenu": HelpMenu
+				"RunParserButton": RunParserButton,
+				"HelpMenu": HelpMenu,
+				"TreebankFormatComboBox": TreebankFormatComboBox,
+				"TreebankFormatComboBoxItem": TreebankFormatComboBoxItem,
+				"AddRemoveActionButton": AddRemoveActionButton,
+				"ActionsTable": ActionsTable,
 			}
 		)
 
@@ -84,25 +87,25 @@ class gui_treebank_parser(QMainWindow):
 		# create a vertical layout
 		vbl = QVBoxLayout(widget);
 		# make the label nice
-		info_label = QLabel(label_contents, widget)
+		infoLabel = QLabel(label_contents, widget)
 		if align != None:
-			info_label.setAlignment(align)
+			infoLabel.setAlignment(align)
 		# add the info label to the layout
-		vbl.addWidget(info_label)
+		vbl.addWidget(infoLabel)
 		# adjust size of the popup to the label
 		widget.adjustSize()
 
 	def setup_how_to(self):
 		self.popup__how_to = QWidget()
 		self.make_new_info_popup(
-		    self.popup__how_to,
+			self.popup__how_to,
 			"How to",
 			help_menu_strings.HOW_TO_STR)
 
 	def setup_about(self):
 		self.popup__about = QWidget()
 		self.make_new_info_popup(
-		    self.popup__about,
+			self.popup__about,
 			"About",
 			help_menu_strings.ABOUT_STR,
 			QtCore.Qt.AlignHCenter)
@@ -122,12 +125,12 @@ class gui_treebank_parser(QMainWindow):
 		print("Setting up interface...")
 
 		# add all available treebank formats
-		treebankFormatSelector = self.findChild(TreebankFormatSelector, "treebankFormatSelector")
+		treebankFormatSelector = self.findChild(TreebankFormatComboBox, "treebankFormatSelector")
 		assert(treebankFormatSelector is not None)
 		for key, format_str in treebank_formats.format_text_str.items():
 			print(f"    Add treebank format '{format_str}'")
 			treebankFormatSelector.addItem(
-			    format_str, TreebankFormatSelectorData(format_str, key)
+			    format_str, TreebankFormatComboBoxItem(format_str, key)
 			)
 
 		# set type of input/output file buttons
@@ -143,13 +146,13 @@ class gui_treebank_parser(QMainWindow):
 
 		# set type of add/remove action buttons
 		print("Setup 'actionAddButton'")
-		actionAddButton = self.findChild(ActionListModifier, "actionAddButton")
+		actionAddButton = self.findChild(AddRemoveActionButton, "actionAddButton")
 		assert(actionAddButton is not None)
 		actionAddButton.set_type("add_action")
 		actionAddButton.set_treebankFormatSelector(treebankFormatSelector)
 
 		print("Setup 'actionRemoveButton'")
-		actionRemoveButton = self.findChild(ActionListModifier, "actionRemoveButton")
+		actionRemoveButton = self.findChild(AddRemoveActionButton, "actionRemoveButton")
 		assert(actionRemoveButton is not None)
 		actionRemoveButton.set_type("remove_action")
 		actionRemoveButton.set_treebankFormatSelector(treebankFormatSelector)
@@ -162,8 +165,8 @@ class gui_treebank_parser(QMainWindow):
 		
 		# load icon
 		print("Setup icon logo")
-		icon_image = QtGui.QImage( os.path.join(self.SCRIPT_DIRECTORY, 'icon/icon.svg'), )
-		icon_pixmap = QtGui.QPixmap(icon_image)
+		iconImage = QtGui.QImage( os.path.join(self.SCRIPT_DIRECTORY, 'icon/icon.svg'), )
+		icon_pixmap = QtGui.QPixmap(iconImage)
 		self.setWindowIcon(QtGui.QIcon(icon_pixmap))
 
 		# keep LAL module in a variable
@@ -194,7 +197,7 @@ if __name__ == "__main__":
 	
 	QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 	app = QApplication([])
-	widget = gui_treebank_parser()
+	widget = GuiTreebankParser()
 	widget.do_basic_setup(args, lal)
 	widget.show()
 	sys.exit(app.exec_())
