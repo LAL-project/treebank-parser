@@ -125,9 +125,6 @@ class ActionsTable(QTableWidget):
 		return True
 
 	def contents_item_changed(self, item1):
-		print("Going through: 'contents_item_changed'")
-		print(f"Just checked: '{self.m_just_checked}'")
-		
 		if self.m_just_checked:
 			self.m_just_checked = False
 			return
