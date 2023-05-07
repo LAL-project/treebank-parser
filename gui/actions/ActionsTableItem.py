@@ -33,6 +33,7 @@
 ################################################################################
 
 from PySide2.QtWidgets import QTableWidgetItem
+from PySide2.QtGui import QBrush, QColor
 
 
 class ActionsTableItem(QTableWidgetItem):
@@ -46,6 +47,7 @@ class ActionsTableItem(QTableWidgetItem):
 		super(ActionsTableItem, self).__init__(text)
 
 		self.m_key = key
+		self.m_default_color = self.background()
 		self.setText(text)
 
 	def set_key(self, key):
@@ -53,3 +55,9 @@ class ActionsTableItem(QTableWidgetItem):
 
 	def key(self):
 		return self.m_key
+	
+	def set_color_error(self):
+		self.setBackground(QBrush(QColor(255,0,0)))
+
+	def set_color_ok(self):
+		self.setBackground(self.m_default_color)

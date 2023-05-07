@@ -50,6 +50,7 @@ def msg_nonvalid_numeric_value(item_text, col_text):
 	return f"The value '{item_text}' for option '{col_text}' is not valid: it has to be a positive integer."
 
 class ActionsTable(QTableWidget):
+	
 	def __init__(self, parent=None):
 		super(ActionsTable, self).__init__(parent)
 		self.itemChanged.connect(self.contents_item_changed)
@@ -66,7 +67,7 @@ class ActionsTable(QTableWidget):
 
 		if (numerical_value is None) or (numerical_value is not None and numerical_value < 0):
 			# paint the background
-			item1.setBackground(QBrush(QColor(255,0,0)))
+			item1.set_color_error()
 			# option text
 			item0_text = item0.text()
 
@@ -77,7 +78,10 @@ class ActionsTable(QTableWidget):
 
 			MyOut.log_separator()
 			return False
-		
+		else:
+			# repaint the background to a normal colour
+			item1.set_color_ok()
+			
 		return True
 	
 	def check_choice_value(self, item0, item1, item2):
