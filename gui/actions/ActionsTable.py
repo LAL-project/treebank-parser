@@ -71,7 +71,7 @@ class ActionsTable(QTableWidget):
 			item0_text = item0.text()
 
 			if numerical_value is None:
-				MyOut.error(msg_non_numeric_value(item1_txt, item0_text))
+				MyOut.error(msg_non_numeric_value(item1_text, item0_text))
 			elif numerical_value < 0:
 				MyOut.error(msg_nonvalid_numeric_value(item1_text, item0_text))
 
