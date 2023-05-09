@@ -207,3 +207,4 @@ All the parameters accepted by the CoNLL-U format parser can be queried using th
 	  --ChunkSyntacticDependencyTree {Anderson,Macutek}
 	                        Chunks a syntactic dependency tree using the specified algorithm. This is
 	                        applied only to those sentences that have not been discarded.
+
