@@ -83,6 +83,8 @@ class ActionsTableComboBox(QComboBox):
 			palette = self.palette()
 			palette.setColor(QPalette.Button, QColor(255, 0, 0))
 			self.setPalette(palette)
+			MyOut.error(f"Choice for '{self.option()}' cannot be empty.")
+			MyOut.log_separator()
 		
 		else:
 			self.setPalette(self.m_default_palette)
@@ -93,6 +95,7 @@ class ActionsTableComboBox(QComboBox):
 	def check_value(self):
 		if self.text() == "":
 			MyOut.error(f"Choice for '{self.option()}' cannot be empty.")
+			MyOut.log_separator()
 			return False
 		
 		return True
