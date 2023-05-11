@@ -62,24 +62,24 @@ class parser:
 	def _should_discard_tree(self, rt):
 		r"""
 		Returns whether or not a rooted tree `rt` should be discarded according
-		to the functions in `self._sentence_discard_functions`.
+		to the functions in `self.m_sentence_discard_functions`.
 		
 		Parameters
 		==========
 		- `rt`: rooted tree.
 		"""
 		if rt.get_num_nodes() == 0: return True
-		for f in self._sentence_discard_functions:
+		for f in self.m_sentence_discard_functions:
 			if f(rt): return True
 		return False
 	
 	def _postprocess_tree(self, rt):
-		for f in self._sentence_postprocess_functions:
+		for f in self.m_sentence_postprocess_functions:
 			rt = f(rt)
 		
 		return rt
 	
-	def _finish_reading_tree(self):
+	def _process_tree(self):
 		r"""
 		This function is used to convert the contents of the member 'current_tree'
 		into an object of type lal.graphs.rooted_tree.
@@ -91,11 +91,32 @@ class parser:
 		a head vector, which is then stored in the variable 'head_vector_collection'.
 		"""
 		
-		# retrieve the head vector
+		# retrieve the head vector from the lines while ensuring
+		# that all heads are numerical
 		head_vector = []
-		for key,word in self._current_tree.items():
-			head_int = int(word.get_HEAD())
+		for key,word in self.m_current_tree.items():
+			try:
+				head_int = int(word.get_HEAD())
+				
+			except:
+				tbp_logging.error(f"At line {word.get_line_number()}")
+				tbp_logging.error(f"    Head: '{word.get_HEAD()}'")
+				tbp_logging.error(f"    Within line: '{word.get_line()}'")
+				return
+			
 			head_vector.append(head_int)
+		
+		# make sure there aren't errors in the head vector (do this with LAL)
+		tbp_logging.info("Checking mistakes in head vector...")
+		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
+		if len(err_list) > 0:
+			
+			tbp_logging.error(f"There were errors within head vector '{head_vector}'")
+			for err in err_list:
+				tbp_logging.error(f"    {err}")
+				
+			tbp_logging.error(self.m_donotknow_msg)
+			return
 		
 		# make the lal.graphs.rooted_tree() object
 		tbp_logging.debug(f"make a rooted tree from the head vector {head_vector=}")
@@ -108,8 +129,8 @@ class parser:
 		# -- apply actions --
 		
 		num_removed = 0
-		for idx, word in self._current_tree.items():
-			for f in self._word_functions:
+		for idx, word in self.m_current_tree.items():
+			for f in self.m_word_functions:
 				# word does not meet criterion for removal
 				if not f(word): continue
 				
@@ -154,45 +175,44 @@ class parser:
 			
 			# Store the head vector of this rooted tree
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
-			self._head_vector_collection.append(hv)
+			self.m_head_vector_collection.append(hv)
 		
 		# it is ¡very! important to reset the state of the parser:
 		# clear the current tree's contents and finish reading the tree.
-		self._current_tree.clear()
-		self._reading_tree = False
+		self.m_current_tree.clear()
 		
 		rt.clear()
 	
 	def _make_functions(self, args):
 		# ----------------------------------------------------------------------
 		# make lambdas for all actions applied on a word
-		self._word_functions = []
+		self.m_word_functions = []
 		
 		# Remove punctuation marks
 		if args.RemovePunctuationMarks:
-			self._word_functions.append( lambda w: w.is_punctuation_mark() )
+			self.m_word_functions.append( lambda w: w.is_punctuation_mark() )
 		# Remove function words
 		if args.RemoveFunctionWords:
-			self._word_functions.append( lambda w: w.is_function_word() )
+			self.m_word_functions.append( lambda w: w.is_function_word() )
 		
 		# ----------------------------------------------------------------------
 		# make lambdas for all actions that discard sentences
-		self._sentence_discard_functions = []
+		self.m_sentence_discard_functions = []
 		
 		# Discard short sentences
 		if args.DiscardSentencesShorter != -1:
-			self._sentence_discard_functions.append(
+			self.m_sentence_discard_functions.append(
 				lambda rt: rt.get_num_nodes() <= args.DiscardSentencesShorter
 			)
 		# Discard long sentences
 		if args.DiscardSentencesLonger != -1:
-			self._sentence_discard_functions.append(
+			self.m_sentence_discard_functions.append(
 				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
 			)
 		
 		# ----------------------------------------------------------------------
 		# make lambdas for postprocessing sentences
-		self._sentence_postprocess_functions = []
+		self.m_sentence_postprocess_functions = []
 		
 		# Discard short sentences
 		if args.ChunkSyntacticDependencyTree != None:
@@ -200,11 +220,11 @@ class parser:
 			Macutek = self.LAL_module.linarr.algorithms_chunking.Macutek
 			
 			if args.ChunkSyntacticDependencyTree == "Anderson":
-				self._sentence_postprocess_functions.append(
+				self.m_sentence_postprocess_functions.append(
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Anderson)
 				)
 			if args.ChunkSyntacticDependencyTree == "Macutek":
-				self._sentence_postprocess_functions.append(
+				self.m_sentence_postprocess_functions.append(
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Macutek)
 				)
 	
@@ -212,15 +232,13 @@ class parser:
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
 		"""
-		self._current_tree = {}
-		self._reading_tree = False
-		self._head_vector_collection = []
-		self._tree_starts_at = 0 # the file line number where the current tree starts
-		self._input_file = args.inputfile
-		self._output_file = args.outputfile
+		self.m_current_tree = {}
+		self.m_head_vector_collection = []
+		self.m_input_file = args.inputfile
+		self.m_output_file = args.outputfile
 		
 		# utilities for logging
-		self._donotknow_msg = "Do not know how to process this. This line will be ignored."
+		self.m_donotknow_msg = "Do not know how to process this. This line will be ignored."
 		
 		# keep LAL module
 		self.LAL_module = lal_module
@@ -235,9 +253,10 @@ class parser:
 		'head_vector_collection' in the form of head vectors.
 		"""
 		
+		reading_tree = False
 		linenumber = 1
-		with open(self._input_file, 'r') as f:
-			tbp_logging.info(f"Input file {self._input_file} has been opened correctly.")
+		with open(self.m_input_file, 'r') as f:
+			tbp_logging.info(f"Input file {self.m_input_file} has been opened correctly.")
 			
 			begin = time.perf_counter()
 			for line in f:
@@ -248,15 +267,16 @@ class parser:
 					pass
 				
 				elif type_of_line == line_type.blank:
-					if self._reading_tree:
+					if reading_tree:
 						# a blank line after having started a tree
 						# indicates the end of the tree
-						self._finish_reading_tree()
+						self._process_tree()
+						reading_tree = False
 				
 				elif type_of_line == line_type.word:
 					# this line has actual information about the tree.
-					if not self._reading_tree:
-						self._reading_tree = True
+					if not reading_tree:
+						reading_tree = True
 						tbp_logging.debug(f"Start reading tree at line {linenumber}")
 					
 					lp = line_parser.line_parser(line, linenumber)
@@ -272,16 +292,18 @@ class parser:
 					
 					if not ignore:
 						lineid = lp.get_ID()
-						self._current_tree[lineid] = lp
+						self.m_current_tree[lineid] = lp
 				
 				linenumber += 1
 			
-			# Finished reading file.
-			# If there was some tree being read, store it.
-			if self._reading_tree: self._finish_reading_tree()
+			# Finished reading file. If there was some tree being read, process it.
+			if reading_tree:
+				self._process_tree()
+				reading_tree = False
+			
 			end = time.perf_counter()
 			
-			tbp_logging.info(f"Finished parsing the whole input file {self._input_file}.")
+			tbp_logging.info(f"Finished parsing the whole input file {self.m_input_file}.")
 			tbp_logging.info(f"    In {end - begin:.3f} s.")
 	
 	def dump_contents(self):
@@ -289,13 +311,14 @@ class parser:
 		Dump all the head vectors to the output file.
 		"""
 		
-		with open(self._output_file, 'w') as f:
-			tbp_logging.info(f"Output file {self._output_file} has been opened correctly.")
+		with open(self.m_output_file, 'w') as f:
+			tbp_logging.info(f"Output file {self.m_output_file} has been opened correctly.")
+			tbp_logging.info(f"    Dumping data...")
 			
 			begin = time.perf_counter()
-			for hv in self._head_vector_collection:
+			for hv in self.m_head_vector_collection:
 				f.write(hv + '\n')
 			end = time.perf_counter()
 			
-			tbp_logging.info(f"Finished writing the head vectors into {self._output_file}.")
+			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
 			tbp_logging.info(f"    In {end - begin:.3f} s.")
