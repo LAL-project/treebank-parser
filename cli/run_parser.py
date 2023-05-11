@@ -106,6 +106,8 @@ def run(args, lal_module):
 	proceed_to_run_parser = True
 	if args.treebank_format == treebank_formats.CoNLLU_key_str:
 		from treebank_parser.conllu import parser
+	elif args.treebank_format == treebank_formats.head_vector_key_str:
+		from treebank_parser.head_vector import parser
 	else:
 		logging.error(f"Unhandled format '{args.treebank_format}'")
 		proceed_to_run_parser = False
