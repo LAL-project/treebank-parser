@@ -1,6 +1,6 @@
 # Treebank parser
 
-This repository contains a small python application that parses treebanks and converts them into the _head vector_ format using LAL (the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library)). It comes with a Command Line Interface (CLI) and a Graphical User Interface (GUI).
+This repository contains a small python application that parses treebanks and converts them into the _head vector_ format using LAL (the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library)). It can also parse a file containing only head vectors and apply some basic filtering operations on those trees. This python application can be used via a Command Line Interface (CLI) and a Graphical User Interface (GUI).
 
 This branch of _treebank-parser_ uses the [latest LAL](https://github.com/LAL-project/linear-arrangement-library/).
 
@@ -135,6 +135,7 @@ Required parameters:
 Format parameters:
 
 - `CoNLL-U`: parse a CoNLL-U-formatted file.
+- `Head-Vector`: parse a head-vector-formatted file.
 
 Optional interesting parameters:
 
@@ -150,14 +151,20 @@ Optional interesting parameters:
 
 All the parameters that the application needs can be queried using the `--help` parameter. The output is the following:
 
-	usage: main.py [-h] -i infile -o outfile [--verbose VERBOSE] [--laldebug] {CoNLL-U} ...
-
-	Parse a treebank file and extract the sentences as head vectors. The format of the treebank file
-	is specified with a positional parameter (see the list of positional arguments within "{}" below).
+	usage: main.py [-h] -i infile -o outfile [--verbose VERBOSE] [--laldebug] [--quiet]
+	               {CoNLL-U,Head-Vector} ...
+	
+	Parse a treebank file and extract the sentences as head vectors. The format of the treebank file is
+	specified with a positional parameter (see the list of positional arguments within "{}" below).
 	
 	positional arguments:
-	  {CoNLL-U}             Choose a format command for the input treebank file.
-	    CoNLL-U             Command to parse a CoNLL-U-formatted file.
+	  {CoNLL-U,Head-Vector}
+	                        Choose a format command for the input treebank file.
+	    CoNLL-U             Command to parse a CoNLL-U-formatted file. For further information on this
+	                        format's detailed specification, see
+	                        https://universaldependencies.org/format.html.
+	    Head-Vector         Command to parse a head vector-formatted file. For further information on this
+	                        format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.
 	
 	optional arguments:
 	  -h, --help            show this help message and exit
@@ -167,12 +174,13 @@ All the parameters that the application needs can be queried using the `--help` 
 	                        Name of the output .heads file.
 	  --verbose VERBOSE     Output logging messages showing the progress of the script. The higher the
 	                        debugging level the more messages will be displayed. Default level: 0 --
-	                        display only 'error' and 'critical' messages. Debugging levels: * 1 --
-	                        messages from 0 plus 'warning' messages; * 2 -- messages from 1 plus
-	                        'info' messages; * 3 -- messages from 2 plus 'debug' messages;
-	  --laldebug            Use the debug compilation of LAL ('import laldebug as lal'). The script
-	                        will run more slowly, but errors will be more likely to be caught.
-	                        Default: 'import lal'.
+	                        display only 'error' and 'critical' messages. Debugging levels: * 1 -- messages
+	                        from 0 plus 'warning' messages; * 2 -- messages from 1 plus 'info' messages; *
+	                        3 -- messages from 2 plus 'debug' messages;
+	  --laldebug            Use the debug compilation of LAL ('import laldebug as lal'). The script will
+	                        run more slowly, but errors will be more likely to be caught. Default: 'import
+	                        lal'.
+	  --quiet               Disable non-logging messages.
 
 #### CoNLL-U parameter documentation
 
@@ -208,3 +216,27 @@ All the parameters accepted by the CoNLL-U format parser can be queried using th
 	                        Chunks a syntactic dependency tree using the specified algorithm. This is
 	                        applied only to those sentences that have not been discarded.
 
+#### Head-Vector parameter documentation
+
+All the parameters accepted by the Head-Vector format parser can be queried using the `Head-Vector --help` parameter. The output is the following:
+
+	usage: main.py Head-Vector [-h] [--DiscardSentencesShorter length_in_words]
+	                           [--DiscardSentencesLonger length_in_words]
+	                           [--ChunkSyntacticDependencyTree {Anderson,Macutek}]
+	
+	The parser of a head vector-formatted file. This command has special mandatory and optional parameters.
+	These are listed below.
+	
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  --DiscardSentencesShorter length_in_words
+	                        Discard sentences whose length (in words) is less than or equal to (<=) a given
+	                        length. This is applied *after* removing punctuation marks and/or function
+	                        words.
+	  --DiscardSentencesLonger length_in_words
+	                        Discard sentences whose length (in words) is greater than or equal to (>=) a
+	                        given length. This is applied *after* removing punctuation marks and/or
+	                        function words.
+	  --ChunkSyntacticDependencyTree {Anderson,Macutek}
+	                        Chunks a syntactic dependency tree using the specified algorithm. This is
+	                        applied only to those sentences that have not been discarded.
