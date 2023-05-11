@@ -37,26 +37,32 @@ The different formats that can be parsed.
 
 Formats
 =======
-- `CoNLLU`: CoNLL-U format (see https://universaldependencies.org/format.html)
+- `CoNLL-U`: CoNLL-U format (see https://universaldependencies.org/format.html)
+- `Head Vector`: head vector format (see https://cqllab.upc.edu/lal/data-formats/)
 """
 
 CoNLLU = 0
+head_vector = 1
 
 # -------------------------------------------------------------------------
 
 format_key_str = {
 	CoNLLU: "CoNLL-U",
+	head_vector: "Head-Vector",
 }
 
 CoNLLU_key_str = format_key_str[CoNLLU]
+head_vector_key_str = format_key_str[head_vector]
 
 # -------------------------------------------------------------------------
 
 format_text_str = {
     CoNLLU: "CoNLL-U",
+    head_vector: "Head-Vector",
 }
 
 CoNLLU_text_str = format_text_str[CoNLLU]
+head_vector_text_str = format_text_str[head_vector]
 
 # -------------------------------------------------------------------------
 
@@ -64,9 +70,13 @@ format_description_str = {
 	CoNLLU:
 		"The parser of a CoNLL-U-formatted file. This command has special\
 		mandatory and optional parameters. These are listed below.",
+	head_vector:
+		"The parser of a head vector-formatted file. This command has special\
+		mandatory and optional parameters. These are listed below.",
 }
 
 CoNLLU_descr_str = format_description_str[CoNLLU]
+head_vector_descr_str = format_description_str[head_vector]
 
 # -------------------------------------------------------------------------
 
@@ -74,9 +84,13 @@ format_help_str = {
 	CoNLLU:
 		"Command to parse a CoNLL-U-formatted file. For further information\
 		on this format's detailed specification, see https://universaldependencies.org/format.html.",
+	head_vector:
+		"Command to parse a head vector-formatted file. For further information\
+		on this format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.",
 }
 
 CoNLLU_help_str = format_help_str[CoNLLU]
+head_vector_help_str = format_help_str[head_vector]
 
 # -------------------------------------------------------------------------
 
