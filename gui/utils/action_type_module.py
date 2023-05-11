@@ -42,5 +42,9 @@ def get_action_type_module(text):
 	if text == treebank_formats.CoNLLU_text_str:
 		from treebank_parser.conllu import action_type
 		return action_type
+	
+	if text == treebank_formats.head_vector_text_str:
+		from treebank_parser.head_vector import action_type
+		return action_type
 
 	print(f"Unhandled treebank format string '{text}'")
