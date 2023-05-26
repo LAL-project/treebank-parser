@@ -1,6 +1,6 @@
 # Treebank parser
 
-This repository contains a small python application that parses treebanks and converts them into the _head vector_ format using LAL (the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library)). It can also parse a file containing only head vectors and apply some basic filtering operations on those trees. This python application can be used via a Command Line Interface (CLI) and a Graphical User Interface (GUI).
+This repository contains a python application that parses treebanks and converts them into the _head vector_ format. It can also parse a file containing only head vectors and apply some basic filtering operations on those trees. This python application can be used via a Command Line Interface (CLI) and a Graphical User Interface (GUI). This uses LAL (the [Linear Arrangement library](https://github.com/LAL-project/linear-arrangement-library)).
 
 This branch of _treebank-parser_ uses the [latest LAL](https://github.com/LAL-project/linear-arrangement-library/).
 
