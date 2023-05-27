@@ -127,7 +127,7 @@ class GuiTreebankParser(QMainWindow):
 		# add all available treebank formats
 		treebankFormatSelector = self.findChild(TreebankFormatComboBox, "treebankFormatSelector")
 		assert(treebankFormatSelector is not None)
-		for key, format_str in treebank_formats.format_text_str.items():
+		for key, format_str in treebank_formats.treebankformat_text_str.items():
 			print(f"    Add treebank format '{format_str}'")
 			treebankFormatSelector.addItem(
 			    format_str, TreebankFormatComboBoxItem(format_str, key)

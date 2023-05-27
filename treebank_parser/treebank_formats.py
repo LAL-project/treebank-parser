@@ -41,32 +41,49 @@ Formats
 - `Head Vector`: head vector format (see https://cqllab.upc.edu/lal/data-formats/)
 """
 
+# -------------------------------------------------------------------------
+
+r"""
+The integer value for 'CoNLL-U' format
+"""
 CoNLLU = 0
+r"""
+The integer value for 'head vector' format
+"""
 head_vector = 1
 
 # -------------------------------------------------------------------------
 
-format_key_str = {
+r"""
+The string used to represent each treebank format in the CLI.
+"""
+treebankformat_key_str = {
 	CoNLLU: "CoNLL-U",
 	head_vector: "Head-Vector",
 }
 
-CoNLLU_key_str = format_key_str[CoNLLU]
-head_vector_key_str = format_key_str[head_vector]
+CoNLLU_key_str = treebankformat_key_str[CoNLLU]
+head_vector_key_str = treebankformat_key_str[head_vector]
 
 # -------------------------------------------------------------------------
 
-format_text_str = {
+r"""
+The string used to represent each treebank format in the GUI.
+"""
+treebankformat_text_str = {
     CoNLLU: "CoNLL-U",
-    head_vector: "Head-Vector",
+    head_vector: "Head Vector",
 }
 
-CoNLLU_text_str = format_text_str[CoNLLU]
-head_vector_text_str = format_text_str[head_vector]
+CoNLLU_text_str = treebankformat_text_str[CoNLLU]
+head_vector_text_str = treebankformat_text_str[head_vector]
 
 # -------------------------------------------------------------------------
 
-format_description_str = {
+r"""
+The description of what each treebank format is. This is used by the CLI and the GUI.
+"""
+treebankformat_description_str = {
 	CoNLLU:
 		"The parser of a CoNLL-U-formatted file. This command has special\
 		mandatory and optional parameters. These are listed below.",
@@ -75,12 +92,15 @@ format_description_str = {
 		mandatory and optional parameters. These are listed below.",
 }
 
-CoNLLU_descr_str = format_description_str[CoNLLU]
-head_vector_descr_str = format_description_str[head_vector]
+CoNLLU_descr_str = treebankformat_description_str[CoNLLU]
+head_vector_descr_str = treebankformat_description_str[head_vector]
 
 # -------------------------------------------------------------------------
 
-format_help_str = {
+r"""
+Used in the CLI to briefly describe what each treebank format is.
+"""
+treebankformat_help_str = {
 	CoNLLU:
 		"Command to parse a CoNLL-U-formatted file. For further information\
 		on this format's detailed specification, see https://universaldependencies.org/format.html.",
@@ -89,13 +109,13 @@ format_help_str = {
 		on this format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.",
 }
 
-CoNLLU_help_str = format_help_str[CoNLLU]
-head_vector_help_str = format_help_str[head_vector]
+CoNLLU_help_str = treebankformat_help_str[CoNLLU]
+head_vector_help_str = treebankformat_help_str[head_vector]
 
 # -------------------------------------------------------------------------
 
 if __name__ == "__main__":
 	# TESTS
 	print("Testing...")
-	assert( len(format_key_str) == len(format_description_str) )
-	assert( len(format_description_str) == len(format_help_str) )
+	assert( len(treebankformat_key_str) == len(treebankformat_description_str) )
+	assert( len(treebankformat_description_str) == len(treebankformat_help_str) )

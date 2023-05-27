@@ -98,12 +98,12 @@ class RunParserButton(QPushButton):
 
 		format_key = treebankFormatSelector.currentData().key()
 		print(f"    Key of format:   '{format_key}'")
-		print(f"    Argument string: '{treebank_formats.format_key_str[format_key]}'")
+		print(f"    Argument string: '{treebank_formats.treebankformat_key_str[format_key]}'")
 
 		action_module = action_type_module.get_action_type_module(treebank_format)
 		assert(action_module is not None)
 		
-		argument_list += [treebank_formats.format_key_str[format_key]]
+		argument_list += [treebank_formats.treebankformat_key_str[format_key]]
 		
 		# retrieve chosen actions table
 		chosenActionTable = parent.findChild(ActionsTable, "chosenActionTable")
