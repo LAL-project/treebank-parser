@@ -75,7 +75,7 @@ The usage can be read by clicking, on the menu bar, `Help` > `How to`. A small p
 	Once all the actions have been chosen, you can click 'Run' to actually transform
 	the input treebank file into a head vector file. Optionally, you can tell the
 	parser to use a debug compilation of the Linear Arrangement Library by checking
-	the checkbox 'Use laldebug'.
+	the checkbox 'Use lal'.
 
 ### Requirements for running the GUI
 
@@ -94,12 +94,12 @@ Simply, run the `gui/main.py` file. For example, from the command line:
 	$ cd treebank-parser/
 	$ python3 gui/main.py
 
-#### Running the GUI with 'laldebug'
+#### Running the GUI with 'lal'
 
 The GUI loads the release distribution of LAL by default. To make the GUI load the debug distribution, simply execute
 
 	$ cd treebank-parser/
-	$ python3 gui/main.py --laldebug
+	$ python3 gui/main.py --lal
 
 ## Usage of the Command Line Interface (CLI)
 
@@ -139,7 +139,7 @@ Format parameters:
 
 Optional interesting parameters:
 
-- `--laldebug`: execute the program using the debug compilation of LAL.
+- `--lal`: execute the program using the debug compilation of LAL.
 - `--verbose l`: set the level of verbosity of the program; the higher the value, the more messages the application will output. These messages are of X kinds:
 	- `CRITICAL` error messages (always displayed),
 	- `ERROR` messages (always displayed),
@@ -151,7 +151,7 @@ Optional interesting parameters:
 
 All the parameters that the application needs can be queried using the `--help` parameter. The output is the following:
 
-	usage: main.py [-h] -i infile -o outfile [--verbose VERBOSE] [--laldebug] [--quiet]
+	usage: main.py [-h] -i infile -o outfile [--verbose VERBOSE] [--lal] [--quiet]
 	               {CoNLL-U,Head-Vector} ...
 	
 	Parse a treebank file and extract the sentences as head vectors. The format of the treebank file is
@@ -177,9 +177,9 @@ All the parameters that the application needs can be queried using the `--help` 
 	                        display only 'error' and 'critical' messages. Debugging levels: * 1 -- messages
 	                        from 0 plus 'warning' messages; * 2 -- messages from 1 plus 'info' messages; *
 	                        3 -- messages from 2 plus 'debug' messages;
-	  --laldebug            Use the debug compilation of LAL ('import laldebug as lal'). The script will
-	                        run more slowly, but errors will be more likely to be caught. Default: 'import
-	                        lal'.
+	  --lal                 Use the debug compilation of LAL ('import lal as lal'). The script will run
+	                        more slowly, but errors will be more likely to be caught. Default: 'import
+	                        laloptimized as lal'.
 	  --quiet               Disable non-logging messages.
 
 #### CoNLL-U parameter documentation

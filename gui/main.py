@@ -183,11 +183,11 @@ if __name__ == "__main__":
 	args = parser.parse_args(sys.argv[1:])
 	
 	if args.laldebug:
-		import laldebug as lal
-		print("Loaded LAL (debug)")
-	else:
 		import lal
 		print("Loaded LAL")
+	else:
+		import laloptimized as lal
+		print("Loaded LAL (optimized)")
 	
 	from treebank_parser import version_lal
 	r = version_lal.is_version_of_LAL_correct(lal)

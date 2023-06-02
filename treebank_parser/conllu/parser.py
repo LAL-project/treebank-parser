@@ -147,7 +147,7 @@ class parser:
 				tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
 				if word_id >= rt.get_num_nodes():
 					tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
-					tbp_logging.critical(f"    Please, rerun the program with '--laldebug --verbose 3' for further debugging.")
+					tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
 				
 				# remove the node
 				rt.remove_node(word_id, True)
