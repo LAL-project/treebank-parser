@@ -50,8 +50,8 @@ to read the usage of this script. Run with
 
 Usage examples:
 
-	python3 cli/main.py -i catalan.conllu -o catalan.heads --laldebug CoNLLU
-	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 --laldebug CoNLLU
+	python3 cli/main.py -i catalan.conllu -o catalan.heads --lal CoNLLU
+	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 --lal CoNLLU
 	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 CoNLLU --RemoveFunctionWords
 	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 CoNLLU --RemoveFunctionWords --DiscardSentencesShorter 3
 """
@@ -92,9 +92,9 @@ else:
 run_parser.configure_logging(args)
 
 if args.laldebug:
-	import laldebug as lal
-else:
 	import lal
+else:
+	import laloptimized as lal
 
 from treebank_parser import version_lal
 r = version_lal.is_version_of_LAL_correct(lal)

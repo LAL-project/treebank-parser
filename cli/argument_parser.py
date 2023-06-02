@@ -78,11 +78,11 @@ def add_arguments_main_parser(parser):
 	"
 	)
 	parser.add_argument(
-		'--laldebug',
+		'--lal',
 		default = False,
 		action = 'store_true',
 		required = False,
-		help = f"Use the debug compilation of LAL ('import laldebug as lal'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import lal'."
+		help = f"Use the debug compilation of LAL ('import lal'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import laloptimized as lal'."
 	)
 	parser.add_argument(
 		'--quiet',
