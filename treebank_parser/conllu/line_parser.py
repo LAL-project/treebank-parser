@@ -66,39 +66,39 @@ class line_parser:
 		assert(isinstance(line_str, str))
 		
 		# The line to be parsed
-		if line_str[-1] == "\n": self._line_str = line_str[:-1]
-		else: self._line_str = line_str
+		if line_str[-1] == "\n": self.m_line_str = line_str[:-1]
+		else: self.m_line_str = line_str
 		
 		# keep the line number where it was found
-		self._line_number = line_number
+		self.m_line_number = line_number
 		
 		# Word index, integer starting at 1 for each new sentence; may be a range
 		# for multiword tokens; may be a decimal number for empty nodes (decimal
 		# numbers can be lower than 1 but must be greater than 0).
-		self._ID = ""
+		self.m_ID = ""
 		# Word form or punctuation symbol.
-		self._FORM = ""	
+		self.m_FORM = ""	
 		# Lemma or stem of word form.
-		self._LEMMA = ""
+		self.m_LEMMA = ""
 		# Universal part-of-speech tag.
-		self._UPOS = ""
+		self.m_UPOS = ""
 		# Language-specific part-of-speech tag; underscore if not available.
-		self._XPOS = ""
+		self.m_XPOS = ""
 		# List of morphological features from the universal feature inventory
 		# or from a defined language-specific extension; underscore if not available.
-		self._FEATS = ""
+		self.m_FEATS = ""
 		# Head of the current word, which is either a value of ID or zero (0).
-		self._HEAD = ""
+		self.m_HEAD = ""
 		# Universal dependency relation to the HEAD (root iff HEAD = 0) or a
 		# defined language-specific subtype of one.
-		self._DEPREL = ""
+		self.m_DEPREL = ""
 		# Enhanced dependency graph in the form of a list of head-deprel pairs.
-		self._DEPS = ""
+		self.m_DEPS = ""
 		# Any other annotation.
-		self._MISC = ""
+		self.m_MISC = ""
 		
 		# Default separator for fields in word lines
-		self._sep = '\t'
+		self.m_sep = '\t'
 	
 	def set_separator(self, sep):
 		r"""
@@ -106,94 +106,94 @@ class line_parser:
 		a string (str).
 		"""
 		assert(isinstance(sep, str))
-		self._sep = sep
+		self.m_sep = sep
 	
 	def parse_line(self):
 		r"""
 		Parses the line this object was initialized with.
 		"""
-		list_of_fields = self._line_str.split(self._sep)
+		list_of_fields = self.m_line_str.split(self.m_sep)
 		
 		# ensure that this CoNLL-U
 		if len(list_of_fields) != 10:
 			tbp_logging.tbp_error( "Amount of fields in line")
-			tbp_logging.tbp_error(f"    '{self._line_str}'")
+			tbp_logging.tbp_error(f"    '{self.m_line_str}'")
 			tbp_logging.tbp_error( "is not 10 as specified in the CoNLL-U format.")
 			tbp_logging.tbp_error( "See: https://universaldependencies.org/format.html")
 			assert(len(list_of_fields) == 10)
 		
-		self._ID = list_of_fields[0]
-		self._FORM = list_of_fields[1]
-		self._LEMMA = list_of_fields[2]
-		self._UPOS = list_of_fields[3]
-		self._XPOS = list_of_fields[4]
-		self._FEATS = list_of_fields[5]
-		self._HEAD = list_of_fields[6]
-		self._DEPREL = list_of_fields[7]
-		self._DEPS = list_of_fields[8]
-		self._MISC = list_of_fields[9]
+		self.m_ID = list_of_fields[0]
+		self.m_FORM = list_of_fields[1]
+		self.m_LEMMA = list_of_fields[2]
+		self.m_UPOS = list_of_fields[3]
+		self.m_XPOS = list_of_fields[4]
+		self.m_FEATS = list_of_fields[5]
+		self.m_HEAD = list_of_fields[6]
+		self.m_DEPREL = list_of_fields[7]
+		self.m_DEPS = list_of_fields[8]
+		self.m_MISC = list_of_fields[9]
 	
 	def get_line(self):
 		r"""
 		Returns the line the parser was initialized with.
 		"""
-		return self._line_str
+		return self.m_line_str
 	def get_ID(self):
 		r"""
 		Returns the contents of the ID field of the line
 		"""
-		return self._ID
+		return self.m_ID
 	def get_FORM(self):
 		r"""
 		Returns the contents of the FORM field of the line
 		"""
-		return self._FORM
+		return self.m_FORM
 	def get_LEMMA(self):
 		r"""
 		Returns the contents of the LEMMA field of the line
 		"""
-		return self._LEMMA
+		return self.m_LEMMA
 	def get_UPOS(self):
 		r"""
 		Returns the contents of the UPOS field of the line
 		"""
-		return self._UPOS
+		return self.m_UPOS
 	def get_XPOS(self):
 		r"""
 		Returns the contents of the XPOS field of the line
 		"""
-		return self._XPOS
+		return self.m_XPOS
 	def get_FEATS(self):
 		r"""
 		Returns the contents of the FEATS field of the line
 		"""
-		return self._FEATS
+		return self.m_FEATS
 	def get_HEAD(self):
 		r"""
 		Returns the contents of the HEAD field of the line
 		"""
-		return self._HEAD
+		return self.m_HEAD
 	def get_DEPREL(self):
 		r"""
 		Returns the contents of the DEPREL field of the line
 		"""
-		return self._DEPREL
+		return self.m_DEPREL
 	def get_DEPS(self):
 		r"""
 		Returns the contents of the DEPS field of the line
 		"""
-		return self._DEPS
+		return self.m_DEPS
 	def get_MISC(self):
 		r"""
 		Returns the contents of the MISC field of the line
 		"""
-		return self._MISC
+		return self.m_MISC
 	
 	def get_line_number(self):
 		r"""
 		Returns the line number of this line within the line it was found at.
 		"""
-		return self._line_number
+		return self.m_line_number
 	
 	def is_punctuation_mark(self):
 		r"""

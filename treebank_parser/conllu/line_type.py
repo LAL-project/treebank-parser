@@ -64,7 +64,7 @@ def classify(line):
 	- comment : for comment lines
 	- word    : for word lines
 	"""
-        
+	
 	assert(isinstance(line, str))
 	
 	if line == "\n" or line == "": return blank
