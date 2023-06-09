@@ -91,7 +91,7 @@ else:
 # configure logging
 run_parser.configure_logging(args)
 
-if args.laldebug:
+if args.lal:
 	import lal
 else:
 	import laloptimized as lal
