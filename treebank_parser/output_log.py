@@ -62,5 +62,5 @@ def _print_critical(s):
 info = _print_info
 debug = _print_debug
 warning = _print_warning
-tbp_error = _print_error
-tbp_critical = _print_critical
+error = _print_error
+critical = _print_critical

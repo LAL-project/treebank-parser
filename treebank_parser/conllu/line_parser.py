@@ -116,10 +116,10 @@ class line_parser:
 		
 		# ensure that this CoNLL-U
 		if len(list_of_fields) != 10:
-			tbp_logging.tbp_error( "Amount of fields in line")
-			tbp_logging.tbp_error(f"    '{self.m_line_str}'")
-			tbp_logging.tbp_error( "is not 10 as specified in the CoNLL-U format.")
-			tbp_logging.tbp_error( "See: https://universaldependencies.org/format.html")
+			tbp_logging.error( "Amount of fields in line")
+			tbp_logging.error(f"    '{self.m_line_str}'")
+			tbp_logging.error( "is not 10 as specified in the CoNLL-U format.")
+			tbp_logging.error( "See: https://universaldependencies.org/format.html")
 			assert(len(list_of_fields) == 10)
 		
 		self.m_ID = list_of_fields[0]
