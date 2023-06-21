@@ -51,6 +51,10 @@ r"""
 The integer value for 'head vector' format
 """
 head_vector = 1
+r"""
+The integer value for 'Stanford' format
+"""
+Stanford = 2
 
 # -------------------------------------------------------------------------
 
@@ -60,10 +64,12 @@ The string used to represent each treebank format in the CLI.
 treebankformat_key_str = {
 	CoNLLU: "CoNLL-U",
 	head_vector: "Head-Vector",
+	Stanford: "Stanford",
 }
 
 CoNLLU_key_str = treebankformat_key_str[CoNLLU]
 head_vector_key_str = treebankformat_key_str[head_vector]
+Stanford_key_str = treebankformat_key_str[Stanford]
 
 # -------------------------------------------------------------------------
 
@@ -73,10 +79,12 @@ The string used to represent each treebank format in the GUI.
 treebankformat_text_str = {
     CoNLLU: "CoNLL-U",
     head_vector: "Head Vector",
+    Stanford: "Stanford",
 }
 
 CoNLLU_text_str = treebankformat_text_str[CoNLLU]
 head_vector_text_str = treebankformat_text_str[head_vector]
+Stanford_text_str = treebankformat_text_str[Stanford]
 
 # -------------------------------------------------------------------------
 
@@ -90,10 +98,14 @@ treebankformat_description_str = {
 	head_vector:
 		"The parser of a head vector-formatted file. This command has special\
 		mandatory and optional parameters. These are listed below.",
+	Stanford:
+		"The parser of a Stanford-formatted file. This command has special\
+		mandatory and optional parameters. These are listed below.",
 }
 
 CoNLLU_descr_str = treebankformat_description_str[CoNLLU]
 head_vector_descr_str = treebankformat_description_str[head_vector]
+Stanford_descr_str = treebankformat_description_str[Stanford]
 
 # -------------------------------------------------------------------------
 
@@ -107,10 +119,14 @@ treebankformat_help_str = {
 	head_vector:
 		"Command to parse a head vector-formatted file. For further information\
 		on this format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.",
+	Stanford:
+		"Command to parse a Stanford-formatted file. For further information\
+		on this format's detailed specification, see https://nlp.stanford.edu/software/stanford-dependencies.html.",
 }
 
 CoNLLU_help_str = treebankformat_help_str[CoNLLU]
 head_vector_help_str = treebankformat_help_str[head_vector]
+Stanford_help_str = treebankformat_help_str[Stanford]
 
 # -------------------------------------------------------------------------
 
