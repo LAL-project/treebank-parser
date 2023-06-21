@@ -152,34 +152,37 @@ Optional interesting parameters:
 All the parameters that the application needs can be queried using the `--help` parameter. The output is the following:
 
 	usage: main.py [-h] -i infile -o outfile [--verbose VERBOSE] [--lal] [--quiet]
-	               {CoNLL-U,Head-Vector} ...
-	
+				   {CoNLL-U,Stanford,Head-Vector} ...
+
 	Parse a treebank file and extract the sentences as head vectors. The format of the treebank file is
 	specified with a positional parameter (see the list of positional arguments within "{}" below).
-	
+
 	positional arguments:
-	  {CoNLL-U,Head-Vector}
-	                        Choose a format command for the input treebank file.
-	    CoNLL-U             Command to parse a CoNLL-U-formatted file. For further information on this
-	                        format's detailed specification, see
-	                        https://universaldependencies.org/format.html.
-	    Head-Vector         Command to parse a head vector-formatted file. For further information on this
-	                        format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.
-	
+	  {CoNLL-U,Stanford,Head-Vector}
+							Choose a format command for the input treebank file.
+		CoNLL-U             Command to parse a CoNLL-U-formatted file. For further information on this
+							format's detailed specification, see
+							https://universaldependencies.org/format.html.
+		Stanford            Command to parse a Stanford-formatted file. For further information on this
+							format's detailed specification, see
+							https://nlp.stanford.edu/software/stanford-dependencies.html.
+		Head-Vector         Command to parse a head vector-formatted file. For further information on this
+							format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.
+
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  -i infile, --inputfile infile
-	                        Name of the input treebank file to be parsed.
+							Name of the input treebank file to be parsed.
 	  -o outfile, --outputfile outfile
-	                        Name of the output .heads file.
+							Name of the output .heads file.
 	  --verbose VERBOSE     Output logging messages showing the progress of the script. The higher the
-	                        debugging level the more messages will be displayed. Default level: 0 --
-	                        display only 'error' and 'critical' messages. Debugging levels: * 1 -- messages
-	                        from 0 plus 'warning' messages; * 2 -- messages from 1 plus 'info' messages; *
-	                        3 -- messages from 2 plus 'debug' messages;
-	  --lal                 Use the debug compilation of LAL ('import lal as lal'). The script will run
-	                        more slowly, but errors will be more likely to be caught. Default: 'import
-	                        laloptimized as lal'.
+							debugging level the more messages will be displayed. Default level: 0 --
+							display only 'error' and 'critical' messages. Debugging levels: * 1 -- messages
+							from 0 plus 'warning' messages; * 2 -- messages from 1 plus 'info' messages; *
+							3 -- messages from 2 plus 'debug' messages;
+	  --lal                 Use the debug compilation of LAL ('import lal'). The script will run more
+							slowly, but errors will be more likely to be caught. Default: 'import
+							laloptimized as lal'.
 	  --quiet               Disable non-logging messages.
 
 #### CoNLL-U parameter documentation
@@ -215,6 +218,34 @@ All the parameters accepted by the CoNLL-U format parser can be queried using th
 	  --ChunkSyntacticDependencyTree {Anderson,Macutek}
 	                        Chunks a syntactic dependency tree using the specified algorithm. This is
 	                        applied only to those sentences that have not been discarded.
+
+#### Stanford parameter documentation
+
+All the parameters accepted by the CoNLL-U format parser can be queried using the `Stanford --help` parameter. The output is the following:
+
+	usage: main.py Stanford [-h] [--RemovePunctuationMarks] [--DiscardSentencesShorter length_in_words]
+							[--DiscardSentencesLonger length_in_words]
+							[--ChunkSyntacticDependencyTree {Anderson,Macutek}]
+
+	The parser of a Stanford-formatted file. This command has special mandatory and optional parameters.
+	These are listed below.
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  --RemovePunctuationMarks
+							Remove punctuation marks from each sentence. A punctuation mark is identified
+							by the dependency type 'punct'.
+	  --DiscardSentencesShorter length_in_words
+							Discard sentences whose length (in words) is less than or equal to (<=) a given
+							length. This is applied *after* removing punctuation marks and/or function
+							words.
+	  --DiscardSentencesLonger length_in_words
+							Discard sentences whose length (in words) is greater than or equal to (>=) a
+							given length. This is applied *after* removing punctuation marks and/or
+							function words.
+	  --ChunkSyntacticDependencyTree {Anderson,Macutek}
+							Chunks a syntactic dependency tree using the specified algorithm. This is
+							applied only to those sentences that have not been discarded.
 
 #### Head-Vector parameter documentation
 
