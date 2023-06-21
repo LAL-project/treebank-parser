@@ -39,7 +39,7 @@ This script contains functions that create an argument parser object for the CoN
 import argparse
 
 from treebank_parser import treebank_formats as formats
-from treebank_parser.conllu import action_type as conllu_action_type
+from treebank_parser.conllu import action_type as action_type
 
 class OneTimeOptionalArgument(argparse.Action):
 	def __call__(self, parser, namespace, values, option_string=None):
@@ -56,49 +56,49 @@ def add_arguments_CoNLLU_parser(parser):
 	
 	# remove function words
 	parser.add_argument(
-		'--' + conllu_action_type.RemoveFunctionWords_key_str,
+		'--' + action_type.RemoveFunctionWords_key_str,
 		default = False,
 		action = 'store_true',
 		required = False,
-		help = conllu_action_type.RemoveFunctionWords_help_str
+		help = action_type.RemoveFunctionWords_help_str
 	)
 	
 	# remove punctuation marks
 	parser.add_argument(
-		'--' + conllu_action_type.RemovePunctuationMarks_key_str,
+		'--' + action_type.RemovePunctuationMarks_key_str,
 		default = False,
 		action = 'store_true',
 		required = False,
-		help = conllu_action_type.RemovePunctuationMarks_help_str
+		help = action_type.RemovePunctuationMarks_help_str
 	)
 	
 	# discard short sentences
 	parser.add_argument(
-		'--' + conllu_action_type.DiscardSentencesShorter_key_str,
+		'--' + action_type.DiscardSentencesShorter_key_str,
 		default = -1,
 		type = int,
 		metavar = "length_in_words",
 		required = False,
-		help = conllu_action_type.DiscardSentencesShorter_help_str
+		help = action_type.DiscardSentencesShorter_help_str
 	)
 	
 	# discard short sentences
 	parser.add_argument(
-		'--' + conllu_action_type.DiscardSentencesLonger_key_str,
+		'--' + action_type.DiscardSentencesLonger_key_str,
 		default = -1,
 		type = int,
 		metavar = "length_in_words",
 		required = False,
-		help = conllu_action_type.DiscardSentencesLonger_help_str
+		help = action_type.DiscardSentencesLonger_help_str
 	)
 	
 	# chunk tree
 	parser.add_argument(
-		'--' + conllu_action_type.ChunkTree_key_str,
+		'--' + action_type.ChunkTree_key_str,
 		required = False,
 		type = str,
-		choices = conllu_action_type.ChunkTree_choice_list,
-		help = conllu_action_type.ChunkTree_help_str,
+		choices = action_type.ChunkTree_choice_list,
+		help = action_type.ChunkTree_help_str,
 		action = OneTimeOptionalArgument
 	)
 

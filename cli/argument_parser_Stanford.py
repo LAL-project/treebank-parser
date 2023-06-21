@@ -33,13 +33,13 @@
 ################################################################################
 
 r"""
-This script contains functions that create an argument parser object for the CoNLL-U format.
+This script contains functions that create an argument parser object for the Stanford format.
 """
 
 import argparse
 
 from treebank_parser import treebank_formats as formats
-from treebank_parser.head_vector import action_type as action_type
+from treebank_parser.stanford import action_type as action_type
 
 class OneTimeOptionalArgument(argparse.Action):
 	def __call__(self, parser, namespace, values, option_string=None):
@@ -49,10 +49,20 @@ class OneTimeOptionalArgument(argparse.Action):
 			parser.error(f"Optional argument '{option_string}' can only be specified once.")
 
 
-def add_arguments_head_vector_parser(parser):
+def add_arguments_Stanford_parser(parser):
 	r"""
-	Adds the necessary arguments to `parser` for CoNLL-U-formatted treebanks.
+	Adds the necessary arguments to `parser` for Stanford-formatted treebanks.
 	"""
+	
+	# remove punctuation marks
+	parser.add_argument(
+		'--' + action_type.RemovePunctuationMarks_key_str,
+		default = False,
+		action = 'store_true',
+		required = False,
+		help = action_type.RemovePunctuationMarks_help_str
+	)
+	
 	# discard short sentences
 	parser.add_argument(
 		'--' + action_type.DiscardSentencesShorter_key_str,

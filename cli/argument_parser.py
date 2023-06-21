@@ -45,6 +45,7 @@ from treebank_parser.conllu import action_type as conllu_action_type
 
 from cli.argument_parser_CoNLLU import add_arguments_CoNLLU_parser
 from cli.argument_parser_head_vector import add_arguments_head_vector_parser
+from cli.argument_parser_Stanford import add_arguments_Stanford_parser
 
 def add_arguments_main_parser(parser):
 	r"""
@@ -106,6 +107,14 @@ def create_format_subparsers(subparser):
 		help = formats.CoNLLU_help_str
 	)
 	add_arguments_CoNLLU_parser(parser_CoNLLU)
+	
+	# create a subparser for Stanford
+	parser_Stanford = subparser.add_parser(
+		name = formats.Stanford_key_str,
+		description = formats.Stanford_descr_str,
+		help = formats.Stanford_help_str
+	)
+	add_arguments_Stanford_parser(parser_Stanford)
 	
 	# create a subparser for head vector
 	parser_head_vector = subparser.add_parser(
