@@ -35,7 +35,7 @@
 r"""
 Parser of CoNLLU-formatted files.
 
-This module contains a single class `CoNLLU_parser`.
+This module contains a single class `parser`.
 """
 
 import time
