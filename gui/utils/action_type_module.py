@@ -46,5 +46,9 @@ def get_action_type_module(text):
 	if text == treebank_formats.head_vector_text_str:
 		from treebank_parser.head_vector import action_type
 		return action_type
-
-	print(f"Unhandled treebank format string '{text}'")
+	
+	if text == treebank_formats.Stanford_text_str:
+		from treebank_parser.stanford import action_type
+		return action_type
+	
+	print(f"{__file__}: Unhandled treebank format string '{text}'")
