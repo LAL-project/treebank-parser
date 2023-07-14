@@ -204,7 +204,7 @@ class parser:
 		"""
 		
 		linenumber = 1
-		with open(self._input_file, 'r') as f:
+		with open(self._input_file, 'r', encoding = "utf-8") as f:
 			tbp_logging.info(f"Input file {self._input_file} has been opened correctly.")
 			
 			begin = time.perf_counter()
