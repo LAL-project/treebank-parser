@@ -285,9 +285,7 @@ class parser:
 					ignore = False
 					
 					# check if line is to be ignored or not
-					if '-' in lp.get_ID():
-						ignore = True
-					elif '.' in lp.get_ID():
+					if '-' in lp.get_ID() or '.' in lp.get_ID():
 						ignore = True
 					
 					if not ignore:
