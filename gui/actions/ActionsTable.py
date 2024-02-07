@@ -32,8 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QTableWidget, QComboBox
-from PySide2.QtGui import QBrush, QColor
+from PySide2.QtWidgets import QTableWidget
 
 from typing import cast
 
