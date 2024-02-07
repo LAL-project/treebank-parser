@@ -1,3 +1,21 @@
 {
-    "files": ["actions/TreebankFormatComboBoxItem.py","actions/ActionsTableItem.py","utils/help_menu_strings.py","actions/ActionListItem.py","actions/AddRemoveActionButton.py","HelpMenu.py","actions/TreebankFormatComboBox.py","utils/MyOut.py","utils/action_type_module.py","UiLoader.py","actions/ActionsTable.py","RunnerButton.py","form.ui","main.py","FileChooserButton.py","actions/ActionsTableComboBox.py"]
+    "files": [
+        "actions/TreebankFormatComboBoxItem.py",
+        "actions/ActionsTableItem.py",
+        "utils/help_menu_strings.py",
+        "actions/ActionListItem.py",
+        "actions/AddRemoveActionButton.py",
+        "HelpMenu.py",
+        "actions/TreebankFormatComboBox.py",
+        "utils/MyOut.py",
+        "utils/action_type_module.py",
+        "UiLoader.py",
+        "actions/ActionsTable.py",
+        "RunParserButton.py",
+        "form.ui",
+        "main.py",
+        "FileChooserButton.py",
+        "actions/ActionsTableComboBox.py",
+        "argument_parser.py"
+    ]
 }
