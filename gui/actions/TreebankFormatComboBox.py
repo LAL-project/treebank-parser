@@ -65,7 +65,8 @@ class TreebankFormatComboBox(QComboBox, object):
 		if availableActionList.count() > 0:
 			availableActionList.clear()
 		if chosenActionTable.rowCount() > 0:
-			chosenActionTable.clear()
+			# remove all rows from the table properly
+			chosenActionTable.setRowCount(0)
 
 		action_module = action_type_module.get_action_type_module(text)
 		if action_module is None:
