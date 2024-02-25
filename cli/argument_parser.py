@@ -3,7 +3,7 @@
 #   Treebank parser -- A small application that parses a treebank and converts
 #   it into a collection of head vectors.
 # 
-#   Copyright (C) 2021-2023
+#   Copyright (C) 2021 - 2024
 # 
 #   This file is part of Linear Arrangement Library. To see the full code
 #   visit the webpage:
