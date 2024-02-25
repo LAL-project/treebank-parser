@@ -36,68 +36,129 @@ r"""
 This is a helper module to make code more readable when classifying lines.
 
 This module only has one method that returns the type of line among three different types:
-- blank line
-- comment line	
-- word lines
+- blank line: `Blank` and `Blank_str`
+- comment line: `Comment` and `Comment_str`
+- word lines: `Word` and `Word_str`
 
 See https://universaldependencies.org/format.html for more details on the type
 of lines that a CoNLL-formatted text can have.
 """
 
-blank = 0
-comment = 1
-word = 2
+Blank = 0
+Comment = 1
+Word = 2
 
-def classify(line):
+Blank_str = "Blank"
+Comment_str = "Comment"
+Word_str = "Word"
+
+def type_as_parameter(t):
+	"""
+	Converts a type of line to a string (`str`) object.
+	
+	Parameters
+	==========
+	- t : One of `Blank`, `Comment`, `Word`.
+	
+	Returns
+	=======
+	Returns a string object representing each line type:
+		
+	- `Blank`   : `Blank_str`
+	- `Comment` : `Comment_str`
+	- `Word`    : `Word_str`
+	"""
+
+	if t == Blank: return Blank_str
+	if t == Comment: return Comment_str
+	if t == Word: return Word_str
+	assert(False)
+
+def classify(line: str):
 	"""
 	Classifies the line passed as parameter.
 	
 	Parameters
 	==========
-	- line : the line to be classified. Must be a string type.
+	- line : the line to be classified. Must be a string (`str`) type.
 	
 	Returns
 	=======
 	Returns the classification of the line as either:
 		
-	- blank   : for blank lines
-	- comment : for comment lines
-	- word    : for word lines
+	- Blank      : for blank lines
+	- Comment    : for comment lines
+	- Word       : for word lines
 	"""
 	
 	assert(isinstance(line, str))
 	
-	if line == "\n" or line == "": return blank
-	if line[0] == "#": return comment
-	return word
+	# corner case
+	if line == "": return Blank
 
-def type_as_string(t):
+	# detect comment lines and simplify finding blank lines
+	if line[0] == "#": return Comment
+
+	# detect complex blank lines (spaces + tabs combined)
+	if line == "\n": return Blank
+	if all(map(lambda x: x == " " or x == "\t", line[:-1])): return Blank
+
+	return Word
+
+def classify_str(line: str):
 	"""
 	Converts a line type to a string.
 	
 	Parameters
 	==========
-	- `t` : type of line. One of line_type.blank, line_type.comment, line_type.word.
+	- line : the line to be classified. Must be a string (`str`) type.
 	
 	Returns
 	=======
-	Returns a string "blank", "comment", "word" dependening on the type.
+	Returns a string "Blank", "Comment", or "Word" dependening on the type.
 	The type must be valid.
 	"""
-	if t == blank: return "blank"
-	if t == comment: return "comment"
-	if t == word: return "word"
+	t = classify(line)
+	if t == Blank: return Blank_str
+	if t == Comment: return Comment_str
+	if t == Word: return Word_str
 	assert(False)
 
 if __name__ == "__main__":
 	# TESTS
-	line_sample1 = "# asdf"
-	line_sample2 = ""
-	line_sample3 = "\n"
+	line_sample = "# asdf"
+	assert( classify(line_sample) == Comment )
+	assert( classify_str(line_sample) == Comment_str )
+
+	line_sample = ""
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
+	line_sample = "    "
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
+	line_sample = "    \n"
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
+	line_sample = "\t\t\t\n"
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
+	line_sample = " \t \t \t \n"
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
+	line_sample = "\t"
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
+	line_sample = "\n"
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
 	# an actual line taken from the UD treebank for Catalan
-	line_sample4 = "2	Privada	Privada	PROPN	_	_	1	flat	1:flat	_"
-	
-	assert( classify(line_sample1) == comment )
-	assert( classify(line_sample2) == blank )
-	assert( classify(line_sample3) == blank )
-	assert( classify(line_sample4) == word )
+	line_sample = "2	Privada	Privada	PROPN	_	_	1	flat	1:flat	_"
+	assert( classify(line_sample) == Word )
+	assert( classify_str(line_sample) == Word_str )

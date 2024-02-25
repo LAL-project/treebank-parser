@@ -42,7 +42,6 @@ import time
 
 from treebank_parser.conllu import line_parser
 from treebank_parser.conllu import line_type
-from treebank_parser.conllu import action_type
 import treebank_parser.output_log as tbp_logging
 
 class parser:
@@ -79,16 +78,16 @@ class parser:
 		
 		return rt
 	
-	def _process_tree(self):
+	def _build_and_process_tree(self):
 		r"""
-		This function is used to convert the contents of the member 'current_tree'
+		This function is used to convert the contents of the member 'm_current_tree'
 		into an object of type lal.graphs.rooted_tree.
 		
 		This function then applies the actions passed as parameters (removal of punctuation
 		marks, function words, ...).
 		
-		Finally, the function converts whatever is left from applying the actions into
-		a head vector, which is then stored in the variable 'head_vector_collection'.
+		Finally, this function converts whatever is left from applying the actions into
+		a head vector, which is then stored in the variable 'm_head_vector_collection'.
 		"""
 		
 		# retrieve the head vector from the lines while ensuring
@@ -98,10 +97,11 @@ class parser:
 			try:
 				head_int = int(word.get_HEAD())
 				
-			except:
+			except Exception as e:
 				tbp_logging.error(f"At line {word.get_line_number()}")
 				tbp_logging.error(f"    Head: '{word.get_HEAD()}'")
 				tbp_logging.error(f"    Within line: '{word.get_line()}'")
+				tbp_logging.error(f"    Exception: '{e}'")
 				return
 			
 			head_vector.append(head_int)
@@ -130,33 +130,35 @@ class parser:
 		
 		num_removed = 0
 		for idx, word in self.m_current_tree.items():
-			for f in self.m_word_functions:
-				# word does not meet criterion for removal
-				if not f(word): continue
-				
-				# calculate the (actual) id of the word to be removed
-				word_id = int(word.get_ID()) - num_removed - 1
-				
-				tbp_logging.debug(f"Remove {word_id}. Original ID: {word.get_ID()}")
-				tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
-				
-				if rt.has_root() and rt.get_root() == word_id:
-					tbp_logging.warning(f"Removing the root of the tree.")
-					tbp_logging.warning(f"This will make the structure become a forest.")
-				
-				tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
-				if word_id >= rt.get_num_nodes():
-					tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
-					tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
-				
-				# remove the node
-				rt.remove_node(word_id, True)
-				
-				# accumulate amount of removed to calculate future ids
-				num_removed += 1
-				
-				# no need to evaluate more functions
-				break
+
+			# word does not meet any criterion for removal
+			if not any(map(lambda f: f(word), self.m_word_functions)):
+				continue
+			
+			# remove this word
+			# calculate the (actual) id of the word to be removed
+			word_id = int(word.get_ID()) - num_removed - 1
+			
+			tbp_logging.debug(f"Remove {word_id}. Original ID: {word.get_ID()}")
+			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
+			
+			if rt.has_root() and rt.get_root() == word_id:
+				tbp_logging.warning(f"Removing the root of the tree.")
+				tbp_logging.warning(f"This will make the structure become a forest.")
+			
+			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
+			if word_id >= rt.get_num_nodes():
+				tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
+				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
+			
+			# remove the node
+			rt.remove_node(word_id, True)
+			
+			# accumulate amount of removed to calculate future ids
+			num_removed += 1
+			
+			# no need to evaluate more functions
+			break
 		
 		tbp_logging.debug("All actions have been applied")
 		
@@ -259,23 +261,26 @@ class parser:
 			tbp_logging.info(f"Input file {self.m_input_file} has been opened correctly.")
 			
 			begin = time.perf_counter()
+
 			for line in f:
 				type_of_line = line_type.classify(line)
 				
-				if type_of_line == line_type.comment:
-					# do nothing...
+				if type_of_line == line_type.Comment:
+					# nothing to do...
 					pass
 				
-				elif type_of_line == line_type.blank:
+				elif type_of_line == line_type.Blank:
 					if reading_tree:
 						# a blank line after having started a tree
 						# indicates the end of the tree
-						self._process_tree()
+						self._build_and_process_tree()
 						reading_tree = False
 				
-				elif type_of_line == line_type.word:
+				elif type_of_line == line_type.Word:
 					# this line has actual information about the tree.
+
 					if not reading_tree:
+						# here we start reading a new tree
 						reading_tree = True
 						tbp_logging.debug(f"Start reading tree at line {linenumber}")
 					
@@ -285,9 +290,9 @@ class parser:
 					ignore = False
 					
 					# check if line is to be ignored or not
-					if '-' in lp.get_ID() or '.' in lp.get_ID():
+					if lp.is_empty_token() or lp.is_multiword_token():
 						ignore = True
-					
+
 					if not ignore:
 						lineid = lp.get_ID()
 						self.m_current_tree[lineid] = lp
@@ -296,7 +301,7 @@ class parser:
 			
 			# Finished reading file. If there was some tree being read, process it.
 			if reading_tree:
-				self._process_tree()
+				self._build_and_process_tree()
 				reading_tree = False
 			
 			end = time.perf_counter()

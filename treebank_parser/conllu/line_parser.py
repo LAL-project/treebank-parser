@@ -201,6 +201,24 @@ class line_parser:
 		"""
 		return self.get_UPOS() == "PUNCT"
 	
+	def is_multiword_token(self):
+		r"""
+		A multiword token is a token that specifies a range of tokens in its
+		field ID with '-'.
+
+		Returns whether or not this token is a multiword token.
+		"""
+		return self.get_ID().find("-") != -1
+
+	def is_empty_token(self):
+		r"""
+		An empty token is a token that specifies an ellipsis in the sentence.
+		It specifies a range of tokens in its ID with '.'.
+
+		Returns whether or not this token is an empty token.
+		"""
+		return self.get_ID().find(".") != -1
+
 	def is_function_word(self):
 		r"""
 		Returns whether or not this token is a function word.
@@ -225,6 +243,9 @@ class line_parser:
 			\t DEPREL: '{self.get_DEPREL()}'\
 			\t DEPS: '{self.get_DEPS()}'\
 			\t MISC: '{self.get_MISC()}'"
+
+
+
 
 if __name__ == "__main__":
 	# TESTS
