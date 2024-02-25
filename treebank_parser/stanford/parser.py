@@ -69,9 +69,7 @@ class parser:
 		- `rt`: rooted tree.
 		"""
 		if rt.get_num_nodes() == 0: return True
-		for f in self.m_sentence_discard_functions:
-			if f(rt): return True
-		return False
+		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
 	
 	def _postprocess_tree(self, rt):
 		for f in self.m_sentence_postprocess_functions:
@@ -79,16 +77,10 @@ class parser:
 		
 		return rt
 	
-	def _process_tree(self):
+	def _build_tree(self):
 		r"""
-		This function is used to convert the contents of the member 'current_tree'
-		into an object of type lal.graphs.rooted_tree.
-		
-		This function then applies the actions passed as parameters (removal of punctuation
-		marks, function words, ...).
-		
-		Finally, the function converts whatever is left from applying the actions into
-		a head vector, which is then stored in the variable 'head_vector_collection'.
+		This function is used to convert the contents of the member 'm_current_tree'
+		into an object of type `lal.graphs.rooted_tree`.
 		"""
 		
 		# retrieve the head vector from the lines while ensuring
@@ -125,8 +117,14 @@ class parser:
 		tbp_logging.debug(f"the graph has {rt.get_num_nodes()} nodes")
 		tbp_logging.debug(f"the graph has {rt.get_num_edges()} edges")
 		tbp_logging.debug(f"Is the graph a rooted tree? {rt.is_rooted_tree()}")
+
+		return rt
 		
-		# -- apply actions --
+	def _remove_words_tree(self, rt):
+		r"""
+		This function applies the actions passed as parameters (removal of punctuation
+		marks, function words, ...).
+		"""
 		
 		num_removed = 0
 		for idx, dep in self.m_current_tree.items():
@@ -159,8 +157,14 @@ class parser:
 				break
 		
 		tbp_logging.debug("All actions have been applied")
+
+		return rt
 		
-		# -- store the head vector --
+	def _store_head_vector(self, rt):
+		r"""
+		This function converts whatever is left from applying the actions into
+		a head vector, which is then stored in the variable 'm_head_vector_collection'.
+		"""
 		
 		if not rt.is_rooted_tree():
 			# 'rt' is not a valid rooted tree. We do not know how to store this
@@ -176,15 +180,8 @@ class parser:
 			# Store the head vector of this rooted tree
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self.m_head_vector_collection.append(hv)
-		
-		# it is ¡very! important to reset the state of the parser:
-		# clear the current tree's contents and finish reading the tree.
-		self.m_current_tree.clear()
-		
-		rt.clear()
 	
-	def _make_functions(self, args):
-		# ----------------------------------------------------------------------
+	def _make_word_discard_functions(self, args):
 		# make lambdas for all actions applied on a word
 		self.m_word_functions = []
 		
@@ -192,7 +189,7 @@ class parser:
 		if args.RemovePunctuationMarks:
 			self.m_word_functions.append( lambda d: d.is_punctuation_mark() )
 		
-		# ----------------------------------------------------------------------
+	def _make_sentence_discard_functions(self, args):
 		# make lambdas for all actions that discard sentences
 		self.m_sentence_discard_functions = []
 		
@@ -207,7 +204,7 @@ class parser:
 				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
 			)
 		
-		# ----------------------------------------------------------------------
+	def _make_sentence_postprocess_functions(self, args):
 		# make lambdas for postprocessing sentences
 		self.m_sentence_postprocess_functions = []
 		
@@ -225,6 +222,18 @@ class parser:
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Macutek)
 				)
 	
+	def _reset_state(self):
+		self.m_current_tree.clear()
+		reading_tree = False
+
+	def _finish_reading_tree(self):
+		tbp_logging.debug("Build the tree...")
+		rt = self._build_tree()
+		tbp_logging.debug("Remove words if needed...")
+		rt = self._remove_words_tree(rt)
+		tbp_logging.debug("Store the head vector...")
+		self._store_head_vector(rt)
+
 	def __init__(self, args, lal_module):
 		r"""
 		Initialises the Stanford parser with the arguments passed as parameter.
@@ -241,7 +250,9 @@ class parser:
 		self.LAL_module = lal_module
 		
 		# make all functions
-		self._make_functions(args)
+		self._make_word_discard_functions(args)
+		self._make_sentence_discard_functions(args)
+		self._make_sentence_postprocess_functions(args)
 	
 	def parse(self):
 		r"""
@@ -259,14 +270,16 @@ class parser:
 			for line in f:
 				type_of_line = line_type.classify(line)
 				
-				if type_of_line == line_type.blank:
-					if reading_tree:
-						# a blank line after having started a tree
-						# indicates the end of the tree
-						self._process_tree()
-						reading_tree = False
+				if type_of_line == line_type.Blank:
+					# a blank line found while reading a tree singals
+					# the end of the tree in the file
 				
-				elif type_of_line == line_type.dependency:
+					if reading_tree:
+						tbp_logging.debug("Finished reading tree")
+						self._finish_reading_tree()
+						self._reset_state()
+				
+				elif type_of_line == line_type.Dependency:
 					# this line has actual information about the tree.
 					if not reading_tree:
 						reading_tree = True
@@ -282,8 +295,9 @@ class parser:
 			
 			# Finished reading file. If there was some tree being read, process it.
 			if reading_tree:
-				self._process_tree()
-				reading_tree = False
+				tbp_logging.debug("Finished reading the last tree")
+				self._finish_reading_tree()
+				self._reset_state()
 			
 			end = time.perf_counter()
 			
