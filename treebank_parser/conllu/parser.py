@@ -74,12 +74,6 @@ class parser:
 		r"""
 		This function is used to convert the contents of the member 'm_current_tree'
 		into an object of type lal.graphs.rooted_tree.
-		
-		This function then applies the actions passed as parameters (removal of punctuation
-		marks, function words, ...).
-		
-		Finally, this function converts whatever is left from applying the actions into
-		a head vector, which is then stored in the variable 'm_head_vector_collection'.
 		"""
 		
 		# retrieve the head vector from the lines while ensuring
@@ -121,6 +115,10 @@ class parser:
 		return rt
 	
 	def _remove_words_tree(self, rt):
+		r"""
+		This function applies the actions passed as parameters (removal of punctuation
+		marks, function words, ...).
+		"""
 		
 		if len(self.m_word_discard_functions) == 0:
 			# nothing to do
@@ -159,7 +157,11 @@ class parser:
 		return rt
 	
 	def _store_head_vector(self, rt):
-
+		r"""
+		This function converts whatever is left from applying the actions into
+		a head vector, which is then stored in the variable 'm_head_vector_collection'.
+		"""
+		
 		if not rt.is_rooted_tree():
 			# 'rt' is not a valid rooted tree. We do not know how to store this
 			# as a head vector.
