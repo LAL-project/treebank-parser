@@ -38,6 +38,8 @@ import logging
 from cli import argument_parser
 from treebank_parser import treebank_formats, output_log
 from treebank_parser.conllu import action_type as conllu_action_type
+from treebank_parser.stanford import action_type as stanford_action_type
+from treebank_parser.head_vector import action_type as head_vector_action_type
 
 def make_actions_list(args):
 	r"""
@@ -53,6 +55,27 @@ def make_actions_list(args):
 			yield conllu_action_type.DiscardSentencesShorter_key_str
 		if args.DiscardSentencesLonger != -1:
 			yield conllu_action_type.DiscardSentencesLonger_key_str
+		if args.ChunkSyntacticDependencyTree != None:
+			yield f"{conllu_action_type.ChunkTree_key_str} -- {args.ChunkSyntacticDependencyTree}"
+	
+	elif args.treebank_format == treebank_formats.Stanford_key_str:
+		if args.RemovePunctuationMarks:
+			yield stanford_action_type.RemovePunctuationMarks_key_str
+		if args.DiscardSentencesShorter != -1:
+			yield stanford_action_type.DiscardSentencesShorter_key_str
+		if args.DiscardSentencesLonger != -1:
+			yield stanford_action_type.DiscardSentencesLonger_key_str
+		if args.ChunkSyntacticDependencyTree != None:
+			yield f"{stanford_action_type.ChunkTree_key_str} -- {args.ChunkSyntacticDependencyTree}"
+
+	elif args.treebank_format == treebank_formats.head_vector_key_str:
+		if args.DiscardSentencesShorter != -1:
+			yield head_vector_action_type.DiscardSentencesShorter_key_str
+		if args.DiscardSentencesLonger != -1:
+			yield head_vector_action_type.DiscardSentencesLonger_key_str
+		if args.ChunkSyntacticDependencyTree != None:
+			yield f"{head_vector_action_type.ChunkTree_key_str} -- {args.ChunkSyntacticDependencyTree}"
+
 
 def configure_logging(args):
 	# configure logging

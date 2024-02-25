@@ -129,6 +129,9 @@ ChunkTree_choices_str = {
 	ChunkTree_choice_Macutek: "Macutek",
 }
 
+ChunkTree_choice_Anderson_str = ChunkTree_choices_str[ChunkTree_choice_Anderson]
+ChunkTree_choice_Macutek_str = ChunkTree_choices_str[ChunkTree_choice_Macutek]
+
 action_choices_list = {
 	DiscardSentencesShorter: [],
 	DiscardSentencesLonger: [],

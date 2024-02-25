@@ -46,7 +46,7 @@ class OneTimeOptionalArgument(argparse.Action):
 		if getattr(namespace, self.dest) is None:
 			setattr(namespace, self.dest, values)
 		else:
-			parser.error(f"Optional argument '{option_string}' can only be specified once.")
+			parser.error(f"Optional argument '{option_string}' can be specified at most once.")
 
 
 def add_arguments_CoNLLU_parser(parser):
@@ -71,7 +71,7 @@ def add_arguments_CoNLLU_parser(parser):
 		required = False,
 		help = action_type.RemovePunctuationMarks_help_str
 	)
-	
+
 	# discard short sentences
 	parser.add_argument(
 		'--' + action_type.DiscardSentencesShorter_key_str,
@@ -82,7 +82,7 @@ def add_arguments_CoNLLU_parser(parser):
 		help = action_type.DiscardSentencesShorter_help_str
 	)
 	
-	# discard short sentences
+	# discard long sentences
 	parser.add_argument(
 		'--' + action_type.DiscardSentencesLonger_key_str,
 		default = -1,
