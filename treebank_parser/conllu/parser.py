@@ -68,17 +68,9 @@ class parser:
 		- `rt`: rooted tree.
 		"""
 		if rt.get_num_nodes() == 0: return True
-		for f in self.m_sentence_discard_functions:
-			if f(rt): return True
-		return False
+		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
 	
-	def _postprocess_tree(self, rt):
-		for f in self.m_sentence_postprocess_functions:
-			rt = f(rt)
-		
-		return rt
-	
-	def _build_and_process_tree(self):
+	def _build_tree(self):
 		r"""
 		This function is used to convert the contents of the member 'm_current_tree'
 		into an object of type lal.graphs.rooted_tree.
@@ -125,17 +117,22 @@ class parser:
 		tbp_logging.debug(f"the graph has {rt.get_num_nodes()} nodes")
 		tbp_logging.debug(f"the graph has {rt.get_num_edges()} edges")
 		tbp_logging.debug(f"Is the graph a rooted tree? {rt.is_rooted_tree()}")
+
+		return rt
+	
+	def _remove_words_tree(self, rt):
 		
-		# -- apply actions --
+		if len(self.m_word_discard_functions) == 0:
+			# nothing to do
+			return rt
 		
 		num_removed = 0
 		for idx, word in self.m_current_tree.items():
 
-			# word does not meet any criterion for removal
-			if not any(map(lambda f: f(word), self.m_word_functions)):
+			if not any(map(lambda f: f(word), self.m_word_discard_functions)):
+				# word does not meet any criterion for removal
 				continue
 			
-			# remove this word
 			# calculate the (actual) id of the word to be removed
 			word_id = int(word.get_ID()) - num_removed - 1
 			
@@ -154,16 +151,15 @@ class parser:
 			# remove the node
 			rt.remove_node(word_id, True)
 			
-			# accumulate amount of removed to calculate future ids
+			# accumulate amount of removed to recalculate calculate future ids
 			num_removed += 1
-			
-			# no need to evaluate more functions
-			break
 		
 		tbp_logging.debug("All actions have been applied")
-		
-		# -- store the head vector --
-		
+
+		return rt
+	
+	def _store_head_vector(self, rt):
+
 		if not rt.is_rooted_tree():
 			# 'rt' is not a valid rooted tree. We do not know how to store this
 			# as a head vector.
@@ -173,31 +169,30 @@ class parser:
 			# The rooted tree should not be discarded. Its number of vertices
 			# (words) is 1 or more and is not too short, nor too long.
 			
-			rt = self._postprocess_tree(rt)
-			
+			tbp_logging.debug("Apply postprocess functions to the tree")
+
+			# apply sentence postprocess functions
+			for f in self.m_sentence_postprocess_functions:
+				rt = f(rt)
+
+			tbp_logging.debug("Transform into a head vector and store it")
+
 			# Store the head vector of this rooted tree
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self.m_head_vector_collection.append(hv)
-		
-		# it is ¡very! important to reset the state of the parser:
-		# clear the current tree's contents and finish reading the tree.
-		self.m_current_tree.clear()
-		
-		rt.clear()
-	
-	def _make_functions(self, args):
-		# ----------------------------------------------------------------------
+
+	def _make_word_discard_functions(self, args):
 		# make lambdas for all actions applied on a word
-		self.m_word_functions = []
+		self.m_word_discard_functions = []
 		
 		# Remove punctuation marks
 		if args.RemovePunctuationMarks:
-			self.m_word_functions.append( lambda w: w.is_punctuation_mark() )
+			self.m_word_discard_functions.append( lambda w: w.is_punctuation_mark() )
 		# Remove function words
 		if args.RemoveFunctionWords:
-			self.m_word_functions.append( lambda w: w.is_function_word() )
+			self.m_word_discard_functions.append( lambda w: w.is_function_word() )
 		
-		# ----------------------------------------------------------------------
+	def _make_sentence_discard_functions(self, args):
 		# make lambdas for all actions that discard sentences
 		self.m_sentence_discard_functions = []
 		
@@ -212,7 +207,7 @@ class parser:
 				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
 			)
 		
-		# ----------------------------------------------------------------------
+	def _make_sentence_postprocess_functions(self, args):
 		# make lambdas for postprocessing sentences
 		self.m_sentence_postprocess_functions = []
 		
@@ -225,11 +220,23 @@ class parser:
 				self.m_sentence_postprocess_functions.append(
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Anderson)
 				)
-			if args.ChunkSyntacticDependencyTree == "Macutek":
+			elif args.ChunkSyntacticDependencyTree == "Macutek":
 				self.m_sentence_postprocess_functions.append(
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Macutek)
 				)
 	
+	def _reset_state(self):
+		self.m_current_tree.clear()
+		reading_tree = False
+
+	def _finish_reading_tree(self):
+		tbp_logging.debug("Build the tree...")
+		rt = self._build_tree()
+		tbp_logging.debug("Remove words if needed...")
+		rt = self._remove_words_tree(rt)
+		tbp_logging.debug("Store the head vector...")
+		self._store_head_vector(rt)
+
 	def __init__(self, args, lal_module):
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
@@ -245,20 +252,22 @@ class parser:
 		# keep LAL module
 		self.LAL_module = lal_module
 		
-		# make all functions
-		self._make_functions(args)
+		# make all discard and postprocess functions
+		self._make_word_discard_functions(args)
+		self._make_sentence_discard_functions(args)
+		self._make_sentence_postprocess_functions(args)
 	
 	def parse(self):
 		r"""
-		Open the input file and read its contents.
-		The sentences in CoNLL-U format are stored in the member variable
-		'head_vector_collection' in the form of head vectors.
+		Open the input file and read its contents. Transform the contents into trees
+		and store them as head vectors in 'm_head_vector_collection'.
 		"""
 		
-		reading_tree = False
-		linenumber = 1
 		with open(self.m_input_file, 'r', encoding = "utf-8") as f:
 			tbp_logging.info(f"Input file {self.m_input_file} has been opened correctly.")
+
+			reading_tree = False
+			linenumber = 1
 			
 			begin = time.perf_counter()
 
@@ -270,11 +279,13 @@ class parser:
 					pass
 				
 				elif type_of_line == line_type.Blank:
+					# a blank line found while reading a tree singals
+					# the end of the tree in the file
+
 					if reading_tree:
-						# a blank line after having started a tree
-						# indicates the end of the tree
-						self._build_and_process_tree()
-						reading_tree = False
+						tbp_logging.debug("Finished reading tree")
+						self._finish_reading_tree()
+						self._reset_state()
 				
 				elif type_of_line == line_type.Word:
 					# this line has actual information about the tree.
@@ -287,9 +298,8 @@ class parser:
 					lp = line_parser.line_parser(line, linenumber)
 					lp.parse_line()
 					
-					ignore = False
-					
 					# check if line is to be ignored or not
+					ignore = False
 					if lp.is_empty_token() or lp.is_multiword_token():
 						ignore = True
 
@@ -299,10 +309,13 @@ class parser:
 				
 				linenumber += 1
 			
+			tbp_logging.debug("Finished reading file")
+
 			# Finished reading file. If there was some tree being read, process it.
 			if reading_tree:
-				self._build_and_process_tree()
-				reading_tree = False
+				tbp_logging.debug("Finished reading the last tree")
+				self._finish_reading_tree()
+				self._reset_state()
 			
 			end = time.perf_counter()
 			
