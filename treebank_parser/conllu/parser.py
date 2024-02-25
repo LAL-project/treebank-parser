@@ -73,7 +73,7 @@ class parser:
 	def _build_tree(self):
 		r"""
 		This function is used to convert the contents of the member 'm_current_tree'
-		into an object of type lal.graphs.rooted_tree.
+		into an object of type `lal.graphs.rooted_tree`.
 		"""
 		
 		# retrieve the head vector from the lines while ensuring
