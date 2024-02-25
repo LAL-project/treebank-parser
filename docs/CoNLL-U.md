@@ -55,5 +55,5 @@ Consider the following example where we find multiword tokens (3-4, 8-9) and emp
 
 Multiword tokens, and empty nodes are dealt with as follows:
 
-	- Empty nodes (such as 7.1) are always ignored and are never used as part of the tree.
-	- Users can choose to ignore multiword tokens (such as 3-4) or split them. By default, multiword tokens are used and their words (such as 3 and 4) are used instead.
+- Empty nodes (such as 7.1) are always ignored and are never used as part of the tree.
+- Users can choose to ignore multiword tokens (such as 3-4) or split them. By default, multiword tokens are used and their words (such as 3 and 4) are used instead.
