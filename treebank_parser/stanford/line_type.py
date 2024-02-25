@@ -36,12 +36,34 @@ r"""
 This is a helper module to make code more readable when classifying lines.
 
 This module only has one method that returns the type of line among three different types:
-- blank line
-- dependency lines
+- Blank line
+- Dependency lines
 """
 
-blank = 0
-dependency = 2
+Blank = 0
+Dependency = 2
+
+Blank_str = "Blank"
+Dependency_str = "Dependency_str"
+
+def type_as_string(t):
+	"""
+	Converts a type of line to a string (`str`) object.
+	
+	Parameters
+	==========
+	- t : One of `Blank`, `Dependency`.
+	
+	Returns
+	=======
+	Returns a string object representing each line type:
+		
+	- `Blank`      : `Blank_str`
+	- `Dependency` : `Dependency_str`
+	"""
+	if t == Blank: return "Blank"
+	if t == Dependency: return "Dependency"
+	assert(False)
 
 def classify(line):
 	"""
@@ -55,39 +77,50 @@ def classify(line):
 	=======
 	Returns the classification of the line as either:
 		
-	- blank      : for blank lines
-	- dependency : for dependency lines
+	- Blank      : for blank lines
+	- Dependency : for dependency lines
 	"""
 	
 	assert(isinstance(line, str))
 	
-	if line == "\n" or line == "": return blank
-	return dependency
+	# corner case
+	if line == "": return Blank
+	
+	# detect complex blank lines (spaces + tabs combined)
+	if line == "\n": return Blank
+	if all(map(lambda x: x == " " or x == "\t", line[:-1])): return Blank
 
-def type_as_string(t):
+	return Dependency
+
+def classify_str(line: str):
 	"""
 	Converts a line type to a string.
 	
 	Parameters
 	==========
-	- `t` : type of line. One of line_type.blank, line_type.dependency.
+	- line : the line to be classified. Must be a string (`str`) type.
 	
 	Returns
 	=======
-	Returns a string "blank", or "dependency" dependening on the type.
+	Returns a string "Blank", or "Dependency" dependening on the type.
 	The type must be valid.
 	"""
-	if t == blank: return "blank"
-	if t == dependency: return "dependency"
+	t = classify(line)
+	if t == Blank: return Blank_str
+	if t == Dependency: return Dependency_str
 	assert(False)
 
 if __name__ == "__main__":
 	# TESTS
-	line_sample2 = ""
-	line_sample3 = "\n"
+	line_sample = ""
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
+	line_sample = "\n"
+	assert( classify(line_sample) == Blank )
+	assert( classify_str(line_sample) == Blank_str )
+
 	# an actual line taken from the UD treebank for Catalan
-	line_sample4 = "case(讲台-28, 上-29)"
-	
-	assert( classify(line_sample2) == blank )
-	assert( classify(line_sample3) == blank )
-	assert( classify(line_sample4) == dependency )
+	line_sample = "case(讲台-28, 上-29)"
+	assert( classify(line_sample) == Dependency )
+	assert( classify_str(line_sample) == Dependency_str )
