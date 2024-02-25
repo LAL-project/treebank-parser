@@ -20,18 +20,18 @@ Those familiar with the Universal Dependencies format are already accostumed to 
 
 	# sent_id = n01002042
 	# te  xt = The new spending is fueled by Clinton’s large bank account.
-	1	The	the	DET	DT	Definite=Def|PronType=Art	3	det	3:det	_
-	2	new	new	ADJ	JJ	Degree=Pos	3	amod	3:amod	_
-	3	spending	spending	NOUN	NN	Number=Sing	5	nsubj:pass	5:nsubj:pass	_
-	4	is	be	AUX	VBZ	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin	5	aux:pass	5:aux:pass	_
-	5	fueled	fuel	VERB	VBN	Tense=Past|VerbForm=Part	0	root	0:root	_
-	6	by	by	ADP	IN	_	11	case	11:case	_
-	7	Clinton	Clinton	PROPN	NNP	Number=Sing	11	nmod:poss	11:nmod:poss	SpaceAfter=No
-	8	’s	’s	PART	POS	_	7	case	7:case	_
-	9	large	large	ADJ	JJ	Degree=Pos	11	amod	11:amod	_
-	10	bank	bank	NOUN	NN	Number=Sing	11	compound	11:compound	_
-	11	account	account	NOUN	NN	Number=Sing	5	obl	5:obl:by	SpaceAfter=No
-	12	.	.	PUNCT	.	_	5	punct	5:punct	_
+	1	The      the      DET   DT   Definite=Def|PronType=Art                             3  det        3:det	      _
+	2	new      new      ADJ   JJ   Degree=Pos                                            3  amod       3:amod	      _
+	3	spending spending NOUN  NN   Number=Sing                                           5  nsubj:pass 5:nsubj:pass _
+	4	is       be       AUX   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin 5  aux:pass   5:aux:pass   _
+	5	fueled   fuel     VERB  VBN  Tense=Past|VerbForm=Part                              0  root       0:root       _
+	6	by       by       ADP   IN   _                                                     11 case       11:case      _
+	7	Clinton  Clinton  PROPN NNP  Number=Sing                                           11 nmod:poss  11:nmod:poss SpaceAfter=No
+	8	's       's       PART  POS  _                                                     7  case       7:case       _
+	9	large    large    ADJ   JJ   Degree=Pos                                            11 amod       11:amod      _
+	10	bank     bank     NOUN  NN   Number=Sing                                           11 compound   11:compound  _
+	11	account  account  NOUN  NN   Number=Sing                                           5  obl        5:obl:by     SpaceAfter=No
+	12	.        .        PUNCT .    _                                                     5  punct      5:punct      _
 
 The head vector of this sentence can be found at the 7th column:
 
@@ -96,7 +96,12 @@ Simply, run the `gui/main.py` file. For example, from the command line:
 
 #### Running the GUI with 'lal'
 
-The GUI loads the release distribution of LAL by default. To make the GUI load the debug distribution, simply execute
+The GUI loads the release distribution of LAL by default. To run it, run
+
+	$ cd treebank-parser/
+	$ python3 gui/main.py
+
+To make the GUI load the debug distribution, run
 
 	$ cd treebank-parser/
 	$ python3 gui/main.py --lal
@@ -147,7 +152,7 @@ Optional interesting parameters:
 	- `INFO` messages (displayed at `l >= 2`),
 	- `DEBUG` messages (displayed at `l >= 3`).
 
-### Full parameter documentation
+### Documentation of the main parameters
 
 All the parameters that the application needs can be queried using the `--help` parameter. The output is the following:
 
@@ -187,87 +192,12 @@ All the parameters that the application needs can be queried using the `--help` 
 
 #### CoNLL-U parameter documentation
 
-All the parameters accepted by the CoNLL-U format parser can be queried using the `CoNLL-U --help` parameter. The output is the following:
-
-	usage: main.py CoNLL-U [-h] [--RemoveFunctionWords] [--RemovePunctuationMarks]
-                           [--DiscardSentencesShorter length_in_words]
-                           [--DiscardSentencesLonger length_in_words]
-                           [--ChunkSyntacticDependencyTree {Anderson,Macutek}]
-
-	The parser of a CoNLL-U-formatted file. This command has special mandatory and optional parameters.
-	These are listed below.
-
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  --RemoveFunctionWords
-	                        Remove function words from each sentence. A function word is identified by the
-	                        values 'ADP', 'AUX', 'CCONJ', 'DET', 'NUM', 'PART', 'PRON', 'SCONJ' in the
-	                        corresponding UPOS field. The origins of this description are found in a 2022
-	                        paper available at arXiv (https://arxiv.org/abs/2007.15342).
-	  --RemovePunctuationMarks
-	                        Remove punctuation marks from each sentence. A punctuation mark is identified
-	                        by the value 'PUNCT' in the UPOS field.
-	  --DiscardSentencesShorter length_in_words
-	                        Discard sentences whose length (in words) is less than or equal to (<=) a
-	                        given length. This is applied *after* removing punctuation marks and/or
-	                        function words.
-	  --DiscardSentencesLonger length_in_words
-	                        Discard sentences whose length (in words) is greater than or equal to (>=) a
-	                        given length. This is applied *after* removing punctuation marks and/or
-	                        function words.
-	  --ChunkSyntacticDependencyTree {Anderson,Macutek}
-	                        Chunks a syntactic dependency tree using the specified algorithm. This is
-	                        applied only to those sentences that have not been discarded.
+All the parameters accepted by the CoNLL-U format parser are documented [here](docs/CoNLL-U.md).
 
 #### Stanford parameter documentation
 
-All the parameters accepted by the CoNLL-U format parser can be queried using the `Stanford --help` parameter. The output is the following:
-
-	usage: main.py Stanford [-h] [--RemovePunctuationMarks] [--DiscardSentencesShorter length_in_words]
-							[--DiscardSentencesLonger length_in_words]
-							[--ChunkSyntacticDependencyTree {Anderson,Macutek}]
-
-	The parser of a Stanford-formatted file. This command has special mandatory and optional parameters.
-	These are listed below.
-
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  --RemovePunctuationMarks
-							Remove punctuation marks from each sentence. A punctuation mark is identified
-							by the dependency type 'punct'.
-	  --DiscardSentencesShorter length_in_words
-							Discard sentences whose length (in words) is less than or equal to (<=) a given
-							length. This is applied *after* removing punctuation marks and/or function
-							words.
-	  --DiscardSentencesLonger length_in_words
-							Discard sentences whose length (in words) is greater than or equal to (>=) a
-							given length. This is applied *after* removing punctuation marks and/or
-							function words.
-	  --ChunkSyntacticDependencyTree {Anderson,Macutek}
-							Chunks a syntactic dependency tree using the specified algorithm. This is
-							applied only to those sentences that have not been discarded.
+All the parameters accepted by the Stanford format parser are documented [here](docs/Stanford.md).
 
 #### Head-Vector parameter documentation
 
-All the parameters accepted by the Head-Vector format parser can be queried using the `Head-Vector --help` parameter. The output is the following:
-
-	usage: main.py Head-Vector [-h] [--DiscardSentencesShorter length_in_words]
-	                           [--DiscardSentencesLonger length_in_words]
-	                           [--ChunkSyntacticDependencyTree {Anderson,Macutek}]
-	
-	The parser of a head vector-formatted file. This command has special mandatory and optional parameters.
-	These are listed below.
-	
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  --DiscardSentencesShorter length_in_words
-	                        Discard sentences whose length (in words) is less than or equal to (<=) a given
-	                        length. This is applied *after* removing punctuation marks and/or function
-	                        words.
-	  --DiscardSentencesLonger length_in_words
-	                        Discard sentences whose length (in words) is greater than or equal to (>=) a
-	                        given length. This is applied *after* removing punctuation marks and/or
-	                        function words.
-	  --ChunkSyntacticDependencyTree {Anderson,Macutek}
-	                        Chunks a syntactic dependency tree using the specified algorithm. This is
-	                        applied only to those sentences that have not been discarded.
+All the parameters accepted by the "head vector" format parser are documented [here](docs/head_vector.md).
