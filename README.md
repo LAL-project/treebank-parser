@@ -19,19 +19,19 @@ represents the simple structure of a _star tree_:
 Those familiar with the Universal Dependencies format are already accostumed to dealing with _heads_. Consider the following phrase (taken from [UD English](https://github.com/UniversalDependencies/UD_English-PUD/blob/master/en_pud-ud-test.conllu)).
 
 	# sent_id = n01002042
-	# te  xt = The new spending is fueled by Clinton’s large bank account.
-	1	The      the      DET   DT   Definite=Def|PronType=Art                             3  det        3:det	      _
-	2	new      new      ADJ   JJ   Degree=Pos                                            3  amod       3:amod	      _
-	3	spending spending NOUN  NN   Number=Sing                                           5  nsubj:pass 5:nsubj:pass _
-	4	is       be       AUX   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin 5  aux:pass   5:aux:pass   _
-	5	fueled   fuel     VERB  VBN  Tense=Past|VerbForm=Part                              0  root       0:root       _
-	6	by       by       ADP   IN   _                                                     11 case       11:case      _
-	7	Clinton  Clinton  PROPN NNP  Number=Sing                                           11 nmod:poss  11:nmod:poss SpaceAfter=No
-	8	's       's       PART  POS  _                                                     7  case       7:case       _
-	9	large    large    ADJ   JJ   Degree=Pos                                            11 amod       11:amod      _
-	10	bank     bank     NOUN  NN   Number=Sing                                           11 compound   11:compound  _
-	11	account  account  NOUN  NN   Number=Sing                                           5  obl        5:obl:by     SpaceAfter=No
-	12	.        .        PUNCT .    _                                                     5  punct      5:punct      _
+	# text = The new spending is fueled by Clinton's large bank account.
+	1  The      the      DET   DT   Definite=Def|PronType=Art                             3  det        3:det	      _
+	2  new      new      ADJ   JJ   Degree=Pos                                            3  amod       3:amod	      _
+	3  spending spending NOUN  NN   Number=Sing                                           5  nsubj:pass 5:nsubj:pass _
+	4  is       be       AUX   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin 5  aux:pass   5:aux:pass   _
+	5  fueled   fuel     VERB  VBN  Tense=Past|VerbForm=Part                              0  root       0:root       _
+	6  by       by       ADP   IN   _                                                     11 case       11:case      _
+	7  Clinton  Clinton  PROPN NNP  Number=Sing                                           11 nmod:poss  11:nmod:poss SpaceAfter=No
+	8  's       's       PART  POS  _                                                     7  case       7:case       _
+	9  large    large    ADJ   JJ   Degree=Pos                                            11 amod       11:amod      _
+	10 bank     bank     NOUN  NN   Number=Sing                                           11 compound   11:compound  _
+	11 account  account  NOUN  NN   Number=Sing                                           5  obl        5:obl:by     SpaceAfter=No
+	12 .        .        PUNCT .    _                                                     5  punct      5:punct      _
 
 The head vector of this sentence can be found at the 7th column:
 
