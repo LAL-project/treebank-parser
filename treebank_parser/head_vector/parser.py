@@ -69,17 +69,28 @@ class parser:
 		- `rt`: rooted tree.
 		"""
 		if rt.get_num_nodes() == 0: return True
-		for f in self.m_sentence_discard_functions:
-			if f(rt): return True
-		return False
+		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
 	
-	def _postprocess_tree(self, rt):
-		for f in self.m_sentence_postprocess_functions:
-			rt = f(rt)
+	def _make_head_vector(self, line, linenumber):
+		# retrieve the head vector from the lines while ensuring
+		# that all heads are numerical
+		head_vector = []
+		for head in line.split(' '):
+			try:
+				head_int = int(head)
+			
+			except Exception as e:
+				tbp_logging.error(f"At line {linenumber}")
+				tbp_logging.error(f"    Head: '{head}'")
+				tbp_logging.error(f"    Line: '{line}'")
+				tbp_logging.error(f"    Exception: '{e}'")
+				return None
+			
+			head_vector.append(head_int)
 		
-		return rt
-	
-	def _process_tree(self, head_vector):
+		return head_vector
+
+	def _build_tree(self, head_vector):
 		r"""
 		This function is used to convert the contents of the member 'current_tree'
 		into an object of type lal.graphs.rooted_tree.
@@ -110,6 +121,10 @@ class parser:
 		tbp_logging.debug(f"the graph has {rt.get_num_nodes()} nodes")
 		tbp_logging.debug(f"the graph has {rt.get_num_edges()} edges")
 		tbp_logging.debug(f"Is the graph a rooted tree? {rt.is_rooted_tree()}")
+
+		return rt
+
+	def _store_head_vector(self, rt):
 		
 		# -- store the head vector --
 		
@@ -122,38 +137,14 @@ class parser:
 			# The rooted tree should not be discarded. Its number of vertices
 			# (words) is 1 or more and is not too short, nor too long.
 			
-			rt = self._postprocess_tree(rt)
+			for f in self.m_sentence_postprocess_functions:
+				rt = f(rt)
 			
 			# Store the head vector of this rooted tree
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self.m_head_vector_collection.append(hv)
-		
-		# it is ¡very! important to reset the state of the parser:
-		# clear the current tree's contents and finish reading the tree.
-		self.m_current_tree.clear()
-		
-		rt.clear()
 	
-	def _make_head_vector(self, line, linenumber):
-		# retrieve the head vector from the lines while ensuring
-		# that all heads are numerical
-		head_vector = []
-		for head in line.split(' '):
-			try:
-				head_int = int(head)
-			
-			except:
-				tbp_logging.error(f"At line {linenumber}")
-				tbp_logging.error(f"    Head: '{head}'")
-				tbp_logging.error(f"    Line: '{line}'")
-				return None
-			
-			head_vector.append(head_int)
-		
-		return head_vector
-	
-	def _make_functions(self, args):
-		# ----------------------------------------------------------------------
+	def _make_sentence_remove_functions(self, args):
 		# make lambdas for all actions that discard sentences
 		self.m_sentence_discard_functions = []
 		
@@ -168,7 +159,7 @@ class parser:
 				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
 			)
 		
-		# ----------------------------------------------------------------------
+	def _make_sentence_postprocess_functions(self, args):
 		# make lambdas for postprocessing sentences
 		self.m_sentence_postprocess_functions = []
 		
@@ -185,7 +176,12 @@ class parser:
 				self.m_sentence_postprocess_functions.append(
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Macutek)
 				)
-	
+
+	def _reset_state(self):
+		# it is ¡very! important to reset the state of the parser:
+		# clear the current tree's contents and finish reading the tree.
+		self.m_current_tree.clear()
+
 	def __init__(self, args, lal_module):
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
@@ -202,7 +198,8 @@ class parser:
 		self.LAL_module = lal_module
 		
 		# make all functions
-		self._make_functions(args)
+		self._make_sentence_remove_functions(args)
+		self._make_sentence_postprocess_functions(args)
 	
 	def parse(self):
 		r"""
@@ -220,7 +217,9 @@ class parser:
 				
 				head_vector = self._make_head_vector(line, linenumber)
 				if head_vector is not None:
-					self._process_tree(head_vector)
+					rt = self._build_tree(head_vector)
+					self._store_head_vector(rt)
+					self._reset_state()
 				
 				linenumber += 1
 			
