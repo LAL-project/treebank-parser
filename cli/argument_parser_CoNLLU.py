@@ -72,6 +72,16 @@ def add_arguments_CoNLLU_parser(parser):
 		help = action_type.RemovePunctuationMarks_help_str
 	)
 
+	# split multitoken words and use their individual words
+	# instead
+	parser.add_argument(
+		'--' + action_type.SplitMultiwordTokens_key_str,
+		default = False,
+		action = 'store_true',
+		required = False,
+		help = action_type.SplitMultiwordTokens_help_str
+	)
+	
 	# discard short sentences
 	parser.add_argument(
 		'--' + action_type.DiscardSentencesShorter_key_str,

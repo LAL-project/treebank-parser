@@ -71,6 +71,7 @@ type. If an action has no parameter associated, the type is None.
 
 RemovePunctuationMarks = 0
 RemoveFunctionWords = 1
+SplitMultiwordTokens = 5
 DiscardSentencesShorter = 2
 DiscardSentencesLonger = 3
 ChunkTree = 4
@@ -80,6 +81,7 @@ ChunkTree = 4
 action_key_str = {
 	RemovePunctuationMarks: "RemovePunctuationMarks",
 	RemoveFunctionWords: "RemoveFunctionWords",
+	SplitMultiwordTokens: "SplitMultiwordTokens",
 	DiscardSentencesShorter: "DiscardSentencesShorter",
 	DiscardSentencesLonger: "DiscardSentencesLonger",
 	ChunkTree: "ChunkSyntacticDependencyTree",
@@ -87,6 +89,7 @@ action_key_str = {
 
 RemovePunctuationMarks_key_str = action_key_str[RemovePunctuationMarks]
 RemoveFunctionWords_key_str = action_key_str[RemoveFunctionWords]
+SplitMultiwordTokens_key_str = action_key_str[SplitMultiwordTokens]
 DiscardSentencesShorter_key_str = action_key_str[DiscardSentencesShorter]
 DiscardSentencesLonger_key_str = action_key_str[DiscardSentencesLonger]
 ChunkTree_key_str = action_key_str[ChunkTree]
@@ -96,6 +99,7 @@ ChunkTree_key_str = action_key_str[ChunkTree]
 action_help_str = {
 	RemovePunctuationMarks: "Remove punctuation marks from each sentence. A punctuation mark is identified by the value 'PUNCT' in the UPOS field.",
 	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP', 'AUX', 'CCONJ', 'DET', 'NUM', 'PART', 'PRON', 'SCONJ' in the corresponding UPOS field. The origins of this description are found in a 2022 paper available at arXiv (https://arxiv.org/abs/2007.15342).",
+	SplitMultiwordTokens: "Multiword tokens are ignored and, instead, their individual words are used as nodes of the tree.",
     DiscardSentencesShorter: "Discard sentences whose length (in words) is less than or equal to (<=) a given length. This is applied *after* removing punctuation marks and/or function words.",
 	DiscardSentencesLonger: "Discard sentences whose length (in words) is greater than or equal to (>=) a given length. This is applied *after* removing punctuation marks and/or function words.",
 	ChunkTree: "Chunks a syntactic dependency tree using the specified algorithm. This is applied only to those sentences that have not been discarded.",
@@ -103,6 +107,7 @@ action_help_str = {
 
 RemovePunctuationMarks_help_str = action_help_str[RemovePunctuationMarks]
 RemoveFunctionWords_help_str = action_help_str[RemoveFunctionWords]
+SplitMultiwordTokens_help_str = action_help_str[SplitMultiwordTokens]
 DiscardSentencesShorter_help_str = action_help_str[DiscardSentencesShorter]
 DiscardSentencesLonger_help_str = action_help_str[DiscardSentencesLonger]
 ChunkTree_help_str = action_help_str[ChunkTree]
@@ -112,6 +117,7 @@ ChunkTree_help_str = action_help_str[ChunkTree]
 action_text_str = {
 	RemovePunctuationMarks: "Remove Punctuation Marks",
 	RemoveFunctionWords: "Remove Function Words",
+	SplitMultiwordTokens: "Split Multiword Tokens",
 	DiscardSentencesShorter: "Discard Sentences Shorter",
 	DiscardSentencesLonger: "Discard Sentences Longer",
 	ChunkTree: "Chunk syntactic dependency tree",
@@ -119,6 +125,7 @@ action_text_str = {
 
 RemovePunctuationMarks_text_str = action_text_str[RemovePunctuationMarks]
 RemoveFunctionWords_text_str = action_text_str[RemoveFunctionWords]
+SplitMultiwordTokens_text_str = action_text_str[SplitMultiwordTokens]
 DiscardSentencesShorter_text_str = action_text_str[DiscardSentencesShorter]
 DiscardSentencesLonger_text_str = action_text_str[DiscardSentencesLonger]
 ChunkTree_text_str = action_text_str[ChunkTree]
@@ -128,6 +135,7 @@ ChunkTree_text_str = action_text_str[ChunkTree]
 action_type_param_str = {
 	RemovePunctuationMarks: type_strings.None_type_str,
 	RemoveFunctionWords: type_strings.None_type_str,
+	SplitMultiwordTokens: type_strings.None_type_str,
 	DiscardSentencesShorter: type_strings.Integer_type_str,
 	DiscardSentencesLonger: type_strings.Integer_type_str,
 	ChunkTree: type_strings.Choice_type_str,
@@ -135,6 +143,7 @@ action_type_param_str = {
 
 RemovePunctuationMarks_param_str = action_type_param_str[RemovePunctuationMarks]
 RemoveFunctionWords_param_str = action_type_param_str[RemoveFunctionWords]
+SplitMultiwordTokens_param_str = action_type_param_str[SplitMultiwordTokens]
 DiscardSentencesShorter_param_str = action_type_param_str[DiscardSentencesShorter]
 DiscardSentencesLonger_param_str = action_type_param_str[DiscardSentencesLonger]
 ChunkTree_param_str = action_type_param_str[ChunkTree]
@@ -155,6 +164,7 @@ ChunkTree_choice_Macutek_str = ChunkTree_choices_str[ChunkTree_choice_Macutek]
 action_choices_list = {
 	RemovePunctuationMarks: [],
 	RemoveFunctionWords: [],
+	SplitMultiwordTokens: [],
 	DiscardSentencesShorter: [],
 	DiscardSentencesLonger: [],
 	ChunkTree: list(ChunkTree_choices_str.values()),
@@ -162,6 +172,7 @@ action_choices_list = {
 
 RemovePunctuationMarks_choice_list = action_choices_list[RemovePunctuationMarks]
 RemoveFunctionWords_choice_list = action_choices_list[RemoveFunctionWords]
+SplitMultiwordTokens_choice_list = action_choices_list[SplitMultiwordTokens]
 DiscardSentencesShorter_choice_list = action_choices_list[DiscardSentencesShorter]
 DiscardSentencesLonger_choice_list = action_choices_list[DiscardSentencesLonger]
 ChunkTree_choice_list = action_choices_list[ChunkTree]
