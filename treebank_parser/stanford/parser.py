@@ -285,11 +285,11 @@ class parser:
 						reading_tree = True
 						tbp_logging.debug(f"Start reading tree at line {linenumber}")
 					
-					lp = line_parser.line_parser(line, linenumber)
-					lp.parse_line()
+					dependency = line_parser.line_parser(line, linenumber)
+					dependency.parse_line()
 					
-					lineid = lp.get_dependent_index()
-					self.m_current_tree[lineid] = lp
+					lineid = dependency.get_dependent_index()
+					self.m_current_tree[lineid] = dependency
 				
 				linenumber += 1
 			
