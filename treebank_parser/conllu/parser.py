@@ -44,6 +44,27 @@ from treebank_parser.conllu import line_parser
 from treebank_parser.conllu import line_type
 import treebank_parser.output_log as tbp_logging
 
+class multiword_token:
+	r"""
+	Auxiliary class to store information about multiword tokens.
+
+	- `token_idxs`: all the token indices that are part of this multiword token.
+	- `token`: the original token object
+	- `is_any_function_word`: a Boolean value that indicates if any of the words
+	  in this multiword token is a function word or not.
+	"""
+
+	def __init__(self):
+		self.token_idxs = []
+		self.token = None
+		self.is_any_function_word = False
+
+	def set_any_function_word(self, b):
+		self.is_any_function_word = self.is_any_function_word or b
+
+	def __repr__(self):
+		return f"'idxs: {self.token_idxs}; is any function word: {self.is_any_function_word}'"
+
 class parser:
 	r"""
 	This class implements a parsing algorithm for CoNLLU-formatted files. It uses
@@ -58,6 +79,15 @@ class parser:
 	(see main CLI).
 	"""
 	
+	def _is_part_of_multiword_token(self, id):
+		r"""
+		Is the token with id `id` part of a multiword token?
+		"""
+		idx = self.m_multiword_token_to_idx.get(id)
+		if idx is None:
+			return (False, idx)
+		return (True, idx)
+
 	def _should_discard_tree(self, rt):
 		r"""
 		Returns whether or not a rooted tree `rt` should be discarded according
@@ -70,13 +100,13 @@ class parser:
 		if rt.get_num_nodes() == 0: return True
 		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
 	
-	def _build_tree(self):
+	def _build_full_tree(self):
 		r"""
 		This function is used to convert the contents of the member 'm_current_tree'
 		into an object of type `lal.graphs.rooted_tree`.
 		"""
 		
-		# retrieve the head vector from the lines while ensuring
+		# construct the head vector from the lines while ensuring
 		# that all heads are numerical
 		head_vector = []
 		for token in self.m_current_tree_tokens:
@@ -84,7 +114,7 @@ class parser:
 				head_int = int(token.get_HEAD())
 				
 			except Exception as e:
-				tbp_logging.error(f"At line {token.get_line_number()}")
+				tbp_logging.error(f"At token {token.get_line_number()}")
 				tbp_logging.error(f"    Head: '{token.get_HEAD()}'")
 				tbp_logging.error(f"    Within line: '{token.get_line()}'")
 				tbp_logging.error(f"    {self.m_donotknow_msg}")
@@ -93,7 +123,7 @@ class parser:
 			
 			head_vector.append(head_int)
 		
-		# make sure there aren't errors in the head vector (do this with LAL)
+		# ensure there aren't errors in the head vector (do this with LAL)
 		tbp_logging.info("Checking mistakes in head vector...")
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
@@ -115,13 +145,19 @@ class parser:
 
 		return rt
 	
-	def _join_multiword_tokens(self, rt):
+	def _update_multiword_tokens_info(self):
+		r"""
+		Calculates relevant information concerning multiword tokens.
+		"""
 
-		#return any(map( lambda x: id in x[0], self.m_multiword_tokens))
+		for token in self.m_current_tree_tokens:
+			id = int(token.get_ID())
 
+			(is_part, idx) = self._is_part_of_multiword_token(id)
+			if not is_part:
+				continue
 
-
-		return rt
+			self.m_multiword_tokens[idx].set_any_function_word( token.is_function_word() )
 	
 	def _remove_words_tree(self, rt):
 		r"""
@@ -129,13 +165,13 @@ class parser:
 		marks, function words, ...).
 		"""
 		
-		if len(self.m_word_discard_functions) == 0:
+		if len(self.m_token_discard_functions) == 0:
 			# nothing to do
 			return rt
 		
 		for token in reversed(self.m_current_tree_tokens):
 
-			if not any(map(lambda f: f(token), self.m_word_discard_functions)):
+			if not any(map(lambda f: f(token), self.m_token_discard_functions)):
 				# word does not meet any criterion for removal
 				continue
 			
@@ -159,8 +195,6 @@ class parser:
 		
 		tbp_logging.debug("All actions have been applied")
 
-		if not rt.check_normalised():
-			rt.normalise()
 		return rt
 
 	def _store_head_vector(self, rt):
@@ -177,8 +211,11 @@ class parser:
 		elif not self._should_discard_tree(rt):
 			# The rooted tree should not be discarded. Its number of vertices
 			# (words) is 1 or more and is not too short, nor too long.
-			
+
 			tbp_logging.debug("Apply postprocess functions to the tree")
+
+			if not rt.check_normalised():
+				rt.normalise()
 
 			# apply sentence postprocess functions
 			for f in self.m_sentence_postprocess_functions:
@@ -190,20 +227,57 @@ class parser:
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self.m_head_vector_collection.append(hv)
 
-	def _make_word_discard_functions(self, args):
-		# make lambdas for all actions applied on a word
-		self.m_word_discard_functions = []
+	def _discard_token_of_a_multiword_token(self, token):
+		id = int(token.get_ID())
+
+		tbp_logging.debug(f"Remove token {id}?")
+
+		(is_part, idx) = self._is_part_of_multiword_token(id)
+		if not is_part:
+			tbp_logging.debug(f"    No, since it is not part of a multiword token")
+			return False
+
+		tbp_logging.debug(f"    It is part of a multiword token... decide removal now")
+
+		multiword_token = self.m_multiword_tokens[idx]
+		token_list = multiword_token.token_idxs
+		assert( id in token_list )
+
+		# Discard this token if it is *not* the first in the range.
+		# We need to keep at least the first token in the range.
+		if id != token_list[0]:
+			tbp_logging.debug(f"    Yes, since one of the words is a function word *and* since we are removing function words")
+			return True
+
+		# If any of the words in this multiword token is a function word then *all*
+		# the tokens have to be removed and thus this token also has to be removed
+		# even if it is not a function word itself.
+		if self.m_remove_function_words and multiword_token.is_any_function_word:
+			tbp_logging.debug(f"    Yes, since one of the words is a function word *and* since we are removing function words")
+			return True
+
+		tbp_logging.debug(f"    No")
+		return False
+
+	def _make_token_discard_functions(self, args):
 		
 		# Remove punctuation marks
 		if args.RemovePunctuationMarks:
-			self.m_word_discard_functions.append( lambda w: w.is_punctuation_mark() )
+			self.m_token_discard_functions.append( lambda token: token.is_punctuation_mark() )
+		
 		# Remove function words
 		if args.RemoveFunctionWords:
-			self.m_word_discard_functions.append( lambda w: w.is_function_word() )
+			self.m_remove_function_words = True
+			self.m_token_discard_functions.append( lambda token: token.is_function_word() )
 		
+		# Remove all tokens that are part of a multiword token except one
+		if args.SplitMultiwordTokens:
+			self.m_join_multiword_tokens = False
+		else:
+			self.m_join_multiword_tokens = True
+			self.m_token_discard_functions.append( lambda token: self._discard_token_of_a_multiword_token(token) )
+
 	def _make_sentence_discard_functions(self, args):
-		# make lambdas for all actions that discard sentences
-		self.m_sentence_discard_functions = []
 		
 		# Discard short sentences
 		if args.DiscardSentencesShorter != -1:
@@ -215,12 +289,10 @@ class parser:
 			self.m_sentence_discard_functions.append(
 				lambda rt: rt.get_num_nodes() >= args.DiscardSentencesLonger
 			)
-		
+
 	def _make_sentence_postprocess_functions(self, args):
-		# make lambdas for postprocessing sentences
-		self.m_sentence_postprocess_functions = []
 		
-		# Discard short sentences
+		# Chunk sentences according to a single algorithm
 		if args.ChunkSyntacticDependencyTree != None:
 			Anderson = self.LAL_module.linarr.algorithms_chunking.Anderson
 			Macutek = self.LAL_module.linarr.algorithms_chunking.Macutek
@@ -233,18 +305,20 @@ class parser:
 				self.m_sentence_postprocess_functions.append(
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Macutek)
 				)
-	
+
 	def _reset_state(self):
 		self.m_current_tree_tokens.clear()
 		self.m_multiword_tokens.clear()
+		self.m_multiword_token_to_idx.clear()
 
 	def _finish_reading_tree(self):
 		tbp_logging.debug("Build the tree...")
-		rt = self._build_tree()
+		rt = self._build_full_tree()
 
 		tbp_logging.debug("Remove words if needed...")
-		if not self.m_split_multiword_tokens:
-			rt = self._join_multiword_tokens(rt)
+		if self.m_join_multiword_tokens:
+			self._update_multiword_tokens_info()
+
 		rt = self._remove_words_tree(rt)
 		
 		tbp_logging.debug("Store the head vector...")
@@ -255,10 +329,15 @@ class parser:
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
 		"""
 		self.m_current_tree_tokens = []
-		self.m_multiword_tokens = [] # pairs of (array of ints, line)
+		self.m_multiword_tokens = []
+		self.m_multiword_token_to_idx = {}
+
 		self.m_head_vector_collection = []
 		self.m_input_file = args.inputfile
 		self.m_output_file = args.outputfile
+
+		self.m_remove_function_words = False
+		self.m_join_multiword_tokens = True
 		
 		# utilities for logging
 		self.m_donotknow_msg = "Do not know how to process this. This line will be ignored."
@@ -267,10 +346,12 @@ class parser:
 		self.LAL_module = lal_module
 		
 		# make all discard and postprocess functions
-		self._make_word_discard_functions(args)
+		self.m_token_discard_functions = []
+		self._make_token_discard_functions(args)
+		self.m_sentence_discard_functions = []
 		self._make_sentence_discard_functions(args)
+		self.m_sentence_postprocess_functions = []
 		self._make_sentence_postprocess_functions(args)
-		self.m_split_multiword_tokens = args.SplitMultiwordTokens
 	
 	def parse(self):
 		r"""
@@ -281,6 +362,7 @@ class parser:
 		with open(self.m_input_file, 'r', encoding = "utf-8") as f:
 			tbp_logging.info(f"Input file {self.m_input_file} has been opened correctly.")
 
+			tree_number = 0
 			reading_tree = False
 			linenumber = 1
 			
@@ -298,7 +380,7 @@ class parser:
 					# the end of the tree in the file
 
 					if reading_tree:
-						tbp_logging.debug("Finished reading tree")
+						tbp_logging.debug(f"Finished reading tree {tree_number}")
 						self._finish_reading_tree()
 						self._reset_state()
 						reading_tree = False
@@ -309,16 +391,25 @@ class parser:
 					if not reading_tree:
 						# here we start reading a new tree
 						reading_tree = True
-						tbp_logging.debug(f"Start reading tree at line {linenumber}")
+						tree_number += 1
+						tbp_logging.debug(f"Start reading tree {tree_number} at line {linenumber}")
 					
 					token = line_parser.line_parser(line, linenumber)
 					token.parse()
 					
-					if not self.m_split_multiword_tokens and token.is_multiword_token():
+					if self.m_join_multiword_tokens and token.is_multiword_token():
 						begin_range, end_range = token.get_ID().split("-")
 						begin_range = int(begin_range)
 						end_range = int(end_range)
-						to_append = ([x for x in range(begin_range, end_range + 1)], token)
+
+						to_append = multiword_token()
+						to_append.token_idxs = [x for x in range(begin_range, end_range + 1)]
+						to_append.token = token
+
+						L = len(self.m_multiword_tokens)
+						for i in range(begin_range, end_range + 1):
+							self.m_multiword_token_to_idx[ i ] = L
+						
 						self.m_multiword_tokens.append(to_append)
 
 					if not token.is_multiword_token() and not token.is_empty_token():
