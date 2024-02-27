@@ -224,7 +224,6 @@ class parser:
 	
 	def _reset_state(self):
 		self.m_current_tree.clear()
-		reading_tree = False
 
 	def _finish_reading_tree(self):
 		tbp_logging.debug("Build the tree...")
@@ -278,6 +277,7 @@ class parser:
 						tbp_logging.debug("Finished reading tree")
 						self._finish_reading_tree()
 						self._reset_state()
+						reading_tree = False
 				
 				elif type_of_line == line_type.Dependency:
 					# this line has actual information about the tree.
