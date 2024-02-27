@@ -119,7 +119,7 @@ class parser:
 				tbp_logging.error(f"    Within line: '{token.get_line()}'")
 				tbp_logging.error(f"    {self.m_donotknow_msg}")
 				tbp_logging.error(f"    Exception: '{e}'")
-				return
+				return None
 			
 			head_vector.append(head_int)
 		
@@ -133,7 +133,7 @@ class parser:
 				tbp_logging.error(f"    {err}")
 				
 			tbp_logging.error(self.m_donotknow_msg)
-			return
+			return None
 		
 		# make the lal.graphs.rooted_tree() object
 		tbp_logging.debug(f"make a rooted tree from the head vector {head_vector=}")
@@ -314,6 +314,8 @@ class parser:
 	def _finish_reading_tree(self):
 		tbp_logging.debug("Build the tree...")
 		rt = self._build_full_tree()
+		if rt is None:
+			return
 
 		tbp_logging.debug("Remove words if needed...")
 		if self.m_join_multiword_tokens:
