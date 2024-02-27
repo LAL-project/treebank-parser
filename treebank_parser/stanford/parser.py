@@ -71,13 +71,7 @@ class parser:
 		if rt.get_num_nodes() == 0: return True
 		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
 	
-	def _postprocess_tree(self, rt):
-		for f in self.m_sentence_postprocess_functions:
-			rt = f(rt)
-		
-		return rt
-	
-	def _build_tree(self):
+	def _build_full_tree(self):
 		r"""
 		This function is used to convert the contents of the member 'm_current_tree'
 		into an object of type `lal.graphs.rooted_tree`.
@@ -86,15 +80,17 @@ class parser:
 		# retrieve the head vector from the lines while ensuring
 		# that all heads are numerical
 		head_vector = []
-		for key, dep in self.m_current_tree.items():
+		for dep in self.m_current_tree:
 			try:
 				head_int = int(dep.get_parent_index())
 				
-			except:
+			except Exception as e:
 				tbp_logging.error(f"At line {dep.get_line_number()}")
 				tbp_logging.error(f"    Head: '{dep.get_parent_index()}'")
 				tbp_logging.error(f"    Within line: '{dep.get_line()}'")
-				return
+				tbp_logging.error(f"    {self.m_donotknow_msg}")
+				tbp_logging.error(f"    Exception: '{e}'")
+				return None
 			
 			head_vector.append(head_int)
 		
@@ -106,9 +102,9 @@ class parser:
 			tbp_logging.error(f"There were errors within head vector '{head_vector}'")
 			for err in err_list:
 				tbp_logging.error(f"    {err}")
-				
+			
 			tbp_logging.error(self.m_donotknow_msg)
-			return
+			return None
 		
 		# make the lal.graphs.rooted_tree() object
 		tbp_logging.debug(f"make a rooted tree from the head vector {head_vector=}")
@@ -126,35 +122,29 @@ class parser:
 		marks, function words, ...).
 		"""
 		
-		num_removed = 0
-		for idx, dep in self.m_current_tree.items():
-			for f in self.m_word_functions:
-				# word does not meet criterion for removal
-				if not f(dep): continue
-				
-				# calculate the (actual) id of the word to be removed
-				word_id = int(dep.get_dependent_index()) - num_removed - 1
-				
-				tbp_logging.debug(f"Remove {word_id}. Original ID: {dep.get_dependent_index()}")
-				tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
-				
-				if rt.has_root() and rt.get_root() == word_id:
-					tbp_logging.warning(f"Removing the root of the tree.")
-					tbp_logging.warning(f"This will make the structure become a forest.")
-				
-				tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
-				if word_id >= rt.get_num_nodes():
-					tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
-					tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
-				
-				# remove the node
-				rt.remove_node(word_id, True)
-				
-				# accumulate amount of removed to calculate future ids
-				num_removed += 1
-				
-				# no need to evaluate more functions
-				break
+		for dep in reversed(self.m_current_tree):
+			
+			if not any(map(lambda f: f(dep), self.m_word_functions)):
+				# word does not meet any criterion for removal
+				continue
+			
+			# calculate the (actual) id of the word to be removed
+			word_id = int(dep.get_dependent_index()) - 1
+			
+			tbp_logging.debug(f"Remove {word_id}. Original ID: {dep.get_dependent_index()}")
+			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
+			
+			if rt.has_root() and rt.get_root() == word_id:
+				tbp_logging.warning(f"Removing the root of the tree.")
+				tbp_logging.warning(f"This will make the structure become a forest.")
+			
+			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
+			if word_id >= rt.get_num_nodes():
+				tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
+				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
+			
+			# remove the node
+			rt.remove_node(word_id)
 		
 		tbp_logging.debug("All actions have been applied")
 
@@ -175,23 +165,23 @@ class parser:
 			# The rooted tree should not be discarded. Its number of vertices
 			# (words) is 1 or more and is not too short, nor too long.
 			
-			rt = self._postprocess_tree(rt)
-			
+			if not rt.check_normalised():
+				rt.normalise()
+
+			for f in self.m_sentence_postprocess_functions:
+				rt = f(rt)
+		
 			# Store the head vector of this rooted tree
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self.m_head_vector_collection.append(hv)
 	
-	def _make_word_discard_functions(self, args):
-		# make lambdas for all actions applied on a word
-		self.m_word_functions = []
+	def _make_token_discard_functions(self, args):
 		
 		# Remove punctuation marks
 		if args.RemovePunctuationMarks:
 			self.m_word_functions.append( lambda d: d.is_punctuation_mark() )
 		
 	def _make_sentence_discard_functions(self, args):
-		# make lambdas for all actions that discard sentences
-		self.m_sentence_discard_functions = []
 		
 		# Discard short sentences
 		if args.DiscardSentencesShorter != -1:
@@ -205,8 +195,6 @@ class parser:
 			)
 		
 	def _make_sentence_postprocess_functions(self, args):
-		# make lambdas for postprocessing sentences
-		self.m_sentence_postprocess_functions = []
 		
 		# Discard short sentences
 		if args.ChunkSyntacticDependencyTree != None:
@@ -227,7 +215,10 @@ class parser:
 
 	def _finish_reading_tree(self):
 		tbp_logging.debug("Build the tree...")
-		rt = self._build_tree()
+		rt = self._build_full_tree()
+		if rt is None:
+			return
+
 		tbp_logging.debug("Remove words if needed...")
 		rt = self._remove_words_tree(rt)
 		tbp_logging.debug("Store the head vector...")
@@ -237,7 +228,8 @@ class parser:
 		r"""
 		Initialises the Stanford parser with the arguments passed as parameter.
 		"""
-		self.m_current_tree = {}
+		self.m_current_tree = []
+
 		self.m_head_vector_collection = []
 		self.m_input_file = args.inputfile
 		self.m_output_file = args.outputfile
@@ -249,8 +241,11 @@ class parser:
 		self.LAL_module = lal_module
 		
 		# make all functions
-		self._make_word_discard_functions(args)
+		self.m_word_functions = []
+		self._make_token_discard_functions(args)
+		self.m_sentence_discard_functions = []
 		self._make_sentence_discard_functions(args)
+		self.m_sentence_postprocess_functions = []
 		self._make_sentence_postprocess_functions(args)
 	
 	def parse(self):
@@ -287,9 +282,8 @@ class parser:
 					
 					dependency = line_parser.line_parser(line, linenumber)
 					dependency.parse_line()
-					
-					lineid = dependency.get_dependent_index()
-					self.m_current_tree[lineid] = dependency
+
+					self.m_current_tree.append( dependency )
 				
 				linenumber += 1
 			
