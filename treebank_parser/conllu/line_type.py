@@ -38,7 +38,7 @@ This is a helper module to make code more readable when classifying lines.
 This module only has one method that returns the type of line among three different types:
 - blank line: `Blank` and `Blank_str`
 - comment line: `Comment` and `Comment_str`
-- word lines: `Word` and `Word_str`
+- token lines: `Token` and `Token_str`
 
 See https://universaldependencies.org/format.html for more details on the type
 of lines that a CoNLL-formatted text can have.
@@ -46,11 +46,11 @@ of lines that a CoNLL-formatted text can have.
 
 Blank = 0
 Comment = 1
-Word = 2
+Token = 2
 
 Blank_str = "Blank"
 Comment_str = "Comment"
-Word_str = "Word"
+Token_str = "Word"
 
 def type_as_parameter(t):
 	"""
@@ -66,12 +66,12 @@ def type_as_parameter(t):
 		
 	- `Blank`   : `Blank_str`
 	- `Comment` : `Comment_str`
-	- `Word`    : `Word_str`
+	- `Token`   : `Token_str`
 	"""
 
 	if t == Blank: return Blank_str
 	if t == Comment: return Comment_str
-	if t == Word: return Word_str
+	if t == Token: return Token_str
 	assert(False)
 
 def classify(line: str):
@@ -88,7 +88,7 @@ def classify(line: str):
 		
 	- Blank      : for blank lines
 	- Comment    : for comment lines
-	- Word       : for word lines
+	- Token      : for token lines
 	"""
 	
 	assert(isinstance(line, str))
@@ -103,7 +103,7 @@ def classify(line: str):
 	if line == "\n": return Blank
 	if all(map(lambda x: x == " " or x == "\t", line[:-1])): return Blank
 
-	return Word
+	return Token
 
 def classify_str(line: str):
 	"""
@@ -115,13 +115,13 @@ def classify_str(line: str):
 	
 	Returns
 	=======
-	Returns a string "Blank", "Comment", or "Word" dependening on the type.
+	Returns a string "Blank", "Comment", or "Token" dependening on the type.
 	The type must be valid.
 	"""
 	t = classify(line)
 	if t == Blank: return Blank_str
 	if t == Comment: return Comment_str
-	if t == Word: return Word_str
+	if t == Token: return Token_str
 	assert(False)
 
 if __name__ == "__main__":
@@ -160,5 +160,5 @@ if __name__ == "__main__":
 
 	# an actual line taken from the UD treebank for Catalan
 	line_sample = "2	Privada	Privada	PROPN	_	_	1	flat	1:flat	_"
-	assert( classify(line_sample) == Word )
-	assert( classify_str(line_sample) == Word_str )
+	assert( classify(line_sample) == Token )
+	assert( classify_str(line_sample) == Token_str )

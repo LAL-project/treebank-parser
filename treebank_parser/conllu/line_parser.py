@@ -108,7 +108,7 @@ class line_parser:
 		assert(isinstance(sep, str))
 		self.m_sep = sep
 	
-	def parse_line(self):
+	def parse(self):
 		r"""
 		Parses the line this object was initialized with.
 		"""
@@ -264,7 +264,7 @@ if __name__ == "__main__":
 	
 	def parse_line(l, ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC):
 		lp = line_parser(l)
-		lp.parse_line()
+		lp.parse()
 		print_contents(lp)
 		
 		assert( lp.get_ID() == ID )

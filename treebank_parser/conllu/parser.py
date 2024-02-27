@@ -79,14 +79,15 @@ class parser:
 		# retrieve the head vector from the lines while ensuring
 		# that all heads are numerical
 		head_vector = []
-		for key,word in self.m_current_tree.items():
+		for token in self.m_current_tree_tokens:
 			try:
-				head_int = int(word.get_HEAD())
+				head_int = int(token.get_HEAD())
 				
 			except Exception as e:
-				tbp_logging.error(f"At line {word.get_line_number()}")
-				tbp_logging.error(f"    Head: '{word.get_HEAD()}'")
-				tbp_logging.error(f"    Within line: '{word.get_line()}'")
+				tbp_logging.error(f"At line {token.get_line_number()}")
+				tbp_logging.error(f"    Head: '{token.get_HEAD()}'")
+				tbp_logging.error(f"    Within line: '{token.get_line()}'")
+				tbp_logging.error(f"    {self.m_donotknow_msg}")
 				tbp_logging.error(f"    Exception: '{e}'")
 				return
 			
@@ -114,6 +115,14 @@ class parser:
 
 		return rt
 	
+	def _join_multiword_tokens(self, rt):
+
+		#return any(map( lambda x: id in x[0], self.m_multiword_tokens))
+
+
+
+		return rt
+	
 	def _remove_words_tree(self, rt):
 		r"""
 		This function applies the actions passed as parameters (removal of punctuation
@@ -124,38 +133,36 @@ class parser:
 			# nothing to do
 			return rt
 		
-		num_removed = 0
-		for idx, word in self.m_current_tree.items():
+		for token in reversed(self.m_current_tree_tokens):
 
-			if not any(map(lambda f: f(word), self.m_word_discard_functions)):
+			if not any(map(lambda f: f(token), self.m_word_discard_functions)):
 				# word does not meet any criterion for removal
 				continue
 			
 			# calculate the (actual) id of the word to be removed
-			word_id = int(word.get_ID()) - num_removed - 1
+			token_id = int(token.get_ID()) - 1
 			
-			tbp_logging.debug(f"Remove {word_id}. Original ID: {word.get_ID()}")
+			tbp_logging.debug(f"Remove {token_id}. Original ID: {token.get_ID()} -- '{token.get_FORM()}'")
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
 			
-			if rt.has_root() and rt.get_root() == word_id:
+			if rt.has_root() and rt.get_root() == token_id:
 				tbp_logging.warning(f"Removing the root of the tree.")
 				tbp_logging.warning(f"This will make the structure become a forest.")
 			
-			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
-			if word_id >= rt.get_num_nodes():
+			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
+			if token_id >= rt.get_num_nodes():
 				tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
 				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
 			
 			# remove the node
-			rt.remove_node(word_id, True)
-			
-			# accumulate amount of removed to recalculate calculate future ids
-			num_removed += 1
+			rt.remove_node(token_id)
 		
 		tbp_logging.debug("All actions have been applied")
 
+		if not rt.check_normalised():
+			rt.normalise()
 		return rt
-	
+
 	def _store_head_vector(self, rt):
 		r"""
 		This function converts whatever is left from applying the actions into
@@ -228,14 +235,18 @@ class parser:
 				)
 	
 	def _reset_state(self):
-		self.m_current_tree.clear()
-		reading_tree = False
+		self.m_current_tree_tokens.clear()
+		self.m_multiword_tokens.clear()
 
 	def _finish_reading_tree(self):
 		tbp_logging.debug("Build the tree...")
 		rt = self._build_tree()
+
 		tbp_logging.debug("Remove words if needed...")
+		if not self.m_split_multiword_tokens:
+			rt = self._join_multiword_tokens(rt)
 		rt = self._remove_words_tree(rt)
+		
 		tbp_logging.debug("Store the head vector...")
 		self._store_head_vector(rt)
 
@@ -243,7 +254,8 @@ class parser:
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
 		"""
-		self.m_current_tree = {}
+		self.m_current_tree_tokens = []
+		self.m_multiword_tokens = [] # pairs of (array of ints, line)
 		self.m_head_vector_collection = []
 		self.m_input_file = args.inputfile
 		self.m_output_file = args.outputfile
@@ -258,6 +270,7 @@ class parser:
 		self._make_word_discard_functions(args)
 		self._make_sentence_discard_functions(args)
 		self._make_sentence_postprocess_functions(args)
+		self.m_split_multiword_tokens = args.SplitMultiwordTokens
 	
 	def parse(self):
 		r"""
@@ -271,7 +284,7 @@ class parser:
 			reading_tree = False
 			linenumber = 1
 			
-			begin = time.perf_counter()
+			begin_time = time.perf_counter()
 
 			for line in f:
 				type_of_line = line_type.classify(line)
@@ -288,26 +301,28 @@ class parser:
 						tbp_logging.debug("Finished reading tree")
 						self._finish_reading_tree()
 						self._reset_state()
+						reading_tree = False
 				
-				elif type_of_line == line_type.Word:
-					# this line has actual information about the tree.
+				elif type_of_line == line_type.Token:
+					# This line has actual information about the tree.
 
 					if not reading_tree:
 						# here we start reading a new tree
 						reading_tree = True
 						tbp_logging.debug(f"Start reading tree at line {linenumber}")
 					
-					lp = line_parser.line_parser(line, linenumber)
-					lp.parse_line()
+					token = line_parser.line_parser(line, linenumber)
+					token.parse()
 					
-					# check if line is to be ignored or not
-					ignore = False
-					if lp.is_empty_token() or lp.is_multiword_token():
-						ignore = True
+					if not self.m_split_multiword_tokens and token.is_multiword_token():
+						begin_range, end_range = token.get_ID().split("-")
+						begin_range = int(begin_range)
+						end_range = int(end_range)
+						to_append = ([x for x in range(begin_range, end_range + 1)], token)
+						self.m_multiword_tokens.append(to_append)
 
-					if not ignore:
-						lineid = lp.get_ID()
-						self.m_current_tree[lineid] = lp
+					if not token.is_multiword_token() and not token.is_empty_token():
+						self.m_current_tree_tokens.append(token)
 				
 				linenumber += 1
 			
@@ -319,10 +334,10 @@ class parser:
 				self._finish_reading_tree()
 				self._reset_state()
 			
-			end = time.perf_counter()
+			end_time = time.perf_counter()
 			
 			tbp_logging.info(f"Finished parsing the whole input file {self.m_input_file}.")
-			tbp_logging.info(f"    In {end - begin:.3f} s.")
+			tbp_logging.info(f"    In {end_time - begin_time:.3f} s.")
 	
 	def dump_contents(self):
 		r"""
@@ -333,10 +348,10 @@ class parser:
 			tbp_logging.info(f"Output file {self.m_output_file} has been opened correctly.")
 			tbp_logging.info(f"    Dumping data...")
 			
-			begin = time.perf_counter()
+			begin_time = time.perf_counter()
 			for hv in self.m_head_vector_collection:
 				f.write(hv + '\n')
-			end = time.perf_counter()
+			end_time = time.perf_counter()
 			
 			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
-			tbp_logging.info(f"    In {end - begin:.3f} s.")
+			tbp_logging.info(f"    In {end_time - begin_time:.3f} s.")
