@@ -3,9 +3,9 @@
 LOG_FILE=execution_log
 MAIN_FILE=../cli/main.py
 
-CoNLLU_SMTW="--SplitMultiwordTokens"
-CoNLLU_RPM="--RemovePunctuationMarks"
-CoNLLU_RFW="--RemoveFunctionWords"
+SMTW="--SplitMultiwordTokens"
+RPM="--RemovePunctuationMarks"
+RFW="--RemoveFunctionWords"
 
 function run_test {
 	
@@ -61,19 +61,19 @@ function run_test {
 	fi
 }
 
-run_test "ca-01-01" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-01.hv"	"CoNLL-U" $CoNLLU_SMTW
-run_test "ca-01-02" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-02.hv"	"CoNLL-U" $CoNLLU_SMTW $CoNLLU_RPM
-run_test "ca-01-03" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-03.hv"	"CoNLL-U" $CoNLLU_SMTW $CoNLLU_RFW
+run_test "ca-01-01" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-01.hv"	"CoNLL-U" $SMTW
+run_test "ca-01-02" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-02.hv"	"CoNLL-U" $SMTW $RPM
+run_test "ca-01-03" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-03.hv"	"CoNLL-U" $SMTW $RFW
 run_test "ca-01-04" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-04.hv"	"CoNLL-U"
-run_test "ca-01-05" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-05.hv"	"CoNLL-U" $CoNLLU_RPM
-run_test "ca-01-06" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-06.hv"	"CoNLL-U" $CoNLLU_RFW
+run_test "ca-01-05" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-05.hv"	"CoNLL-U" $RPM
+run_test "ca-01-06" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-06.hv"	"CoNLL-U" $RFW
 
-run_test "ca-02-01" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-01.hv"	"CoNLL-U" $CoNLLU_SMTW
-run_test "ca-02-02" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-02.hv"	"CoNLL-U" $CoNLLU_SMTW $CoNLLU_RPM
-run_test "ca-02-03" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-03.hv"	"CoNLL-U" $CoNLLU_SMTW $CoNLLU_RFW
-run_test "ca-02-04" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-04.hv"	"CoNLL-U" $CoNLLU_SMTW $CoNLLU_RFW $CoNLLU_RPM
-run_test "ca-02-05" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-05.hv"	"CoNLL-U" $CoNLLU_SMTW $CoNLLU_RPM $CoNLLU_RFW
+run_test "ca-02-01" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-01.hv"	"CoNLL-U" $SMTW
+run_test "ca-02-02" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-02.hv"	"CoNLL-U" $SMTW $RPM
+run_test "ca-02-03" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-03.hv"	"CoNLL-U" $SMTW $RFW
+run_test "ca-02-04" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
+run_test "ca-02-05" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
 run_test "ca-02-06" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-06.hv"	"CoNLL-U"
-run_test "ca-02-07" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-07.hv"	"CoNLL-U" $CoNLLU_RPM
-run_test "ca-02-08" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-08.hv"	"CoNLL-U" $CoNLLU_RFW
-run_test "ca-02-09" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-09.hv"	"CoNLL-U" $CoNLLU_RPM $CoNLLU_RFW
+run_test "ca-02-07" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-07.hv"	"CoNLL-U" $RPM
+run_test "ca-02-08" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-08.hv"	"CoNLL-U" $RFW
+run_test "ca-02-09" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-09.hv"	"CoNLL-U" $RPM $RFW
