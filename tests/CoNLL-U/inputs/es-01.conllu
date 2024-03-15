@@ -1,4 +1,4 @@
-# FROM: es_pud-ud-test.conllu
+# FROM: UD-2.12/Spanish-PUD/es_pud-ud-test.conllu
 # sent_id = n01016019
 # text = Varios analistas han sugerido que Huawei está en la mejor posición para beneficiarse del retroceso de Samsung.
 # text_en = Several analysts have suggested Huawei is best placed to benefit from Samsung's setback.

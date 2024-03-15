@@ -1,20 +1,22 @@
+# FROM: UD-2.12/French-PUD/fr_pud-ud-test.conllu
 # newdoc id = n01031
 # sent_id = n01031005
 # text = Des chercheurs étudient le potentiel des contraceptions hormonales masculines depuis environ 20 ans.
 # text_en = Researchers have been investigating potential for male hormonal contraceptives for around 20 years.
 1	Des	un	DET	DT	Definite=Ind|Gender=Masc|Number=Plur|PronType=Art	2	det	_	wordform=des
-2	chercheurs	chercheur	NOUN	NN	Gender=Masc|Number=Plur	3	subj	_	_
+2	chercheurs	chercheur	NOUN	NN	Gender=Masc|Number=Plur	3	nsubj	_	_
 3	étudient	étudier	VERB	VBC	Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin	0	root	_	_
 4	le	le	DET	DT	Definite=Def|Gender=Masc|Number=Sing|PronType=Art	5	det	_	_
-5	potentiel	potentiel	NOUN	NN	Gender=Masc|Number=Sing	3	comp:obj	_	_
+5	potentiel	potentiel	NOUN	NN	Gender=Masc|Number=Sing	3	obj	_	_
 6-7	des	_	_	_	_	_	_	_	_
-6	de	de	ADP	INDT	_	5	udep	_	_
+6	de	de	ADP	INDT	_	8	case	_	_
 7	les	le	DET	_	Definite=Def|Gender=Fem|Number=Plur|PronType=Art	8	det	_	_
-8	contraceptions	contraception	NOUN	NN	Gender=Fem|Number=Plur	6	comp:obj	_	_
-9	hormonales	hormonal	ADJ	JJ	Gender=Fem|Number=Plur	8	mod	_	_
-10	masculines	masculin	ADJ	JJ	Gender=Fem|Number=Plur	8	mod	_	_
-11	depuis	depuis	ADP	IN	_	3	udep	_	_
-12	environ	environ	ADV	RB	_	13	mod	_	_
-13	20	20	NUM	CD	_	14	mod	_	_
-14	ans	an	NOUN	NN	Gender=Masc|Number=Plur	11	comp:obj	_	SpaceAfter=No
+8	contraceptions	contraception	NOUN	NN	Gender=Fem|Number=Plur	5	nmod	_	_
+9	hormonales	hormonal	ADJ	JJ	Gender=Fem|Number=Plur	8	amod	_	_
+10	masculines	masculin	ADJ	JJ	Gender=Fem|Number=Plur	8	amod	_	_
+11	depuis	depuis	ADP	IN	_	14	case	_	_
+12	environ	environ	ADV	RB	_	13	advmod	_	_
+13	20	20	NUM	CD	_	14	nummod	_	_
+14	ans	an	NOUN	NN	Gender=Masc|Number=Plur	3	obl	_	SpaceAfter=No
 15	.	.	PUNCT	.	_	3	punct	_	_
+

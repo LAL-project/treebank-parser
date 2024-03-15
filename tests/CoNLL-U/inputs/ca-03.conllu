@@ -1,4 +1,4 @@
-# FROM: ca_ancora-ud-dev.conllu
+# FROM: UD-2.12/Catalan-AnCora/ca_ancora-ud-dev.conllu
 # sent_id = 3LB-CAT-06010100-17-s2
 # text = En aquest temps, el Palau ha acollit 13 activitats diverses, a banda dels certàmens firals de gran format, algunes de les quals no s'han obert al públic.
 # orig_file_sentence 001#2

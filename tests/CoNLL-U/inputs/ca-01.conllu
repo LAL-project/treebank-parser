@@ -1,4 +1,4 @@
-# FROM: ca_ancora-ud-dev.conllu
+# FROM: UD-2.12/Catalan-AnCora/ca_ancora-ud-dev.conllu
 # sent_id = 3LB-CAT-06010300-6-s9
 # text = Precisament un dels objectius del pla urbanístic és rebaixar-lo.
 # orig_file_sentence 001#68
