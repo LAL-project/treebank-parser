@@ -54,39 +54,113 @@ function run_test {
 		echo -e "    \e[1;4;31mDifferent outputs\e[0m "
 		echo "    See result in $result_file"
 		# write output in the execution log
-		echo "$(date +"%Y/%m/%d.%T")    Error: when executing test $ID -- Output of test differs from ground truth" >> $LOG_FILE
+		echo "$(date +"%Y/%m/%d.%T")     Error: when executing test $ID -- Output of test differs from ground truth" >> $LOG_FILE
 	else
 		echo -e "    \e[1;1;32mOk\e[0m"
 		rm -f $result_file
 	fi
 }
 
-run_test "ca-01-01" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-01.hv"	"CoNLL-U" $SMTW
-run_test "ca-01-02" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-02.hv"	"CoNLL-U" $SMTW $RPM
-run_test "ca-01-03" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-03.hv"	"CoNLL-U" $SMTW $RFW
-run_test "ca-01-04" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-04.hv"	"CoNLL-U"
-run_test "ca-01-05" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-05.hv"	"CoNLL-U" $RPM
-run_test "ca-01-06" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-06.hv"	"CoNLL-U" $RFW
+function run_tests {
+	local FORMAT=$1
+	local LANG=$2
+	local ID=$3
 
-run_test "ca-02-01" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-01.hv"	"CoNLL-U" $SMTW
-run_test "ca-02-02" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-02.hv"	"CoNLL-U" $SMTW $RPM
-run_test "ca-02-03" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-03.hv"	"CoNLL-U" $SMTW $RFW
-run_test "ca-02-04" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
-run_test "ca-02-05" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
-run_test "ca-02-06" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-06.hv"	"CoNLL-U"
-run_test "ca-02-07" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-07.hv"	"CoNLL-U" $RPM
-run_test "ca-02-08" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-08.hv"	"CoNLL-U" $RFW
-run_test "ca-02-09" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-09.hv"	"CoNLL-U" $RPM $RFW
-run_test "ca-02-10" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-10.hv"	"CoNLL-U" $RFW $RPM
+	if [ "$FORMAT" == "CoNLL-U" ]; then
+		if [ "$LANG" == "ca" ]; then
+			if [ "$ID" == "01" ]; then
+				run_test "ca-01-01" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-01.hv"	"CoNLL-U" $SMTW
+				run_test "ca-01-02" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-02.hv"	"CoNLL-U" $SMTW $RPM
+				run_test "ca-01-03" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-03.hv"	"CoNLL-U" $SMTW $RFW
+				run_test "ca-01-04" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-04.hv"	"CoNLL-U"
+				run_test "ca-01-05" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-05.hv"	"CoNLL-U" $RPM
+				run_test "ca-01-06" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-06.hv"	"CoNLL-U" $RFW
+			fi
 
-run_test "es-01-01" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-01.hv"	"CoNLL-U" $SMTW
-run_test "es-01-02" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-02.hv"	"CoNLL-U" $SMTW $RPM
-run_test "es-01-03" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-03.hv"	"CoNLL-U" $SMTW $RFW
-run_test "es-01-04" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
-run_test "es-01-05" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
+			if [ "$ID" == "02" ]; then
+				run_test "ca-02-01" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-01.hv"	"CoNLL-U" $SMTW
+				run_test "ca-02-02" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-02.hv"	"CoNLL-U" $SMTW $RPM
+				run_test "ca-02-03" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-03.hv"	"CoNLL-U" $SMTW $RFW
+				run_test "ca-02-04" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
+				run_test "ca-02-05" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
+				run_test "ca-02-06" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-06.hv"	"CoNLL-U"
+				run_test "ca-02-07" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-07.hv"	"CoNLL-U" $RPM
+				run_test "ca-02-08" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-08.hv"	"CoNLL-U" $RFW
+				run_test "ca-02-09" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-09.hv"	"CoNLL-U" $RPM $RFW
+				run_test "ca-02-10" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-10.hv"	"CoNLL-U" $RFW $RPM
+			fi
+		fi
 
-run_test "es-01-06" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-06.hv"	"CoNLL-U"
-run_test "es-01-07" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-07.hv"	"CoNLL-U" $RPM
-run_test "es-01-08" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-08.hv"	"CoNLL-U" $RFW
-run_test "es-01-09" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-09.hv"	"CoNLL-U" $RPM $RFW
-run_test "es-01-10" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-10.hv"	"CoNLL-U" $RFW $RPM
+		if [ "$LANG" == "es" ]; then
+			if [ "$ID" == "01" ]; then
+				run_test "es-01-01" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-01.hv"	"CoNLL-U" $SMTW
+				run_test "es-01-02" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-02.hv"	"CoNLL-U" $SMTW $RPM
+				run_test "es-01-03" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-03.hv"	"CoNLL-U" $SMTW $RFW
+				run_test "es-01-04" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
+				run_test "es-01-05" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
+				run_test "es-01-06" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-06.hv"	"CoNLL-U"
+				run_test "es-01-07" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-07.hv"	"CoNLL-U" $RPM
+				run_test "es-01-08" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-08.hv"	"CoNLL-U" $RFW
+				run_test "es-01-09" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-09.hv"	"CoNLL-U" $RPM $RFW
+				run_test "es-01-10" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-10.hv"	"CoNLL-U" $RFW $RPM
+			fi
+		fi
+	fi
+}
+
+all=0
+usage=0
+format=0
+lang=0
+id=0
+
+for i in "$@"; do
+	case $i in
+		
+		--help|-h)
+		usage=1
+		shift
+		;;
+
+		--all|-a)
+		all=1
+		shift
+		;;
+
+		--format=*|-f=)
+		format="${i#*=}"
+		shift
+		;;
+
+		--lang=*|-l=)
+		lang="${i#*=}"
+		shift
+		;;
+		
+		--id=*|-i=)
+		id="${i#*=}"
+		shift
+		;;
+		
+		*)
+		echo -e "\e[1;4;31mError:\e[0m Option $i unknown"
+		exit
+		;;
+	esac
+done
+
+if [ $all == 0 ]; then
+	echo "$(date +"%Y/%m/%d.%T") Run specific tests: $format $lang $id" >> $LOG_FILE
+	run_tests $format $lang $id
+	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
+else
+	echo "$(date +"%Y/%m/%d.%T") Run all tests" >> $LOG_FILE
+	for f in "CoNLL-U"; do
+		for l in "ca" "es"; do
+			for i in "01" "02"; do
+				run_tests $f $l $i
+			done
+		done
+	done
+	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
+fi
