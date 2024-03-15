@@ -1,20 +1,20 @@
-# FROM: UD-2.12/English-PUD/en_pud-ud-test.conllu
+# FROM: UD-2.12/English-PSUD/en_pud-sud-test.conllu
 # sent_id = n01011017
 # text = "I'm going to jail either way, hope it was worth it."
-1	"	"	PUNCT	``	_	4	punct	4:punct	SpaceAfter=No
-2	I	I	PRON	PRP	Case=Nom|Number=Sing|Person=1|PronType=Prs	4	nsubj	4:nsubj	SpaceAfter=No
-3	'm	be	AUX	VBP	Mood=Ind|Tense=Pres|VerbForm=Fin	4	aux	4:aux	_
-4	going	go	VERB	VBG	Tense=Pres|VerbForm=Part	0	root	0:root	_
-5	to	to	ADP	IN	_	6	case	6:case	_
-6	jail	jail	NOUN	NN	Number=Sing	4	obl	4:obl:to	_
-7	either	either	DET	DT	_	8	det	8:det	_
-8	way	way	NOUN	NN	Number=Sing	4	obl:npmod	4:obl:npmod	SpaceAfter=No
-9	,	,	PUNCT	,	_	4	punct	4:punct	_
-10	hope	hope	VERB	VBP	Mood=Ind|Tense=Pres|VerbForm=Fin	4	parataxis	4:parataxis	_
-11	it	it	PRON	PRP	Case=Nom|Gender=Neut|Number=Sing|Person=3|PronType=Prs	13	nsubj	13:nsubj	_
-12	was	be	AUX	VBD	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin	13	cop	13:cop	_
-13	worth	worth	ADJ	JJ	Degree=Pos	10	ccomp	10:ccomp	_
-14	it	it	PRON	PRP	Case=Acc|Gender=Neut|Number=Sing|Person=3|PronType=Prs	13	obj	13:obj	SpaceAfter=No
-15	.	.	PUNCT	.	_	4	punct	4:punct	SpaceAfter=No
-16	"	"	PUNCT	''	_	4	punct	4:punct	_
-
+1	"	"	PUNCT	``	_	3	punct	_	SpaceAfter=No
+2-3	I'm	_	_	_	_	_	_	_	_
+2	I	I	PRON	PRP	Case=Nom|Number=Sing|Person=1|PronType=Prs	3	subj	_	_
+3	'm	be	AUX	VBP	Mood=Ind|Tense=Pres|VerbForm=Fin	0	root	_	_
+4	going	go	VERB	VBG	Tense=Pres|VerbForm=Part	3	comp:aux	_	_
+5	to	to	ADP	IN	_	4	udep	_	_
+6	jail	jail	NOUN	NN	Number=Sing	5	comp:obj	_	_
+7	either	either	DET	DT	PronType=Ind	8	det	_	_
+8	way	way	NOUN	NN	Number=Sing	4	udep@npmod	_	SpaceAfter=No
+9	,	,	PUNCT	,	_	3	punct	_	_
+10	hope	hope	VERB	VBP	Mood=Ind|Tense=Pres|VerbForm=Fin	3	parataxis	_	_
+11	it	it	PRON	PRP	Case=Nom|Gender=Neut|Number=Sing|Person=3|PronType=Prs	12	subj	_	_
+12	was	be	AUX	VBD	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin	10	comp:obj	_	_
+13	worth	worth	ADJ	JJ	Degree=Pos	12	comp:pred	_	_
+14	it	it	PRON	PRP	Case=Acc|Gender=Neut|Number=Sing|Person=3|PronType=Prs	13	comp:obj	_	SpaceAfter=No
+15	.	.	PUNCT	.	_	3	punct	_	SpaceAfter=No
+16	"	"	PUNCT	''	_	3	punct	_	_
