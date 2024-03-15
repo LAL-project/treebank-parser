@@ -89,6 +89,7 @@ class line_parser:
 		self.m_FEATS = ""
 		# Head of the current word, which is either a value of ID or zero (0).
 		self.m_HEAD = ""
+		self.m_iHEAD = None
 		# Universal dependency relation to the HEAD (root iff HEAD = 0) or a
 		# defined language-specific subtype of one.
 		self.m_DEPREL = ""
@@ -129,6 +130,14 @@ class line_parser:
 		self.m_XPOS = list_of_fields[4]
 		self.m_FEATS = list_of_fields[5]
 		self.m_HEAD = list_of_fields[6]
+		try:
+			self.m_iHEAD = int(self.m_HEAD)
+		except Exception as e:
+			tbp_logging.debug(f"At token {self.m_line_number}")
+			tbp_logging.debug(f"    Head: '{self.m_HEAD}'")
+			tbp_logging.debug(f"    Within line: '{self.m_line_str}'")
+			tbp_logging.debug(f"    Exception: '{e}'")
+
 		self.m_DEPREL = list_of_fields[7]
 		self.m_DEPS = list_of_fields[8]
 		self.m_MISC = list_of_fields[9]
@@ -173,6 +182,11 @@ class line_parser:
 		Returns the contents of the HEAD field of the line
 		"""
 		return self.m_HEAD
+	def get_iHEAD(self):
+		r"""
+		Returns the id of the HEAD as an integer number
+		"""
+		return self.m_iHEAD
 	def get_DEPREL(self):
 		r"""
 		Returns the contents of the DEPREL field of the line
@@ -232,19 +246,7 @@ class line_parser:
 		return self.get_UPOS() in ["ADP","AUX","CCONJ","DET","NUM","PART","PRON","SCONJ"]
 	
 	def __repr__(self):
-		return f"({self.get_line_number()}) \
-			ID: '{self.get_ID()}'\
-			\t FORM: '{self.get_FORM()}'\
-			\t LEMMA: '{self.get_LEMMA()}'\
-			\t UPOS: '{self.get_UPOS()}'\
-			\t XPOS: '{self.get_XPOS()}'\
-			\t FEATS: '{self.get_FEATS()}'\
-			\t HEAD: '{self.get_HEAD()}'\
-			\t DEPREL: '{self.get_DEPREL()}'\
-			\t DEPS: '{self.get_DEPS()}'\
-			\t MISC: '{self.get_MISC()}'"
-
-
+		return f"({self.get_line_number()}) ID: '{self.get_ID()}' FORM: '{self.get_FORM()}' LEMMA: '{self.get_LEMMA()}' UPOS: '{self.get_UPOS()}' XPOS: '{self.get_XPOS()}' FEATS: '{self.get_FEATS()}' HEAD: '{self.get_HEAD()}' DEPREL: '{self.get_DEPREL()}' DEPS: '{self.get_DEPS()}' MISC: '{self.get_MISC()}'"
 
 
 if __name__ == "__main__":
