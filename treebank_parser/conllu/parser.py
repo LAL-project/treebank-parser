@@ -346,8 +346,7 @@ class parser:
 			if rt.is_rooted_tree():
 				root = rt.get_root()
 				id_not_to_remove = multiword_token.get_word_id_of_tree_vertex(root)
-				if token_id != id_not_to_remove:
-					return True
+				return token_id != id_not_to_remove
 
 			# Case 2: we are going to keep the first token in the sequence, but
 			# this will potentially lead to errors.
