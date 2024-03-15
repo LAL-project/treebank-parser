@@ -165,7 +165,8 @@ class parser:
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
 			
-			tbp_logging.error(f"There were errors within head vector '{head_vector}'")
+			tbp_logging.error(f"In sentence '{self.m_current_sentence_id}'")
+			tbp_logging.error(f"    There were errors within head vector '{head_vector}'")
 			for err in err_list:
 				tbp_logging.error(f"    {err}")
 				
@@ -205,12 +206,14 @@ class parser:
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
 			
 			if rt.has_root() and rt.get_root() == token_id:
-				tbp_logging.warning(f"Removing the root of the tree.")
-				tbp_logging.warning(f"This will make the structure become a forest.")
+				tbp_logging.warning(f"In sentence '{self.m_current_sentence_id}'")
+				tbp_logging.warning(f"    Removing the root of the tree.")
+				tbp_logging.warning(f"    This will make the structure become a forest.")
 			
 			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
 			if token_id >= rt.get_num_nodes():
-				tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
+				tbp_logging.critical(f"In sentence '{self.m_current_sentence_id}'")
+				tbp_logging.critical(f"    Trying to remove a non-existent vertex. The program should crash now.")
 				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
 			
 			# remove the node -- connect the children of the node with its parent
@@ -348,8 +351,9 @@ class parser:
 
 			# Case 2: we are going to keep the first token in the sequence, but
 			# this will potentially lead to errors.
-			tbp_logging.warning(f"Multiword token '{token.get_FORM()}' has multiple parents.")
-			tbp_logging.warning(f"We keep the first token, but this may lead to errors.")
+			tbp_logging.warning(f"In sentence '{self.m_current_sentence_id}'")
+			tbp_logging.warning(f"    Multiword token '{token.get_FORM()}' has multiple parents.")
+			tbp_logging.warning(f"    We keep the first token, but this may lead to errors.")
 			if token_id != all_word_ids_in_multiword[0]:
 				return True
 			
@@ -409,23 +413,25 @@ class parser:
 				)
 
 	def _reset_state(self):
+		self.m_current_sentence_id = "Unknown ID"
 		self.m_current_tree_tokens.clear()
 		self.m_multiword_tokens.clear()
 		self.m_word_to_multiword_token.clear()
 
 	def _finish_reading_tree(self):
-		tbp_logging.debug("Build the tree...")
+		tbp_logging.info(f"In sentence '{self.m_current_sentence_id}'")
+		tbp_logging.info("    Building the tree...")
 		rt = self._build_full_tree()
 		if rt is None:
 			return
 
-		tbp_logging.debug("Remove words if needed...")
+		tbp_logging.info("    Remove words if needed...")
 		if self.m_join_multiword_tokens:
 			self._update_multiword_tokens_info(rt)
 
 		rt = self._remove_words_tree(rt)
 		
-		tbp_logging.debug("Store the head vector...")
+		tbp_logging.info("    Store the head vector...")
 		self._store_head_vector(rt)
 
 	def __init__(self, args, lal_module):
@@ -435,6 +441,8 @@ class parser:
 		
 		# only the non-multiword tokens and the non-empty tokens
 		self.m_current_tree_tokens = []
+		# current sentence ID for to easily locate the sentence in the file
+		self.m_current_sentence_id = "Unknown ID"
 		
 		# only the multiword tokens (1-2, 8-10, ...)
 		self.m_multiword_tokens = []
@@ -483,6 +491,8 @@ class parser:
 				
 				if type_of_line == line_type.Comment:
 					# nothing to do...
+					if line.find("sent_id") != -1:
+						self.m_current_sentence_id = line.split('=')[1].strip()
 					pass
 				
 				elif type_of_line == line_type.Blank:
@@ -527,8 +537,6 @@ class parser:
 				
 				linenumber += 1
 			
-			tbp_logging.debug("Finished reading file")
-
 			# Finished reading file. If there was some tree being read, process it.
 			if reading_tree:
 				tbp_logging.debug("Finished reading the last tree")
