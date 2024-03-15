@@ -1,4 +1,4 @@
-# FROM: UD-2.12/English-PSUD/en_pud-sud-test.conllu
+# FROM: SUD-2.12/English-PSUD/en_pud-sud-test.conllu
 # sent_id = n01011017
 # text = "I'm going to jail either way, hope it was worth it."
 1	"	"	PUNCT	``	_	3	punct	_	SpaceAfter=No
