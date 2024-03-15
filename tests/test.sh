@@ -7,6 +7,35 @@ SMTW="--SplitMultiwordTokens"
 RPM="--RemovePunctuationMarks"
 RFW="--RemoveFunctionWords"
 
+function usage {
+	echo "./test.sh ..."
+	echo "This script can either run all tests, or a subset of them. To run all"
+	echo "the tests, use the option:"
+	echo ""
+	echo "    --all : run all tests"
+	echo ""
+	echo "To run only a subset of the tests use the following options:"
+	echo ""
+	echo "    --format=F : to run the tests that involve the format F. Possible"
+	echo "                 values are:"
+	echo ""
+	echo "                 - CoNLL-U"
+	echo ""
+	echo "    --lang=L : to run the tests that involve language L. Possible values"
+	echo "               are:"
+	echo ""
+	echo "               - ca : Catalan"
+	echo "               - es : Spanish"
+	echo "               - en : English"
+	echo "               - fr : French"
+	echo ""
+	echo "    --id=I : to run the tests that involve input file with ID equal to I."
+	echo "             Possible values are:"
+	echo ""
+	echo "             01, 02, 03"
+	echo ""
+}
+
 function run_test {
 	
 	# ID name of the test
@@ -127,10 +156,15 @@ function run_tests {
 	fi
 }
 
+# run all tests
 all=0
+# call help() function
 usage=0
+# run only the tests of format 'format'
 format=0
+# run only the tests of language 'lang'
 lang=0
+# run only the tests of id 'id'
 id=0
 
 for i in "$@"; do
@@ -167,6 +201,11 @@ for i in "$@"; do
 		;;
 	esac
 done
+
+if [ $usage == 1 ]; then
+	usage
+	exit
+fi
 
 if [ $all == 0 ]; then
 	echo "$(date +"%Y/%m/%d.%T") Run specific tests: $format $lang $id" >> $LOG_FILE
