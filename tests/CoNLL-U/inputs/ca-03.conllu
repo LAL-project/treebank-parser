@@ -1,0 +1,40 @@
+# FROM: ca_ancora-ud-dev.conllu
+# sent_id = 3LB-CAT-06010100-17-s2
+# text = En aquest temps, el Palau ha acollit 13 activitats diverses, a banda dels certàmens firals de gran format, algunes de les quals no s'han obert al públic.
+# orig_file_sentence 001#2
+1	En	en	ADP	sps00	_	3	case	3:case	_
+2	aquest	aquest	DET	dd0ms0	Gender=Masc|Number=Sing|PronType=Dem	3	det	3:det	_
+3	temps	temps	NOUN	ncmn000	Gender=Masc	8	obl	8:obl	SpaceAfter=No|ArgTem=argM:tmp
+4	,	,	PUNCT	fc	PunctType=Comm	3	punct	3:punct	_
+5	el	el	DET	da0ms0	Definite=Def|Gender=Masc|Number=Sing|PronType=Art	6	det	6:det	Entity=(NOCOREF:Spec.location-place-2-gstype:spec
+6	Palau	Palau	PROPN	np0000l	_	8	nsubj	8:nsubj	ArgTem=arg2:loc|Entity=NOCOREF:Spec.location)
+7	ha	haver	AUX	vaip3s0	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin	8	aux	8:aux	_
+8	acollit	acollir	VERB	vmp00sm	Gender=Masc|Number=Sing|Tense=Past|VerbForm=Part	0	root	0:root	_
+9	13	13	NUM	_	NumForm=Digit|NumType=Card	10	nummod	10:nummod	_
+10	activitats	activitat	NOUN	ncfp000	Gender=Fem|Number=Plur	8	obj	8:obj	ArgTem=arg1:pat
+11	diverses	divers	ADJ	aq0fp0	Gender=Fem|Number=Plur	10	amod	10:amod	SpaceAfter=No
+12	,	,	PUNCT	fc	PunctType=Comm	17	punct	17:punct	_
+13	a	a	ADP	spcmp	_	17	case	17:case	MWE=a_banda_dels|MWEPOS=ADP
+14	banda	banda	NOUN	_	_	13	fixed	13:fixed	_
+15-16	dels	_	_	_	_	_	_	_	_
+15	de	de	ADP	_	_	13	fixed	13:fixed	_
+16	els	el	DET	_	Definite=Def|Gender=Masc|Number=Plur|PronType=Art	17	det	17:det	_
+17	certàmens	certamen	NOUN	ncmp000	Gender=Masc|Number=Plur	10	conj	10:conj	_
+18	firals	firal	ADJ	aq0cp0	Number=Plur	17	amod	17:amod	_
+19	de	de	ADP	sps00	_	21	case	21:case	_
+20	gran	gran	ADJ	aq0cs0	Number=Sing	21	amod	21:amod	_
+21	format	format	NOUN	ncms000	Gender=Masc|Number=Sing	17	nmod	17:nmod	SpaceAfter=No
+22	,	,	PUNCT	fc	PunctType=Comm	30	punct	30:punct	_
+23	algunes	algun	PRON	pi0fp000	Gender=Fem|Number=Plur|PronType=Ind	30	nsubj	30:nsubj	ArgTem=arg1:pat
+24	de	de	ADP	sps00	_	26	case	26:case	_
+25	les	el	DET	da0fp0	Definite=Def|Gender=Fem|Number=Plur|PronType=Art	26	det	26:det	_
+26	quals	qual	PRON	pr0cp000	Number=Plur|PronType=Rel	23	nmod	23:nmod	_
+27	no	no	ADV	rn	Polarity=Neg	30	advmod	30:advmod	_
+28	s'	ell	PRON	p0000000	Case=Acc,Dat|Person=3|PrepCase=Npr|PronType=Prs|Reflex=Yes	30	obj	30:obj	SpaceAfter=No
+29	han	haver	AUX	vaip3p0	Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin	30	aux	30:aux	_
+30	obert	obrir	VERB	vmp00sm	Gender=Masc|Number=Sing|Tense=Past|VerbForm=Part	8	advcl	8:advcl	_
+31-32	al	_	_	_	_	_	_	_	_
+31	a	a	ADP	spcms	_	33	case	33:case	_
+32	el	el	DET	_	Definite=Def|Gender=Masc|Number=Sing|PronType=Art	33	det	33:det	_
+33	públic	públic	NOUN	ncms000	Gender=Masc|Number=Sing	30	obj	30:obj	SpaceAfter=No|ArgTem=arg2:tem
+34	.	.	PUNCT	fp	PunctType=Peri	8	punct	8:punct	_
