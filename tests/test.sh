@@ -83,6 +83,7 @@ function run_test {
 		echo    "    See file $err_file for details on the errors."
 		exit
 	fi
+	rm -f $err_file
 	
 	# calculate diff between the outputs
 	local DIFF=$(diff $result_file $output_file)
