@@ -114,7 +114,9 @@ class parser:
 	This class also applies some preprocessing specified by the user via arguments
 	(see main CLI).
 	"""
-	
+	def _location(self):
+		return f"At sentence {self.m_sentence_number} of ID '{self.m_sentence_id}' (starting at line {self.m_sentence_starting_line})"
+
 	def _is_part_of_multiword_token(self, id):
 		r"""
 		Is the token with id `id` part of a multiword token?
@@ -148,12 +150,13 @@ class parser:
 		# construct the head vector from the lines while ensuring
 		# that all heads are numerical
 		head_vector = []
-		for token in self.m_current_tree_tokens:
+		for token in self.m_sentence_tokens:
 			if token.get_iHEAD() is not None:
 				head_vector.append(token.get_iHEAD())
 
 			else:
-				tbp_logging.error(f"In sentence '{self.m_current_sentence_id}', at token {token.get_line_number()}")
+				tbp_logging.error(self._location())
+				tbp_logging.error(f"    At token {token.get_line_number()}")
 				tbp_logging.error(f"    Within line: '{token.get_line()}'")
 				tbp_logging.error(f"    Head: '{token.get_HEAD()}'")
 				tbp_logging.error(f"    {self.m_donotknow_msg}")
@@ -165,7 +168,7 @@ class parser:
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
 			
-			tbp_logging.error(f"In sentence '{self.m_current_sentence_id}'")
+			tbp_logging.error(self._location())
 			tbp_logging.error(f"There were errors within head vector '{head_vector}'")
 			for err in err_list:
 				tbp_logging.error(f"    {err}")
@@ -193,7 +196,7 @@ class parser:
 			# nothing to do
 			return rt
 		
-		for token in reversed(self.m_current_tree_tokens):
+		for token in reversed(self.m_sentence_tokens):
 
 			if not any(map(lambda f: f(token), self.m_token_discard_functions)):
 				# word does not meet any criterion for removal
@@ -206,13 +209,13 @@ class parser:
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
 			
 			if rt.has_root() and rt.get_root() == token_id:
-				tbp_logging.warning(f"In sentence '{self.m_current_sentence_id}'")
+				tbp_logging.warning(self._location())
 				tbp_logging.warning(f"    Removing the root of the tree.")
 				tbp_logging.warning(f"    This will make the structure become a forest.")
 			
 			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
 			if token_id >= rt.get_num_nodes():
-				tbp_logging.critical(f"In sentence '{self.m_current_sentence_id}'")
+				tbp_logging.critical(self._location())
 				tbp_logging.critical(f"    Trying to remove a non-existent vertex. The program should crash now.")
 				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
 			
@@ -264,7 +267,7 @@ class parser:
 			
 			parent_ids = []
 			for w in word_ids:
-				wtoken = self.m_current_tree_tokens[w - 1]
+				wtoken = self.m_sentence_tokens[w - 1]
 				head_int = wtoken.get_iHEAD()
 				assert(head_int is not None)
 				parent_ids.append( head_int )
@@ -320,7 +323,7 @@ class parser:
 			# If any of the words in this multiword token is a function word then
 			# *all* the tokens have to be removed. So, the token also has to
 			# be removed even if it is not a function word itself.
-			if multiword_token.is_function_multitoken_word(self.m_current_tree_tokens):
+			if multiword_token.is_function_multitoken_word(self.m_sentence_tokens):
 				return True
 
 		if multiword_token.has_unique_parent():
@@ -350,7 +353,7 @@ class parser:
 
 			# Case 2: we are going to keep the first token in the sequence, but
 			# this will potentially lead to errors.
-			tbp_logging.warning(f"In sentence '{self.m_current_sentence_id}'")
+			tbp_logging.warning(self._location())
 			tbp_logging.warning(f"    Multiword token '{token.get_FORM()}' has multiple parents.")
 			tbp_logging.warning(f"    We keep the first token, but this may lead to errors.")
 			if token_id != all_word_ids_in_multiword[0]:
@@ -412,13 +415,13 @@ class parser:
 				)
 
 	def _reset_state(self):
-		self.m_current_sentence_id = "Unknown ID"
-		self.m_current_tree_tokens.clear()
+		self.m_sentence_id = "Unknown ID"
+		self.m_sentence_tokens.clear()
 		self.m_multiword_tokens.clear()
 		self.m_word_to_multiword_token.clear()
 
 	def _finish_reading_tree(self):
-		tbp_logging.info(f"In sentence '{self.m_current_sentence_id}'")
+		tbp_logging.info(self._location())
 		tbp_logging.info("    Building the tree...")
 		rt = self._build_full_tree()
 		if rt is None:
@@ -439,9 +442,11 @@ class parser:
 		"""
 		
 		# only the non-multiword tokens and the non-empty tokens
-		self.m_current_tree_tokens = []
+		self.m_sentence_tokens = []
 		# current sentence ID to easily locate the sentence in the file
-		self.m_current_sentence_id = "Unknown ID"
+		self.m_sentence_id = ""
+		self.m_sentence_number = 0
+		self.m_sentence_starting_line = 0
 		
 		# only the multiword tokens (1-2, 8-10, ...)
 		self.m_multiword_tokens = []
@@ -479,7 +484,6 @@ class parser:
 		with open(self.m_input_file, 'r', encoding = "utf-8") as f:
 			tbp_logging.info(f"Input file {self.m_input_file} has been opened correctly.")
 
-			tree_number = 0
 			reading_tree = False
 			linenumber = 1
 			
@@ -491,7 +495,7 @@ class parser:
 				if type_of_line == line_type.Comment:
 					# nothing to do...
 					if line.find("sent_id") != -1:
-						self.m_current_sentence_id = line.split('=')[1].strip()
+						self.m_sentence_id = line.split('=')[1].strip()
 					pass
 				
 				elif type_of_line == line_type.Blank:
@@ -499,7 +503,7 @@ class parser:
 					# the end of the tree in the file
 
 					if reading_tree:
-						tbp_logging.debug(f"Finished reading tree {tree_number}")
+						tbp_logging.debug(f"Finished reading tree {self.m_sentence_number}")
 						self._finish_reading_tree()
 						self._reset_state()
 						reading_tree = False
@@ -510,8 +514,9 @@ class parser:
 					if not reading_tree:
 						# here we start reading a new tree
 						reading_tree = True
-						tree_number += 1
-						tbp_logging.debug(f"Start reading tree {tree_number} at line {linenumber}")
+						self.m_sentence_starting_line = linenumber
+						self.m_sentence_number += 1
+						tbp_logging.debug(f"Start reading tree {self.m_sentence_number} at line {linenumber}")
 					
 					token = line_parser.line_parser(line, linenumber)
 					token.parse()
@@ -532,7 +537,7 @@ class parser:
 						self.m_multiword_tokens.append(to_append)
 
 					if not token.is_multiword_token() and not token.is_empty_token():
-						self.m_current_tree_tokens.append(token)
+						self.m_sentence_tokens.append(token)
 				
 				linenumber += 1
 			
