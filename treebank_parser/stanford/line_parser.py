@@ -157,10 +157,7 @@ class line_parser:
 		return self.get_dependency_type() == "punct"
 	
 	def __repr__(self):
-		return f"({self.get_line_number()}) \
-			type: '{self.get_dependency_type()}'\
-			\t parent: '{self.get_parent_word()} ({self.get_parent_id()})\
-			\t dependent: '{self.get_dependent_word()} ({self.get_dependent_id()})"
+		return f"({self.get_line_number()}) type: '{self.get_dependency_type()}' parent: '{self.get_parent_word()} ({self.get_parent_id()}) dependent: '{self.get_dependent_word()} ({self.get_dependent_id()})"
 	
 	def get_line(self):
 		r"""
