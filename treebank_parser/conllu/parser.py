@@ -153,7 +153,7 @@ class parser:
 				head_vector.append(token.get_iHEAD())
 
 			else:
-				tbp_logging.error(f"At token {token.get_line_number()}")
+				tbp_logging.error(f"In sentence '{self.m_current_sentence_id}', at token {token.get_line_number()}")
 				tbp_logging.error(f"    Within line: '{token.get_line()}'")
 				tbp_logging.error(f"    Head: '{token.get_HEAD()}'")
 				tbp_logging.error(f"    {self.m_donotknow_msg}")
@@ -166,7 +166,7 @@ class parser:
 		if len(err_list) > 0:
 			
 			tbp_logging.error(f"In sentence '{self.m_current_sentence_id}'")
-			tbp_logging.error(f"    There were errors within head vector '{head_vector}'")
+			tbp_logging.error(f"There were errors within head vector '{head_vector}'")
 			for err in err_list:
 				tbp_logging.error(f"    {err}")
 				
