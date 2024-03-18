@@ -105,7 +105,7 @@ class line_parser:
 			
 		except BaseException as e:
 			self.m_parent_id = None
-			tbp_logging.critical(f"Integer conversion of parent word index failed.")
+			tbp_logging.critical(f"Integer conversion of governor ID failed.")
 			tbp_logging.critical(f"At line {self.m_line_number}")
 			tbp_logging.critical(f"At line {self.m_line_str}")
 		
@@ -114,7 +114,7 @@ class line_parser:
 			
 		except BaseException as e:
 			self.m_dependent_id = None
-			tbp_logging.critical(f"Integer conversion of dependent word index failed.")
+			tbp_logging.critical(f"Integer conversion of dependent word ID failed.")
 			tbp_logging.critical(f"At line {self.m_line_number}")
 			tbp_logging.critical(f"At line {self.m_line_str}")
 	
@@ -171,20 +171,20 @@ if __name__ == "__main__":
 		print(lp.get_line())
 		print(f"    word type:       '{lp.get_dependency_type()}'")
 		print(f"    parent word:     '{lp.get_parent_word()}'")
-		print(f"    parent index:    '{lp.get_parent_index()}'")
+		print(f"    parent index:    '{lp.get_parent_id()}'")
 		print(f"    dependent word:  '{lp.get_dependent_word()}'")
-		print(f"    dependent index: '{lp.get_dependent_index()}'")
+		print(f"    dependent index: '{lp.get_dependent_id()}'")
 	
-	def parse_line(l, lineno, dependency_type, par_word, par_idx, dep_word, dep_idx):
+	def parse_line(l, lineno, dependency_type, par_word, par_id, dep_word, dep_id):
 		lp = line_parser(l, lineno)
 		lp.parse_line()
 		print_contents(lp)
 		
 		assert( lp.get_dependency_type() == dependency_type )
 		assert( lp.get_parent_word() == par_word )
-		assert( lp.get_parent_id() == par_idx )
+		assert( lp.get_parent_id() == par_id )
 		assert( lp.get_dependent_word() == dep_word )
-		assert( lp.get_dependent_id() == dep_idx )
+		assert( lp.get_dependent_id() == dep_id )
 	
 	line01 = "case(一-3, 在-1)"
 	line02 = "dep(一-3, 过去-2)"
