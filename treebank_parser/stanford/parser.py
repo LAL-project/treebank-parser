@@ -58,6 +58,16 @@ class parser:
 	This class also applies some preprocessing specified by the user via arguments
 	(see main CLI).
 	"""
+
+	def _location(self):
+		return f"At sentence {self.m_sentence_id}, starting at line {self.m_sentence_starting_line}"
+
+	def _num_unique_ids(self):
+		unique_ids = []
+		for d in self.m_sentence_deps:
+			unique_ids.append( d.get_parent_index() )
+			unique_ids.append( d.get_dependent_index() )
+		return len(set(unique_ids))
 	
 	def _should_discard_tree(self, rt):
 		r"""
@@ -80,12 +90,12 @@ class parser:
 		# retrieve the head vector from the lines while ensuring
 		# that all heads are numerical
 		head_vector = []
-		for dep in self.m_current_tree:
+		for dep in self.m_sentence_deps:
 			try:
 				head_int = int(dep.get_parent_index())
 				
 			except Exception as e:
-				tbp_logging.error(f"At line {dep.get_line_number()}")
+				tbp_logging.error(self._location())
 				tbp_logging.error(f"    Head: '{dep.get_parent_index()}'")
 				tbp_logging.error(f"    Within line: '{dep.get_line()}'")
 				tbp_logging.error(f"    {self.m_donotknow_msg}")
@@ -99,7 +109,8 @@ class parser:
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
 			
-			tbp_logging.error(f"There were errors within head vector '{head_vector}'")
+			tbp_logging.error(self._location())
+			tbp_logging.error(f"There were errors within head vector '{head_vector}':")
 			for err in err_list:
 				tbp_logging.error(f"    {err}")
 			
@@ -122,7 +133,7 @@ class parser:
 		marks, function words, ...).
 		"""
 		
-		for dep in reversed(self.m_current_tree):
+		for dep in reversed(self.m_sentence_deps):
 			
 			if not any(map(lambda f: f(dep), self.m_word_functions)):
 				# word does not meet any criterion for removal
@@ -211,16 +222,27 @@ class parser:
 				)
 	
 	def _reset_state(self):
-		self.m_current_tree.clear()
+		self.m_sentence_deps.clear()
 
-	def _finish_reading_tree(self):
+	def _finish_reading_sentence(self):
+		tbp_logging.debug(self._location())
 		tbp_logging.debug("Build the tree...")
+
+		n = self._num_unique_ids()
+		m = len(self.m_sentence_deps)
+		if m != n - 1:
+			tbp_logging.warning(self._location())
+			tbp_logging.warning(f"The syntactic dependency structure of sentence '{self.m_sentence_id}' is not a tree.")
+			tbp_logging.debug(f"The graph has {n} nodes and {m} edges")
+			return
+		
 		rt = self._build_full_tree()
 		if rt is None:
 			return
 
 		tbp_logging.debug("Remove words if needed...")
 		rt = self._remove_words_tree(rt)
+
 		tbp_logging.debug("Store the head vector...")
 		self._store_head_vector(rt)
 
@@ -228,9 +250,17 @@ class parser:
 		r"""
 		Initialises the Stanford parser with the arguments passed as parameter.
 		"""
-		self.m_current_tree = []
+		# all the dependencies in the current sentence
+		self.m_sentence_deps = []
+		# this ID is not obtained from the file: it is the position of the
+		# sentence in the file
+		self.m_sentence_id = 0
+		self.m_sentence_starting_line = 0
 
+		# all the head vectors to dump into the output file
 		self.m_head_vector_collection = []
+
+		# input and output files
 		self.m_input_file = args.inputfile
 		self.m_output_file = args.outputfile
 		
@@ -255,7 +285,7 @@ class parser:
 		'head_vector_collection' in the form of head vectors.
 		"""
 		
-		reading_tree = False
+		reading_sentence = False
 		linenumber = 1
 		with open(self.m_input_file, 'r', encoding = "utf-8") as f:
 			tbp_logging.info(f"Input file {self.m_input_file} has been opened correctly.")
@@ -268,29 +298,31 @@ class parser:
 					# a blank line found while reading a tree singals
 					# the end of the tree in the file
 				
-					if reading_tree:
+					if reading_sentence:
 						tbp_logging.debug("Finished reading tree")
-						self._finish_reading_tree()
+						self._finish_reading_sentence()
 						self._reset_state()
-						reading_tree = False
+						reading_sentence = False
 				
 				elif type_of_line == line_type.Dependency:
 					# this line has actual information about the tree.
-					if not reading_tree:
-						reading_tree = True
+					if not reading_sentence:
+						self.m_sentence_starting_line = linenumber
+						reading_sentence = True
+						self.m_sentence_id += 1
 						tbp_logging.debug(f"Start reading tree at line {linenumber}")
 					
 					dependency = line_parser.line_parser(line, linenumber)
 					dependency.parse_line()
 
-					self.m_current_tree.append( dependency )
+					self.m_sentence_deps.append( dependency )
 				
 				linenumber += 1
 			
 			# Finished reading file. If there was some tree being read, process it.
-			if reading_tree:
+			if reading_sentence:
 				tbp_logging.debug("Finished reading the last tree")
-				self._finish_reading_tree()
+				self._finish_reading_sentence()
 				self._reset_state()
 			
 			end = time.perf_counter()
