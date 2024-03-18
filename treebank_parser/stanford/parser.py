@@ -64,9 +64,9 @@ class parser:
 
 	def _num_unique_ids(self):
 		unique_ids = []
-		for d in self.m_sentence_deps:
-			unique_ids.append( d.get_parent_id() )
-			unique_ids.append( d.get_dependent_id() )
+		for dep in self.m_sentence_deps:
+			unique_ids.append( dep.get_parent_id() )
+			unique_ids.append( dep.get_dependent_id() )
 		return len(set(unique_ids))
 	
 	def _should_discard_tree(self, rt):
