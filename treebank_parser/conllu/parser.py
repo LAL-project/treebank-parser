@@ -420,7 +420,7 @@ class parser:
 		self.m_multiword_tokens.clear()
 		self.m_word_to_multiword_token.clear()
 
-	def _finish_reading_tree(self):
+	def _finish_reading_sentence(self):
 		tbp_logging.info(self._location())
 		tbp_logging.info("    Building the tree...")
 		rt = self._build_full_tree()
@@ -484,7 +484,7 @@ class parser:
 		with open(self.m_input_file, 'r', encoding = "utf-8") as f:
 			tbp_logging.info(f"Input file {self.m_input_file} has been opened correctly.")
 
-			reading_tree = False
+			reading_sentence = False
 			linenumber = 1
 			
 			begin_time = time.perf_counter()
@@ -502,18 +502,18 @@ class parser:
 					# a blank line found while reading a tree singals
 					# the end of the tree in the file
 
-					if reading_tree:
+					if reading_sentence:
 						tbp_logging.debug(f"Finished reading tree {self.m_sentence_number}")
-						self._finish_reading_tree()
+						self._finish_reading_sentence()
 						self._reset_state()
-						reading_tree = False
+						reading_sentence = False
 				
 				elif type_of_line == line_type.Token:
 					# This line has actual information about the tree.
 
-					if not reading_tree:
+					if not reading_sentence:
 						# here we start reading a new tree
-						reading_tree = True
+						reading_sentence = True
 						self.m_sentence_starting_line = linenumber
 						self.m_sentence_number += 1
 						tbp_logging.debug(f"Start reading tree {self.m_sentence_number} at line {linenumber}")
@@ -542,9 +542,9 @@ class parser:
 				linenumber += 1
 			
 			# Finished reading file. If there was some tree being read, process it.
-			if reading_tree:
+			if reading_sentence:
 				tbp_logging.debug("Finished reading the last tree")
-				self._finish_reading_tree()
+				self._finish_reading_sentence()
 				self._reset_state()
 			
 			end_time = time.perf_counter()

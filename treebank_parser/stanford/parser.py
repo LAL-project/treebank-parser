@@ -265,7 +265,7 @@ class parser:
 		self.m_output_file = args.outputfile
 		
 		# utilities for logging
-		self.m_donotknow_msg = "Do not know how to process this. This line will be ignored."
+		self.m_donotknow_msg = "Do not know how to process this. This will be ignored."
 		
 		# keep LAL module
 		self.LAL_module = lal_module
