@@ -93,7 +93,8 @@ class line_parser:
 		self.m_dependency_type = self.m_line_str[:left_paren]
 		contents = self.m_line_str[left_paren + 1 : right_paren]
 		
-		parent, dependent = contents.split(',')
+		i = contents.find(',')
+		parent, dependent = contents[:i], contents[i + 1:]
 		
 		self.m_parent_word, self.m_parent_id = self._split_unit(parent)
 		self.m_dependent_word, self.m_dependent_id = self._split_unit(dependent)
@@ -186,28 +187,30 @@ if __name__ == "__main__":
 		assert( lp.get_dependent_word() == dep_word )
 		assert( lp.get_dependent_id() == dep_id )
 	
-	line01 = "case(一-3, 在-1)"
-	line02 = "dep(一-3, 过去-2)"
-	line03 = "nmod:prep(实现-7, 一-3)"
-	line04 = "mark:clf(一-3, 年-4)"
-	line05 = "punct(实现-7, ，-5)"
-	line06 = "nsubj(实现-7, 我们-6)"
-	line07 = "root(ROOT-0, 实现-7)"
-	line08 = "aux:asp(实现-7, 了-8)"
-	line09 = "amod(进步-11, 了不起-9)"
-	line10 = "case(了不起-9, 的-10)"
-	line11 = "conj(成就-15, 进步-11)"
-	line12 = "cc(成就-15, 和-12)"
-	line13 = "amod(成就-15, 非凡-13)"
-	line14 = "case(非凡-13, 的-14)"
-	line15 = "dobj(实现-7, 成就-15)"
-	line16 = "punct(实现-7, 。-16)"
+	line01  = "case(一-3, 在-1)"
+	line02  = "dep(一-3, 过去-2)"
+	line03  = "nmod:prep(实现-7, 一-3)"
+	line04  = "mark:clf(一-3, 年-4)"
+	line05  = "punct(实现-7, ，-5)"
+	line051 = "punct(实现-7, ,-5)"
+	line06  = "nsubj(实现-7, 我们-6)"
+	line07  = "root(ROOT-0, 实现-7)"
+	line08  = "aux:asp(实现-7, 了-8)"
+	line09  = "amod(进步-11, 了不起-9)"
+	line10  = "case(了不起-9, 的-10)"
+	line11  = "conj(成就-15, 进步-11)"
+	line12  = "cc(成就-15, 和-12)"
+	line13  = "amod(成就-15, 非凡-13)"
+	line14  = "case(非凡-13, 的-14)"
+	line15  = "dobj(实现-7, 成就-15)"
+	line16  = "punct(实现-7, 。-16)"
 	
 	parse_line(line01,  1, "case", "一", 3, "在", 1)
 	parse_line(line02,  2, "dep", "一", 3, "过去", 2)
 	parse_line(line03,  3, "nmod:prep", "实现", 7, "一", 3)
 	parse_line(line04,  4, "mark:clf", "一", 3, "年", 4)
 	parse_line(line05,  5, "punct", "实现", 7, "，", 5)
+	parse_line(line051, 5, "punct", "实现", 7, ",", 5)
 	parse_line(line06,  6, "nsubj", "实现", 7, "我们", 6)
 	parse_line(line07,  7, "root", "ROOT", 0, "实现", 7)
 	parse_line(line08,  8, "aux:asp", "实现", 7, "了", 8)
