@@ -20,6 +20,7 @@ function usage {
 	echo "        values are:"
 	echo ""
 	echo "            - CoNLL-U"
+	echo "            - Stanford"
 	echo ""
 	echo "    --lang=L : to run the tests that involve language L. Possible values"
 	echo "        are:"
@@ -28,6 +29,7 @@ function usage {
 	echo "            - en : English"
 	echo "            - es : Spanish"
 	echo "            - fr : French"
+	echo "            - zh : Chinese"
 	echo ""
 	echo "    --id=I : to run the tests that involve input file with ID equal to I."
 	echo "        Possible values are:"
@@ -171,7 +173,24 @@ function run_tests {
 				run_test "fr-01-10" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-10.hv"	"CoNLL-U" $RFW $RPM
 			fi
 		fi
-	
+	elif [ "$FORMAT" == "Stanford" ]; then
+		
+		if [ "$LANG" == "en" ]; then
+			if [ "$ID" == "01" ]; then
+				run_test "en-01-01" "Stanford/inputs/en-01.stp" "Stanford/outputs/en-01-01.hv"	"Stanford"
+				run_test "en-01-01" "Stanford/inputs/en-01.stp" "Stanford/outputs/en-01-02.hv"	"Stanford"	$RPM
+			fi
+
+		elif [ "$LANG" == "zh" ]; then
+			if [ "$ID" == "01" ]; then
+				run_test "zh-01-01" "Stanford/inputs/zh-01.stp" "Stanford/outputs/zh-01-01.hv"	"Stanford"
+				
+			elif [ "$ID" == "02" ]; then
+				run_test "zh-02-01" "Stanford/inputs/zh-02.stp" "Stanford/outputs/zh-02-01.hv"	"Stanford"
+				run_test "zh-02-02" "Stanford/inputs/zh-02.stp" "Stanford/outputs/zh-02-02.hv"	"Stanford"	$RPM
+			fi
+
+		fi
 	fi
 }
 
@@ -232,8 +251,8 @@ if [ $all == 0 ]; then
 	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
 else
 	echo "$(date +"%Y/%m/%d.%T") Run all tests" >> $LOG_FILE
-	for f in "CoNLL-U"; do
-		for l in "ca" "en" "es" "fr"; do
+	for f in "CoNLL-U" "Stanford"; do
+		for l in "ca" "en" "es" "fr" "zh"; do
 			for i in "01" "02"; do
 				run_tests $f $l $i
 			done
