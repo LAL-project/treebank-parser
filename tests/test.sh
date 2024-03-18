@@ -53,6 +53,7 @@ function run_test {
 	
 	# the flags to run the treebank parser with
 	local flags=("$@")
+	local FORMAT=${flags[0]}
 	
 	local result_file=.out.$ID
 	local err_file=.err.$ID
@@ -74,7 +75,7 @@ function run_test {
 		return
 	fi
 	
-	echo -en "\e[1;1;35mRunning test\e[0m $ID"
+	echo -en "\e[1;1;35mRunning test\e[0m ($FORMAT) $ID"
 	
 	# run the program
 	python3 $MAIN_FILE -i $input_file -o $result_file --lal --quiet ${flags[@]} 2> $err_file
@@ -246,11 +247,7 @@ if [ $usage == 1 ]; then
 	exit
 fi
 
-if [ $all == 0 ]; then
-	echo "$(date +"%Y/%m/%d.%T") Run specific tests: $format $lang $id" >> $LOG_FILE
-	run_tests $format $lang $id
-	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
-else
+if [ $all == 1 ]; then
 	echo "$(date +"%Y/%m/%d.%T") Run all tests" >> $LOG_FILE
 	for f in "CoNLL-U" "Stanford"; do
 		for l in "ca" "en" "es" "fr" "zh"; do
@@ -259,5 +256,35 @@ else
 			done
 		done
 	done
+	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
+else
+	if [ "$format" == "0" ] && [ "$lang" == "0" ]; then
+		echo -e "\e[1;4;31mError:\e[0m Missing --format and --lang parameters."
+		exit
+	fi
+
+	if [ "$format" != "0" ] && [ "$lang" == "0" ]; then
+		echo "$(date +"%Y/%m/%d.%T") Run specific for format: $format" >> $LOG_FILE
+
+		for l in "ca" "en" "es" "fr" "zh"; do
+			for i in "01" "02"; do
+				run_tests $format $l $i
+			done
+		done
+
+	elif [ "$format" == "0" ] && [ "$lang" != "0" ]; then
+
+		echo "$(date +"%Y/%m/%d.%T") Run specific for language: $lang" >> $LOG_FILE
+		for f in "CoNLL-U" "Stanford"; do
+			for i in "01" "02"; do
+				run_tests $f $lang $i
+			done
+		done
+
+	else
+		echo "$(date +"%Y/%m/%d.%T") Run specific tests: $format $lang $id" >> $LOG_FILE
+		run_tests $format $lang $id
+	fi
+
 	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
 fi
