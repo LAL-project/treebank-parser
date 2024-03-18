@@ -440,7 +440,7 @@ class parser:
 		
 		# only the non-multiword tokens and the non-empty tokens
 		self.m_current_tree_tokens = []
-		# current sentence ID for to easily locate the sentence in the file
+		# current sentence ID to easily locate the sentence in the file
 		self.m_current_sentence_id = "Unknown ID"
 		
 		# only the multiword tokens (1-2, 8-10, ...)
