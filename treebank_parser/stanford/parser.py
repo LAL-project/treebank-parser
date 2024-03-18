@@ -65,8 +65,8 @@ class parser:
 	def _num_unique_ids(self):
 		unique_ids = []
 		for d in self.m_sentence_deps:
-			unique_ids.append( d.get_parent_index() )
-			unique_ids.append( d.get_dependent_index() )
+			unique_ids.append( d.get_parent_id() )
+			unique_ids.append( d.get_dependent_id() )
 		return len(set(unique_ids))
 	
 	def _should_discard_tree(self, rt):
@@ -92,11 +92,11 @@ class parser:
 		head_vector = []
 		for dep in self.m_sentence_deps:
 			try:
-				head_int = int(dep.get_parent_index())
+				head_int = int(dep.get_parent_id())
 				
 			except Exception as e:
 				tbp_logging.error(self._location())
-				tbp_logging.error(f"    Head: '{dep.get_parent_index()}'")
+				tbp_logging.error(f"    Head: '{dep.get_parent_id()}'")
 				tbp_logging.error(f"    Within line: '{dep.get_line()}'")
 				tbp_logging.error(f"    {self.m_donotknow_msg}")
 				tbp_logging.error(f"    Exception: '{e}'")
@@ -140,9 +140,9 @@ class parser:
 				continue
 			
 			# calculate the (actual) id of the word to be removed
-			word_id = int(dep.get_dependent_index()) - 1
+			word_id = int(dep.get_dependent_id()) - 1
 			
-			tbp_logging.debug(f"Remove {word_id}. Original ID: {dep.get_dependent_index()}")
+			tbp_logging.debug(f"Remove {word_id}. Original ID: {dep.get_dependent_id()}")
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
 			
 			if rt.has_root() and rt.get_root() == word_id:

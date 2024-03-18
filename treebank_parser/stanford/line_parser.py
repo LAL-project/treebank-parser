@@ -76,12 +76,12 @@ class line_parser:
 		self.m_dependency_type = ""
 		# the string that corresponds to the parent word
 		self.m_parent_word = ""
-		# the index of the parent word
-		self.m_parent_index = -1
+		# the ID of the parent word
+		self.m_parent_id = -1
 		# the string that corresponds to the dependent word
 		self.m_dependent_word = ""
-		# the index of the dependent word
-		self.m_dependent_index = -1
+		# the ID of the dependent word
+		self.m_dependent_id = -1
 	
 	def parse_line(self):
 		r"""
@@ -95,25 +95,25 @@ class line_parser:
 		
 		parent, dependent = contents.split(',')
 		
-		self.m_parent_word, self.m_parent_index = self._split_unit(parent)
-		self.m_dependent_word, self.m_dependent_index = self._split_unit(dependent)
+		self.m_parent_word, self.m_parent_id = self._split_unit(parent)
+		self.m_dependent_word, self.m_dependent_id = self._split_unit(dependent)
 		if self.m_dependent_word[0] == " ":
 			self.m_dependent_word = self.m_dependent_word[1:]
 		
 		try:
-			self.m_parent_index = int(self.m_parent_index)
+			self.m_parent_id = int(self.m_parent_id)
 			
 		except BaseException as e:
-			self.m_parent_index = None
+			self.m_parent_id = None
 			tbp_logging.critical(f"Integer conversion of parent word index failed.")
 			tbp_logging.critical(f"At line {self.m_line_number}")
 			tbp_logging.critical(f"At line {self.m_line_str}")
 		
 		try:
-			self.m_dependent_index = int(self.m_dependent_index)
+			self.m_dependent_id = int(self.m_dependent_id)
 			
 		except BaseException as e:
-			self.m_dependent_index = None
+			self.m_dependent_id = None
 			tbp_logging.critical(f"Integer conversion of dependent word index failed.")
 			tbp_logging.critical(f"At line {self.m_line_number}")
 			tbp_logging.critical(f"At line {self.m_line_str}")
@@ -124,17 +124,17 @@ class line_parser:
 		"""
 		return self.m_dependency_type
 	
-	def get_parent_index(self):
+	def get_parent_id(self):
 		r"""
-		Returns the index of the parent word in the dependency.
+		Returns the ID of the parent word in the dependency.
 		"""
-		return self.m_parent_index
+		return self.m_parent_id
 	
-	def get_dependent_index(self):
+	def get_dependent_id(self):
 		r"""
-		Returns the index of the dependent word in the dependency.
+		Returns the ID of the dependent word in the dependency.
 		"""
-		return self.m_dependent_index
+		return self.m_dependent_id
 	
 	def get_parent_word(self):
 		r"""
@@ -159,8 +159,8 @@ class line_parser:
 	def __repr__(self):
 		return f"({self.get_line_number()}) \
 			type: '{self.get_dependency_type()}'\
-			\t parent: '{self.get_parent_word()} ({self.get_parent_index()})\
-			\t dependent: '{self.get_dependent_word()} ({self.get_dependent_index()})"
+			\t parent: '{self.get_parent_word()} ({self.get_parent_id()})\
+			\t dependent: '{self.get_dependent_word()} ({self.get_dependent_id()})"
 	
 	def get_line(self):
 		r"""
@@ -185,9 +185,9 @@ if __name__ == "__main__":
 		
 		assert( lp.get_dependency_type() == dependency_type )
 		assert( lp.get_parent_word() == par_word )
-		assert( lp.get_parent_index() == par_idx )
+		assert( lp.get_parent_id() == par_idx )
 		assert( lp.get_dependent_word() == dep_word )
-		assert( lp.get_dependent_index() == dep_idx )
+		assert( lp.get_dependent_id() == dep_idx )
 	
 	line01 = "case(一-3, 在-1)"
 	line02 = "dep(一-3, 过去-2)"
