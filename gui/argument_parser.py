@@ -50,7 +50,8 @@ def add_arguments_main_parser(parser):
 		default = False,
 		action = 'store_true',
 		required = False,
-		help = f"Use the debug compilation of LAL ('import laldebug as lal'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import lal'."
+		help = "Use the debug compilation of LAL ('import lal'). The script will run more slowly, but errors will be more\
+		        likely to be caught. By default, the optimized compilation of LAL is imported ('import laloptimized as lal')."
 	)
 
 # ------------------------------------------------------------------------------
