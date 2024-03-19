@@ -34,7 +34,7 @@ function usage {
 	echo "    --id=I : to run the tests that involve input file with ID equal to I."
 	echo "        Possible values are:"
 	echo ""
-	echo "            01, 02, 03"
+	echo "            01, 02"
 	echo ""
 }
 
@@ -173,6 +173,7 @@ function run_tests {
 				run_test "fr-01-08" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-08.hv"	"CoNLL-U" $RFW
 				run_test "fr-01-09" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-09.hv"	"CoNLL-U" $RPM $RFW
 				run_test "fr-01-10" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-10.hv"	"CoNLL-U" $RFW $RPM
+			
 			fi
 		fi
 	elif [ "$FORMAT" == "Stanford" ]; then
@@ -264,7 +265,7 @@ else
 	fi
 
 	if [ "$format" != "0" ] && [ "$lang" == "0" ]; then
-		echo "$(date +"%Y/%m/%d.%T") Run specific for format: $format" >> $LOG_FILE
+		echo "$(date +"%Y/%m/%d.%T") Run specific tests for format: $format" >> $LOG_FILE
 
 		for l in "ca" "en" "es" "fr" "zh"; do
 			for i in "01" "02"; do
@@ -274,16 +275,27 @@ else
 
 	elif [ "$format" == "0" ] && [ "$lang" != "0" ]; then
 
-		echo "$(date +"%Y/%m/%d.%T") Run specific for language: $lang" >> $LOG_FILE
+		echo "$(date +"%Y/%m/%d.%T") Run specific tests for language: $lang" >> $LOG_FILE
 		for f in "CoNLL-U" "Stanford"; do
 			for i in "01" "02"; do
 				run_tests $f $lang $i
 			done
 		done
+	
+	elif [ "$format" != "0" ] && [ "$lang" != "0" ]; then
+		
+		if [ "$id" == "0" ]; then
+			echo "$(date +"%Y/%m/%d.%T") Run specific tests for format '$format' and language '$lang'" >> $LOG_FILE
+			for i in "01" "02"; do
+				run_tests $format $lang $i
+			done
+		
+		else
+			echo "$(date +"%Y/%m/%d.%T") Run specific tests: $format $lang $id" >> $LOG_FILE
+			run_tests $format $lang $id
+			
+		fi
 
-	else
-		echo "$(date +"%Y/%m/%d.%T") Run specific tests: $format $lang $id" >> $LOG_FILE
-		run_tests $format $lang $id
 	fi
 
 	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
