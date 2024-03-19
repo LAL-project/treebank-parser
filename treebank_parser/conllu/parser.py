@@ -499,24 +499,25 @@ class parser:
 					pass
 				
 				elif type_of_line == line_type.Blank:
-					# a blank line found while reading a tree singals
-					# the end of the tree in the file
+					# a blank line found while reading a sentence signals the end
+					# of the sentence in the file
 
 					if reading_sentence:
-						tbp_logging.debug(f"Finished reading tree {self.m_sentence_number}")
+						tbp_logging.debug(f"Finished reading sentence")
 						self._finish_reading_sentence()
 						self._reset_state()
 						reading_sentence = False
 				
 				elif type_of_line == line_type.Token:
-					# This line has actual information about the tree.
+					# This line has actual information about the sentence.
 
 					if not reading_sentence:
-						# here we start reading a new tree
+						# here we start reading a new sentence
 						reading_sentence = True
 						self.m_sentence_starting_line = linenumber
 						self.m_sentence_number += 1
-						tbp_logging.debug(f"Start reading tree {self.m_sentence_number} at line {linenumber}")
+						tbp_logging.debug(self._location())
+						tbp_logging.debug(f"Start reading sentence")
 					
 					token = line_parser.line_parser(line, linenumber)
 					token.parse()
@@ -541,9 +542,9 @@ class parser:
 				
 				linenumber += 1
 			
-			# Finished reading file. If there was some tree being read, process it.
+			# Finished reading file. If there was some sentence being read, process it.
 			if reading_sentence:
-				tbp_logging.debug("Finished reading the last tree")
+				tbp_logging.debug("Finished reading the last sentence")
 				self._finish_reading_sentence()
 				self._reset_state()
 			

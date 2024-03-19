@@ -60,7 +60,7 @@ class parser:
 	"""
 
 	def _location(self):
-		return f"At sentence {self.m_sentence_id}, starting at line {self.m_sentence_starting_line}"
+		return f"At sentence {self.m_sentence_number}, starting at line {self.m_sentence_starting_line}"
 
 	def _num_unique_ids(self):
 		unique_ids = []
@@ -232,7 +232,7 @@ class parser:
 		m = len(self.m_sentence_deps)
 		if m != n - 1:
 			tbp_logging.warning(self._location())
-			tbp_logging.warning(f"The syntactic dependency structure of sentence '{self.m_sentence_id}' is not a tree.")
+			tbp_logging.warning(f"The syntactic dependency structure of sentence '{self.m_sentence_number}' is not a tree.")
 			tbp_logging.debug(f"The graph has {n} nodes and {m} edges")
 			return
 		
@@ -252,9 +252,8 @@ class parser:
 		"""
 		# all the dependencies in the current sentence
 		self.m_sentence_deps = []
-		# this ID is not obtained from the file: it is the position of the
-		# sentence in the file
-		self.m_sentence_id = 0
+		# the number of the sentence in the file, in the order in which they appear
+		self.m_sentence_number = 0
 		self.m_sentence_starting_line = 0
 
 		# all the head vectors to dump into the output file
@@ -295,22 +294,23 @@ class parser:
 				type_of_line = line_type.classify(line)
 				
 				if type_of_line == line_type.Blank:
-					# a blank line found while reading a tree singals
-					# the end of the tree in the file
+					# a blank line found while reading a sentence signals the end
+					# of the sentence in the file
 				
 					if reading_sentence:
-						tbp_logging.debug("Finished reading tree")
+						tbp_logging.debug("Finished reading sentence")
 						self._finish_reading_sentence()
 						self._reset_state()
 						reading_sentence = False
 				
 				elif type_of_line == line_type.Dependency:
-					# this line has actual information about the tree.
+					# this line has actual information about the sentence.
 					if not reading_sentence:
 						self.m_sentence_starting_line = linenumber
 						reading_sentence = True
-						self.m_sentence_id += 1
-						tbp_logging.debug(f"Start reading tree at line {linenumber}")
+						self.m_sentence_number += 1
+						tbp_logging.debug(self._location())
+						tbp_logging.debug(f"Start reading sentence")
 					
 					dependency = line_parser.line_parser(line, linenumber)
 					dependency.parse_line()
@@ -319,9 +319,9 @@ class parser:
 				
 				linenumber += 1
 			
-			# Finished reading file. If there was some tree being read, process it.
+			# Finished reading file. If there was some sentence being read, process it.
 			if reading_sentence:
-				tbp_logging.debug("Finished reading the last tree")
+				tbp_logging.debug("Finished reading the last sentence")
 				self._finish_reading_sentence()
 				self._reset_state()
 			
