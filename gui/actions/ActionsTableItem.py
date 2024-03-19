@@ -57,7 +57,7 @@ class ActionsTableItem(QTableWidgetItem):
 		return self.m_key
 	
 	def contains_error(self):
-		return m_contains_error
+		return self.m_contains_error
 	
 	def set_color_error(self):
 		self.setBackground(QBrush(QColor(255,0,0)))
