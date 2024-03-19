@@ -385,32 +385,32 @@
   <customwidget>
    <class>TreebankFormatComboBox</class>
    <extends>QComboBox</extends>
-   <header>treebankformatselector.h</header>
+   <header>gui.actions.TreebankFormatComboBox</header>
   </customwidget>
   <customwidget>
    <class>FileChooserButton</class>
    <extends>QPushButton</extends>
-   <header>filechooserbutton.h</header>
+   <header>gui.FileChooserButton</header>
   </customwidget>
   <customwidget>
    <class>AddRemoveActionButton</class>
    <extends>QPushButton</extends>
-   <header>actionlistmodifier.h</header>
+   <header>gui.actions.AddRemoveActionButton</header>
   </customwidget>
   <customwidget>
    <class>ActionsTable</class>
    <extends>QTableWidget</extends>
-   <header>chosenactionstable.h</header>
+   <header>gui.actions.ActionsTable</header>
   </customwidget>
   <customwidget>
    <class>RunParserButton</class>
    <extends>QPushButton</extends>
-   <header>runnerbutton.h</header>
+   <header>gui.RunParserButton</header>
   </customwidget>
   <customwidget>
    <class>HelpMenu</class>
    <extends>QMenu</extends>
-   <header>helpmenu.h</header>
+   <header>gui.HelpMenu</header>
   </customwidget>
  </customwidgets>
  <resources/>

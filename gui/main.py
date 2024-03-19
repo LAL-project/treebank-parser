@@ -48,38 +48,29 @@ from PySide6 import QtCore, QtGui
 
 from treebank_parser import treebank_formats
 
-from gui import UiLoader, argument_parser
+from gui import argument_parser
 
 from gui.utils import help_menu_strings
 from gui.utils.MyOut import MyOut
 
 from gui.FileChooserButton import FileChooserButton
-from gui.HelpMenu import HelpMenu
-from gui.RunParserButton import RunParserButton
 
 from gui.actions.TreebankFormatComboBox import TreebankFormatComboBox
 from gui.actions.TreebankFormatComboBoxItem import TreebankFormatComboBoxItem
 from gui.actions.AddRemoveActionButton import AddRemoveActionButton
-from gui.actions.ActionsTable import ActionsTable
+
+# Important:
+# You need to run the following command to generate the ui_form.py file
+#     pyside6-uic form.ui -o ui_form.py, or
+#     pyside2-uic form.ui -o ui_form.py
+from gui.ui_form import Ui_gui_treebank_parser as Ui_Widget
 
 class GuiTreebankParser(QMainWindow):
 	def __init__(self):
 		super(GuiTreebankParser, self).__init__()
-
+		self.ui = Ui_Widget()
+		self.ui.setupUi(self)
 		self.SCRIPT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-		UiLoader.loadUi(
-			os.path.join(self.SCRIPT_DIRECTORY, 'form.ui'),
-			self,
-			{
-				"FileChooserButton": FileChooserButton,
-				"RunParserButton": RunParserButton,
-				"HelpMenu": HelpMenu,
-				"TreebankFormatComboBox": TreebankFormatComboBox,
-				"TreebankFormatComboBoxItem": TreebankFormatComboBoxItem,
-				"AddRemoveActionButton": AddRemoveActionButton,
-				"ActionsTable": ActionsTable,
-			}
-		)
 
 	def make_new_info_popup(self, widget, window_title, label_contents, align=None):
 		# set the widget's window title
