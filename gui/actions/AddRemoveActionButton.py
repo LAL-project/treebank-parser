@@ -124,7 +124,7 @@ class AddRemoveActionButton(QPushButton):
 				#item2.setFlags(...) # no need to set flags
 				item2.setFlags(~Qt.ItemFlag.ItemIsEditable)
 				item2.setText(type_text)
-				item2.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
+				item2.setToolTip("This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
 			
 			chosenActionTable.setItem(current_row, 0, item0)
 			chosenActionTable.setItem(current_row, 1, item1)
@@ -139,7 +139,7 @@ class AddRemoveActionButton(QPushButton):
 			
 			item2 = ActionsTableItem(selected_item.key(), type_text)
 			item2.setFlags(~Qt.ItemFlag.ItemIsEditable)
-			item2.setToolTip(f"This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
+			item2.setToolTip("This cell indicates the type of the value that has to be entered in the cell immediately to its left.")
 			
 			chosenActionTable.setItem(current_row, 0, item0)
 			chosenActionTable.setCellWidget(current_row, 1, item1)
