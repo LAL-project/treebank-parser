@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QMenu
+from PySide6.QtWidgets import QMenu
 
 class HelpMenu(QMenu):
 	def __init__(self, parent=None):

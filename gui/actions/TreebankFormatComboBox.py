@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QComboBox, QListWidget, QTableWidget
+from PySide6.QtWidgets import QComboBox, QListWidget, QTableWidget
 
 from gui.actions.ActionListItem import ActionListItem
 from gui.utils import action_type_module

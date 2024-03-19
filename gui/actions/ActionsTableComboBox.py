@@ -32,8 +32,8 @@
 #
 ################################################################################
 
-from PySide2.QtGui import QPalette, QColor
-from PySide2.QtWidgets import QComboBox
+from PySide6.QtGui import QPalette, QColor
+from PySide6.QtWidgets import QComboBox
 
 from gui.utils.MyOut import MyOut
 

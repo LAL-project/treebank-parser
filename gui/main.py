@@ -41,10 +41,10 @@ if __name__ == "__main__":
 	sys.path.insert(0, str(pathlib.Path(__file__).parent.absolute()) + "/..")
 	del pathlib
 
-from PySide2.QtWidgets import QAbstractItemView, QApplication, QMainWindow, QCheckBox
-from PySide2.QtWidgets import QWidget, QTableWidget, QTextEdit
-from PySide2.QtWidgets import QLabel, QVBoxLayout
-from PySide2 import QtCore, QtGui
+from PySide6.QtWidgets import QAbstractItemView, QApplication, QMainWindow, QCheckBox
+from PySide6.QtWidgets import QWidget, QTableWidget, QTextEdit
+from PySide6.QtWidgets import QLabel, QVBoxLayout
+from PySide6 import QtCore, QtGui
 
 from treebank_parser import treebank_formats
 
@@ -200,4 +200,4 @@ if __name__ == "__main__":
 	widget = GuiTreebankParser()
 	widget.do_basic_setup(args, lal)
 	widget.show()
-	sys.exit(app.exec_())
+	sys.exit(app.exec())

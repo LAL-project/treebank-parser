@@ -32,8 +32,8 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QPushButton, QListWidget, QTableWidget, QComboBox
-from PySide2.QtCore import Qt
+from PySide6.QtWidgets import QPushButton, QListWidget, QTableWidget
+from PySide6.QtCore import Qt
 
 from typing import cast
 

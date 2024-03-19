@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QListWidgetItem
+from PySide6.QtWidgets import QListWidgetItem
 
 
 class ActionListItem(QListWidgetItem):

@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QPushButton, QLineEdit, QSpinBox, QComboBox
+from PySide6.QtWidgets import QPushButton, QLineEdit, QSpinBox
 
 from typing import cast
 

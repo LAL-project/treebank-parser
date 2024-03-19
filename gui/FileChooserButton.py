@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QPushButton, QFileDialog, QLineEdit
+from PySide6.QtWidgets import QPushButton, QFileDialog, QLineEdit
 
 
 class FileChooserButton(QPushButton):

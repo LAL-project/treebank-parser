@@ -32,8 +32,8 @@
 
 from __future__ import (print_function, division, unicode_literals, absolute_import)
 
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import QMetaObject
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import QMetaObject
 
 
 class UiLoader(QUiLoader):

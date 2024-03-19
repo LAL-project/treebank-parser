@@ -32,8 +32,8 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QTableWidgetItem
-from PySide2.QtGui import QBrush, QColor
+from PySide6.QtWidgets import QTableWidgetItem
+from PySide6.QtGui import QBrush, QColor
 
 
 class ActionsTableItem(QTableWidgetItem):

@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide2.QtWidgets import QTableWidget
+from PySide6.QtWidgets import QTableWidget
 
 from typing import cast
 
