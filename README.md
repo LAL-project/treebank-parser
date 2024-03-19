@@ -79,13 +79,13 @@ The usage can be read by clicking, on the menu bar, `Help` > `How to`. A small p
 
 ### Requirements for running the GUI
 
-The GUI was built with [PySide2](https://pypi.org/project/PySide2/). Anaconda users can install it with the following command ([here](https://anaconda.org/conda-forge/pyside2) are listed alternative ways of installing PySide2 with conda.)
+The GUI was built with [PySide6](https://pypi.org/project/PySide6/). Anaconda users can install it with the following command ([here](https://anaconda.org/conda-forge/pyside6) are listed alternative ways of installing PySide6 with conda.)
 
-	$ conda install -c conda-forge pyside2
+	$ conda install conda-forge::pyside6 
 
-`pip3` users can run the following command in their command line terminal to install PySide2
+`pip3` users can run the following command in their command line terminal to install PySide6
 
-	$ pip3 install PySide2
+	$ pip3 install PySide6
 
 ### Running the GUI
 
