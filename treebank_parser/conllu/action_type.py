@@ -98,7 +98,7 @@ ChunkTree_key_str = action_key_str[ChunkTree]
 
 action_help_str = {
 	RemovePunctuationMarks: "Remove punctuation marks from each sentence. A punctuation mark is identified by the value 'PUNCT' in the UPOS field.",
-	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP', 'AUX', 'CCONJ', 'DET', 'NUM', 'PART', 'PRON', 'SCONJ' in the corresponding UPOS field. The origins of this description are found in a 2022 paper available at arXiv (https://arxiv.org/abs/2007.15342).",
+	RemoveFunctionWords: "Remove function words from each sentence. A function word is identified by the values 'ADP', 'AUX', 'CCONJ', 'DET', 'NUM', 'PART', 'PRON', 'SCONJ' in the corresponding UPOS field. The origins of this description are found in the journal paper 'The optimality of syntactic dependency distances' (doi: 10.1103/PhysRevE.105.014308); available online at https://arxiv.org/abs/2007.15342. ",
 	SplitMultiwordTokens: "Multiword tokens are ignored and, instead, their individual words are used as nodes of the tree.",
     DiscardSentencesShorter: "Discard sentences whose length (in words) is less than or equal to (<=) a given length. This is applied *after* removing punctuation marks and/or function words.",
 	DiscardSentencesLonger: "Discard sentences whose length (in words) is greater than or equal to (>=) a given length. This is applied *after* removing punctuation marks and/or function words.",

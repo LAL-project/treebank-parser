@@ -15,8 +15,10 @@ All the parameters accepted by the CoNLL-U format parser can be queried using th
 	  --RemoveFunctionWords
 	                        Remove function words from each sentence. A function word is identified by the
 	                        values 'ADP', 'AUX', 'CCONJ', 'DET', 'NUM', 'PART', 'PRON', 'SCONJ' in the
-	                        corresponding UPOS field. The origins of this description are found in a 2022
-	                        paper available at arXiv (https://arxiv.org/abs/2007.15342).
+	                        corresponding UPOS field. The origins of this description are found in the
+	                        journal paper 'The optimality of syntactic dependency distances' (doi:
+	                        10.1103/PhysRevE.105.014308); available online at
+	                        https://arxiv.org/abs/2007.15342.
 	  --RemovePunctuationMarks
 	                        Remove punctuation marks from each sentence. A punctuation mark is identified
 	                        by the value 'PUNCT' in the UPOS field.
