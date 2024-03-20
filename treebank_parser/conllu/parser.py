@@ -98,7 +98,7 @@ class parser:
 				return None
 
 		# ensure there aren't errors in the head vector (do this with LAL)
-		tbp_logging.info("Checking mistakes in head vector...")
+		tbp_logging.info("    Checking mistakes in head vector...")
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
 			
@@ -239,16 +239,19 @@ class parser:
 		self.m_sentence_tokens.clear()
 
 	def _finish_reading_sentence(self):
-		tbp_logging.info(self._location())
-		tbp_logging.info("    Building the tree...")
+		tbp_logging.debug(self._location())
+		tbp_logging.info("Building the tree...")
+		
 		rt = self._build_full_tree()
-		if rt is None:
+		if rt is None: return
+		if not rt.is_rooted_tree():
+			tbp_logging.warning("The tree is not a rooted tree")
 			return
 
-		tbp_logging.info("    Remove words if needed...")
+		tbp_logging.info("Remove words if needed...")
 		rt = self._remove_words_tree(rt)
 		
-		tbp_logging.info("    Store the head vector...")
+		tbp_logging.info("Store the head vector...")
 		self._store_head_vector(rt)
 
 	def __init__(self, args, lal_module):

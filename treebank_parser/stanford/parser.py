@@ -65,6 +65,8 @@ class parser:
 	def _num_unique_ids(self):
 		r"""
 		Returns the number of unique ids found in self.m_sentence_deps.
+
+		This counts ID '0' which corresponds to an artificial root.
 		"""
 		unique_ids = []
 		for dep in self.m_sentence_deps:
@@ -77,6 +79,7 @@ class parser:
 		Returns the list of unique edges from the dependencies in self.m_sentence_deps.
 		These are returned in the order they are found in self.m_sentence_deps.
 		Each edge is a pair (governor, dependent).
+		This list contains the edge (0, x) where x is an ID >= 1.
 		"""
 		deps = []
 		for dep in self.m_sentence_deps:
@@ -102,7 +105,7 @@ class parser:
 		head_vector = [edge[0] for edge in edge_list]
 		
 		# make sure there aren't errors in the head vector (do this with LAL)
-		tbp_logging.info("Checking mistakes in head vector...")
+		tbp_logging.info("    Checking mistakes in head vector...")
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
 			
@@ -223,7 +226,7 @@ class parser:
 
 	def _finish_reading_sentence(self):
 		tbp_logging.debug(self._location())
-		tbp_logging.debug("Build the tree...")
+		tbp_logging.info("Building the tree...")
 
 		n = self._num_unique_ids()
 		edges = self._unique_dependencies()
@@ -235,13 +238,15 @@ class parser:
 			return
 		
 		rt = self._build_full_tree(edges)
-		if rt is None:
+		if rt is None: return
+		if not rt.is_rooted_tree():
+			tbp_logging.warning("The tree is not a rooted tree")
 			return
 
-		tbp_logging.debug("Remove words if needed...")
+		tbp_logging.info("Remove words if needed...")
 		rt = self._remove_words_tree(rt)
 
-		tbp_logging.debug("Store the head vector...")
+		tbp_logging.info("Store the head vector...")
 		self._store_head_vector(rt)
 
 	def __init__(self, args, lal_module):
