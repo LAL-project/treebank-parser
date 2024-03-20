@@ -1,0 +1,29 @@
+# FROM: SUD-2.12/SUD_French-GSD/fr_gsd-sud-dev.conllu
+# sent_id = fr-ud-dev_00013
+# text = On retrouve ici une touche très melvillienne et qui au lieu de souligner la thématique du livre y ajoute du sens.
+1	On	on	PRON	_	Emph=No|Gender=Masc|Number=Sing|Person=3|PronType=Ind	2	subj	_	wordform=on
+2	retrouve	retrouver	VERB	_	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin	0	root	_	_
+3	ici	ici	ADV	_	_	2	mod	_	_
+4	une	un	DET	_	Definite=Ind|Gender=Fem|Number=Sing|PronType=Art	5	det	_	_
+5	touche	touche	NOUN	_	Gender=Fem|Number=Sing	2	comp:obj	_	_
+6	très	très	ADV	_	Shared=No	7	mod	_	_
+7	melvillienne	melvillien	ADJ	_	Gender=Fem|Number=Sing	5	mod	_	_
+8	et	et	CCONJ	_	_	21	cc	_	_
+9	qui	qui	PRON	_	PronType=Rel	21	subj	_	_
+10-11	au	_	_	_	_	_	_	_	_
+10	à	à	ADP	_	ExtPos=ADV	21	mod	_	Idiom=Yes
+11	le	le	DET	_	Definite=Def|Gender=Masc|Number=Sing|PronType=Art	12	det	_	InIdiom=Yes
+12	lieu	lieu	NOUN	_	Gender=Masc|Number=Sing	10	comp:obj	_	InIdiom=Yes
+13	de	de	ADP	_	_	12	comp:obl	_	_
+14	souligner	souligner	VERB	_	VerbForm=Inf	13	comp:obj	_	Subject=SubjRaising
+15	la	le	DET	_	Definite=Def|Gender=Fem|Number=Sing|PronType=Art	16	det	_	_
+16	thématique	thématique	NOUN	_	Gender=Fem|Number=Sing	14	comp:obj	_	_
+17-18	du	_	_	_	_	_	_	_	_
+17	de	de	ADP	_	_	16	udep	_	_
+18	le	le	DET	_	Definite=Def|Gender=Masc|Number=Sing|PronType=Art	19	det	_	_
+19	livre	livre	NOUN	_	Gender=Masc|Number=Sing	17	comp:obj	_	_
+20	y	y	PRON	_	Emph=No|Person=3|PronType=Prs	21	comp:obl	_	_
+21	ajoute	ajouter	VERB	_	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin	7	conj:coord	_	_
+22	du	du	DET	_	Definite=Ind|Gender=Masc|Number=Sing|PronType=Art	23	det	_	_
+23	sens	sens	NOUN	_	Gender=Masc|Number=Sing|Shared=No	21	comp:obj	_	SpaceAfter=No
+24	.	.	PUNCT	_	_	2	punct	_	_

@@ -149,6 +149,13 @@ function run_tests {
 				run_test "fr-01-04" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-04.hv"	"CoNLL-U" $RFW $RPM
 				run_test "fr-01-05" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-05.hv"	"CoNLL-U" $RPM $RFW
 			
+			elif [ "$ID" == "02" ]; then
+				run_test "fr-02-01" "CoNLL-U/inputs/fr-02.conllu" "CoNLL-U/outputs/fr-02-01.hv"	"CoNLL-U"
+				run_test "fr-02-02" "CoNLL-U/inputs/fr-02.conllu" "CoNLL-U/outputs/fr-02-02.hv"	"CoNLL-U" $RPM
+				run_test "fr-02-03" "CoNLL-U/inputs/fr-02.conllu" "CoNLL-U/outputs/fr-02-03.hv"	"CoNLL-U" $RFW
+				run_test "fr-02-04" "CoNLL-U/inputs/fr-02.conllu" "CoNLL-U/outputs/fr-02-04.hv"	"CoNLL-U" $RFW $RPM
+				run_test "fr-02-05" "CoNLL-U/inputs/fr-02.conllu" "CoNLL-U/outputs/fr-02-05.hv"	"CoNLL-U" $RPM $RFW
+			
 			fi
 		fi
 	elif [ "$FORMAT" == "Stanford" ]; then
