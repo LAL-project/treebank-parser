@@ -170,6 +170,7 @@ function run_tests {
 		elif [ "$LANG" == "zh" ]; then
 			if [ "$ID" == "01" ]; then
 				run_test "zh-01-01" "Stanford/inputs/zh-01.stp" "Stanford/outputs/zh-01-01.hv"	"Stanford"
+				run_test "zh-01-02" "Stanford/inputs/zh-01.stp" "Stanford/outputs/zh-01-02.hv"	"Stanford" $RPM
 			
 			elif [ "$ID" == "02" ]; then
 				run_test "zh-02-01" "Stanford/inputs/zh-02.stp" "Stanford/outputs/zh-02-01.hv"	"Stanford"
