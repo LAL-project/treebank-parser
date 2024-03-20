@@ -3,7 +3,6 @@
 LOG_FILE=execution_log
 MAIN_FILE=../cli/main.py
 
-SMTW="--SplitMultiwordTokens"
 RPM="--RemovePunctuationMarks"
 RFW="--RemoveFunctionWords"
 
