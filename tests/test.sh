@@ -109,70 +109,45 @@ function run_tests {
 	if [ "$FORMAT" == "CoNLL-U" ]; then
 		if [ "$LANG" == "ca" ]; then
 			if [ "$ID" == "01" ]; then
-				run_test "ca-01-01" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-01.hv"	"CoNLL-U" $SMTW
-				run_test "ca-01-02" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-02.hv"	"CoNLL-U" $SMTW $RPM
-				run_test "ca-01-03" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-03.hv"	"CoNLL-U" $SMTW $RFW
-				run_test "ca-01-04" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
-				run_test "ca-01-05" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
-				run_test "ca-01-06" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-06.hv"	"CoNLL-U"
-				run_test "ca-01-07" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-07.hv"	"CoNLL-U" $RPM
-				run_test "ca-01-08" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-08.hv"	"CoNLL-U" $RFW
-				run_test "ca-01-09" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-09.hv"	"CoNLL-U" $RFW $RPM
-				run_test "ca-01-10" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-10.hv"	"CoNLL-U" $RPM $RFW
+				run_test "ca-01-01" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-01.hv"	"CoNLL-U" 
+				run_test "ca-01-02" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-02.hv"	"CoNLL-U" $RPM
+				run_test "ca-01-03" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-03.hv"	"CoNLL-U" $RFW
+				run_test "ca-01-04" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-04.hv"	"CoNLL-U" $RFW $RPM
+				run_test "ca-01-05" "CoNLL-U/inputs/ca-01.conllu" "CoNLL-U/outputs/ca-01-05.hv"	"CoNLL-U" $RPM $RFW
 			
 			elif [ "$ID" == "02" ]; then
-				run_test "ca-02-01" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-01.hv"	"CoNLL-U" $SMTW
-				run_test "ca-02-02" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-02.hv"	"CoNLL-U" $SMTW $RPM
-				run_test "ca-02-03" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-03.hv"	"CoNLL-U" $SMTW $RFW
-				run_test "ca-02-04" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
-				run_test "ca-02-05" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
-				run_test "ca-02-06" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-06.hv"	"CoNLL-U"
-				run_test "ca-02-07" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-07.hv"	"CoNLL-U" $RPM
-				run_test "ca-02-08" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-08.hv"	"CoNLL-U" $RFW
-				run_test "ca-02-09" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-09.hv"	"CoNLL-U" $RPM $RFW
-				run_test "ca-02-10" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-10.hv"	"CoNLL-U" $RFW $RPM
+				run_test "ca-02-01" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-01.hv"	"CoNLL-U" 
+				run_test "ca-02-02" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-02.hv"	"CoNLL-U" $RPM
+				run_test "ca-02-03" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-03.hv"	"CoNLL-U" $RFW
+				run_test "ca-02-04" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-04.hv"	"CoNLL-U" $RFW $RPM
+				run_test "ca-02-05" "CoNLL-U/inputs/ca-02.conllu" "CoNLL-U/outputs/ca-02-05.hv"	"CoNLL-U" $RPM $RFW
 			fi
 		
 		elif [ "$LANG" == "en" ]; then
 			if [ "$ID" == "01" ]; then
-				run_test "en-01-01" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-01.hv"	"CoNLL-U" $SMTW
-				run_test "en-01-02" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-02.hv"	"CoNLL-U" $SMTW $RPM
-				run_test "en-01-03" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-03.hv"	"CoNLL-U" $SMTW $RFW
-				run_test "en-01-04" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
-				run_test "en-01-05" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
-				run_test "en-01-06" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-06.hv"	"CoNLL-U"
-				run_test "en-01-07" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-07.hv"	"CoNLL-U" $RPM
-				run_test "en-01-08" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-08.hv"	"CoNLL-U" $RFW
-				run_test "en-01-09" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-09.hv"	"CoNLL-U" $RPM $RFW
-				run_test "en-01-10" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-10.hv"	"CoNLL-U" $RFW $RPM
+				run_test "en-01-01" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-01.hv"	"CoNLL-U"
+				run_test "en-01-02" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-02.hv"	"CoNLL-U" $RPM
+				run_test "en-01-03" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-03.hv"	"CoNLL-U" $RFW
+				run_test "en-01-04" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-04.hv"	"CoNLL-U" $RFW $RPM
+				run_test "en-01-05" "CoNLL-U/inputs/en-01.conllu" "CoNLL-U/outputs/en-01-05.hv"	"CoNLL-U" $RPM $RFW
 			fi
 		
 		elif [ "$LANG" == "es" ]; then
 			if [ "$ID" == "01" ]; then
-				run_test "es-01-01" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-01.hv"	"CoNLL-U" $SMTW
-				run_test "es-01-02" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-02.hv"	"CoNLL-U" $SMTW $RPM
-				run_test "es-01-03" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-03.hv"	"CoNLL-U" $SMTW $RFW
-				run_test "es-01-04" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
-				run_test "es-01-05" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
-				run_test "es-01-06" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-06.hv"	"CoNLL-U"
-				run_test "es-01-07" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-07.hv"	"CoNLL-U" $RPM
-				run_test "es-01-08" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-08.hv"	"CoNLL-U" $RFW
-				run_test "es-01-09" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-09.hv"	"CoNLL-U" $RPM $RFW
-				run_test "es-01-10" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-10.hv"	"CoNLL-U" $RFW $RPM
+				run_test "es-01-01" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-01.hv"	"CoNLL-U"
+				run_test "es-01-02" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-02.hv"	"CoNLL-U" $RPM
+				run_test "es-01-03" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-03.hv"	"CoNLL-U" $RFW
+				run_test "es-01-04" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-04.hv"	"CoNLL-U" $RFW $RPM
+				run_test "es-01-05" "CoNLL-U/inputs/es-01.conllu" "CoNLL-U/outputs/es-01-05.hv"	"CoNLL-U" $RPM $RFW
 			fi
 		
 		elif [ "$LANG" == "fr" ]; then
 			if [ "$ID" == "01" ]; then
-				run_test "fr-01-01" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-01.hv"	"CoNLL-U" $SMTW
-				run_test "fr-01-02" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-02.hv"	"CoNLL-U" $SMTW $RPM
-				run_test "fr-01-03" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-03.hv"	"CoNLL-U" $SMTW $RFW
-				run_test "fr-01-04" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-04.hv"	"CoNLL-U" $SMTW $RFW $RPM
-				run_test "fr-01-05" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-05.hv"	"CoNLL-U" $SMTW $RPM $RFW
-				run_test "fr-01-06" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-06.hv"	"CoNLL-U"
-				run_test "fr-01-07" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-07.hv"	"CoNLL-U" $RPM
-				run_test "fr-01-08" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-08.hv"	"CoNLL-U" $RFW
-				run_test "fr-01-09" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-09.hv"	"CoNLL-U" $RPM $RFW
-				run_test "fr-01-10" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-10.hv"	"CoNLL-U" $RFW $RPM
+				run_test "fr-01-01" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-01.hv"	"CoNLL-U"
+				run_test "fr-01-02" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-02.hv"	"CoNLL-U" $RPM
+				run_test "fr-01-03" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-03.hv"	"CoNLL-U" $RFW
+				run_test "fr-01-04" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-04.hv"	"CoNLL-U" $RFW $RPM
+				run_test "fr-01-05" "CoNLL-U/inputs/fr-01.conllu" "CoNLL-U/outputs/fr-01-05.hv"	"CoNLL-U" $RPM $RFW
 			
 			fi
 		fi
@@ -182,17 +157,18 @@ function run_tests {
 			if [ "$ID" == "01" ]; then
 				run_test "en-01-01" "Stanford/inputs/en-01.stp" "Stanford/outputs/en-01-01.hv"	"Stanford"
 				run_test "en-01-01" "Stanford/inputs/en-01.stp" "Stanford/outputs/en-01-02.hv"	"Stanford"	$RPM
+			
 			fi
-
+		
 		elif [ "$LANG" == "zh" ]; then
 			if [ "$ID" == "01" ]; then
 				run_test "zh-01-01" "Stanford/inputs/zh-01.stp" "Stanford/outputs/zh-01-01.hv"	"Stanford"
-				
+			
 			elif [ "$ID" == "02" ]; then
 				run_test "zh-02-01" "Stanford/inputs/zh-02.stp" "Stanford/outputs/zh-02-01.hv"	"Stanford"
 				run_test "zh-02-02" "Stanford/inputs/zh-02.stp" "Stanford/outputs/zh-02-02.hv"	"Stanford"	$RPM
+			
 			fi
-
 		fi
 	fi
 }
@@ -257,7 +233,7 @@ if [ $all == 1 ]; then
 			done
 		done
 	done
-	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
+	
 else
 	if [ "$format" == "0" ] && [ "$lang" == "0" ]; then
 		echo -e "\e[1;4;31mError:\e[0m Missing --format and --lang parameters."
@@ -298,5 +274,6 @@ else
 
 	fi
 
-	echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE
 fi
+
+echo "$(date +"%Y/%m/%d.%T") Finished running tests" >> $LOG_FILE

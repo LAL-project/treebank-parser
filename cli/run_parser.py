@@ -47,8 +47,6 @@ def make_actions_list(args):
 	"""
 	
 	if args.treebank_format == treebank_formats.CoNLLU_key_str:
-		if args.SplitMultiwordTokens:
-			yield conllu_action_type.SplitMultiwordTokens_key_str
 		if args.RemovePunctuationMarks:
 			yield conllu_action_type.RemovePunctuationMarks_key_str
 		if args.RemoveFunctionWords:

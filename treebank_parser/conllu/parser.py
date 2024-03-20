@@ -38,68 +38,11 @@ Parser of CoNLLU-formatted files.
 This module contains a single class `parser`.
 """
 
-import itertools
 import time
 
 from treebank_parser.conllu import line_parser
 from treebank_parser.conllu import line_type
 import treebank_parser.output_log as tbp_logging
-
-class multiword_token:
-	r"""
-	Auxiliary class to store information about multiword tokens. A multiword token
-	is a token that contains multiple tokens. For example, 'del' is a multiword
-	token with ID, say, 4-5, whose tokens are 'de' (with ID '4') and 'el' (with
-	ID '5').
-
-	- `m_token_ids`: all the token IDs that are part of this multiword token
-	   (e.g., 'del').
-	- `m_parent_ids`: all the IDs of the parents of the individual tokens.
-	- `m_rooted_tree`: the rooted tree made up of the edges among words in this
-	   multiword token
-	- `m_token`: the original token object (e.g., 'del', 4-5).
-	"""
-
-	def __init__(self):
-		self.m_word_ids = []
-		self.m_parent_ids = []
-		self.m_unique_parent_ids = []
-		
-		self.m_normalized_to_word_id = {}
-		self.m_rooted_tree = None
-
-		self.m_token = None
-
-	def is_function_multitoken_word(self, tokens):
-		return all(map(
-			lambda t : tokens[t - 1].is_function_word(),
-			self.m_word_ids))
-
-	def set_parent_ids(self, pids):
-		self.m_parent_ids = pids
-		self.m_unique_parent_ids = list(set(self.m_parent_ids))
-
-	def get_parent_ids(self): return self.m_parent_ids
-	def get_unique_parent_ids(self): return list(set(self.m_parent_ids))
-
-	def has_unique_parent(self): return len(self.m_unique_parent_ids) == 1
-
-	def set_token(self, t): self.m_token = t
-	def get_token(self): return self.m_token
-
-	def set_word_ids(self, ids): self.m_word_ids = ids
-	def get_word_ids(self): return self.m_word_ids
-
-	def get_rooted_tree(self): return self.m_rooted_tree
-	def set_rooted_tree(self, rt, normalized_to_word_id):
-		self.m_rooted_tree = rt
-		self.m_normalized_to_word_id = normalized_to_word_id
-	
-	def get_word_id_of_tree_vertex(self, u):
-		return self.m_normalized_to_word_id.get(u)
-
-	def __repr__(self):
-		return f"word ids: '{self.m_word_ids}', parent ids: '{self.m_parent_ids}'"
 
 class parser:
 	r"""
@@ -116,15 +59,6 @@ class parser:
 	"""
 	def _location(self):
 		return f"At sentence {self.m_sentence_number} of ID '{self.m_sentence_id}' (starting at line {self.m_sentence_starting_line})"
-
-	def _is_part_of_multiword_token(self, id):
-		r"""
-		Is the token with id `id` part of a multiword token?
-		"""
-		idx = self.m_word_to_multiword_token.get(id)
-		if idx is None:
-			return (False, idx)
-		return (True, idx)
 
 	def _should_discard_tree(self, rt):
 		r"""
@@ -256,111 +190,6 @@ class parser:
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self.m_head_vector_collection.append(hv)
 
-	def _update_multiword_tokens_info(self, rt):
-		r"""
-		Updates all the necessary information of multiword tokens for adequate
-		removal in later stages.
-		"""
-
-		for t in self.m_multiword_tokens:
-			word_ids = t.get_word_ids()
-			
-			parent_ids = []
-			for w in word_ids:
-				wtoken = self.m_sentence_tokens[w - 1]
-				head_int = wtoken.get_iHEAD()
-				assert(head_int is not None)
-				parent_ids.append( head_int )
-
-			t.set_parent_ids(parent_ids)
-
-			if not t.has_unique_parent():
-				min_word_id = min(word_ids)
-				normalized_to_word_id = {}
-				for w in word_ids:
-					normalized_to_word_id[w - min_word_id] = w
-
-				# make edges among the words in this multitoken word
-				edges = []
-				for u, v in itertools.product(word_ids, repeat=2):
-					nu = u - min_word_id
-					nv = v - min_word_id
-					if nu != nv and rt.has_edge(u - 1, v - 1):
-						edges.append( (nu, nv) )
-				
-				N = len(word_ids)
-				rt2 = self.LAL_module.graphs.rooted_tree(N)
-				rt2.add_edges(edges)
-				
-				# retrieve all roots and see if there is only one
-				roots = []
-				for u in range(0, N):
-					if rt2.get_in_degree(u) == 0:
-						roots.append(u)
-				if len(roots) == 1:
-					rt2.set_root(roots[0])
-				
-				t.set_rooted_tree(rt2, normalized_to_word_id)
-	
-	def _remove_word_of_a_multiword_token(self, token):
-		r"""
-		Returns True if a token that is part of a multiword token (e.g., token
-		with id, say, '4' and the sentence has a multiword token, say, 4-6) is
-		to be removed from the tree.
-		"""
-
-		token_id = int(token.get_ID())
-
-		(is_part, idx) = self._is_part_of_multiword_token(token_id)
-		if not is_part:
-			return False
-
-		multiword_token = self.m_multiword_tokens[idx]
-		all_word_ids_in_multiword = multiword_token.get_word_ids()
-		assert( token_id in all_word_ids_in_multiword )
-
-		if self.m_remove_function_words:
-			# If any of the words in this multiword token is a function word then
-			# *all* the tokens have to be removed. So, the token also has to
-			# be removed even if it is not a function word itself.
-			if multiword_token.is_function_multitoken_word(self.m_sentence_tokens):
-				return True
-
-		if multiword_token.has_unique_parent():
-			# In this case, all the words in the multiword token have the same
-			# parent. Here we can safely discard a token if it *not* the first
-			# in the range.
-			if token_id != all_word_ids_in_multiword[0]:
-				return True
-		else:
-			# In this case, there is more than one parent in the multiword token.
-			# There are two scenarios concerning the tree we can make with the
-			# syntactic dependencies among the words in the multiword token:
-			# 1. The tree is an actual rooted tree (unique root, connected): like
-			#    a catena.
-			# 2. The tree is not a rooted tree (missing edges -> more than one root)
-			
-			rt = multiword_token.get_rooted_tree()
-			assert(rt is not None)
-
-			# Case 1: It is completely safe to remove this token if it is not the
-			# root of the tree we can make with the (head,dependent) relationships
-			# among the words in the multiword token.
-			if rt.is_rooted_tree():
-				root = rt.get_root()
-				id_not_to_remove = multiword_token.get_word_id_of_tree_vertex(root)
-				return token_id != id_not_to_remove
-
-			# Case 2: we are going to keep the first token in the sequence, but
-			# this will potentially lead to errors.
-			tbp_logging.warning(self._location())
-			tbp_logging.warning(f"    Multiword token '{token.get_FORM()}' has multiple parents.")
-			tbp_logging.warning(f"    We keep the first token, but this may lead to errors.")
-			if token_id != all_word_ids_in_multiword[0]:
-				return True
-			
-		return False
-
 	def _make_token_discard_functions(self, args):
 		
 		# Remove punctuation marks
@@ -376,15 +205,6 @@ class parser:
 				lambda token: token.is_function_word()
 			)
 		
-		# Remove all tokens that are part of a multiword token except one
-		if args.SplitMultiwordTokens:
-			self.m_join_multiword_tokens = False
-		else:
-			self.m_join_multiword_tokens = True
-			self.m_token_discard_functions.append(
-				lambda token: self._remove_word_of_a_multiword_token(token)
-			)
-
 	def _make_sentence_discard_functions(self, args):
 		
 		# Discard short sentences
@@ -417,8 +237,6 @@ class parser:
 	def _reset_state(self):
 		self.m_sentence_id = "Unknown ID"
 		self.m_sentence_tokens.clear()
-		self.m_multiword_tokens.clear()
-		self.m_word_to_multiword_token.clear()
 
 	def _finish_reading_sentence(self):
 		tbp_logging.info(self._location())
@@ -428,9 +246,6 @@ class parser:
 			return
 
 		tbp_logging.info("    Remove words if needed...")
-		if self.m_join_multiword_tokens:
-			self._update_multiword_tokens_info(rt)
-
 		rt = self._remove_words_tree(rt)
 		
 		tbp_logging.info("    Store the head vector...")
@@ -448,10 +263,6 @@ class parser:
 		self.m_sentence_number = 0
 		self.m_sentence_starting_line = 0
 		
-		# only the multiword tokens (1-2, 8-10, ...)
-		self.m_multiword_tokens = []
-		self.m_word_to_multiword_token = {}
-
 		# all the head vectors to dump into the output file
 		self.m_head_vector_collection = []
 		# input and output files
@@ -459,7 +270,6 @@ class parser:
 		self.m_output_file = args.outputfile
 
 		self.m_remove_function_words = False
-		self.m_join_multiword_tokens = True
 		
 		# utilities for logging
 		self.m_donotknow_msg = "Do not know how to process this. This line will be ignored."
@@ -522,21 +332,6 @@ class parser:
 					token = line_parser.line_parser(line, linenumber)
 					token.parse()
 					
-					if self.m_join_multiword_tokens and token.is_multiword_token():
-						begin_range, end_range = token.get_ID().split("-")
-						begin_range = int(begin_range)
-						end_range = int(end_range)
-
-						to_append = multiword_token()
-						to_append.set_word_ids([x for x in range(begin_range, end_range + 1)])
-						to_append.set_token(token)
-
-						L = len(self.m_multiword_tokens)
-						for i in range(begin_range, end_range + 1):
-							self.m_word_to_multiword_token[ i ] = L
-						
-						self.m_multiword_tokens.append(to_append)
-
 					if not token.is_multiword_token() and not token.is_empty_token():
 						self.m_sentence_tokens.append(token)
 				
