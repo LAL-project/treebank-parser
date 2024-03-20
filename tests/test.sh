@@ -175,6 +175,10 @@ function run_tests {
 				run_test "zh-02-01" "Stanford/inputs/zh-02.stp" "Stanford/outputs/zh-02-01.hv"	"Stanford"
 				run_test "zh-02-02" "Stanford/inputs/zh-02.stp" "Stanford/outputs/zh-02-02.hv"	"Stanford"	$RPM
 			
+			elif [ "$ID" == "03" ]; then
+				run_test "zh-03-01" "Stanford/inputs/zh-03.stp" "Stanford/outputs/zh-03-01.hv"	"Stanford"
+				run_test "zh-03-02" "Stanford/inputs/zh-03.stp" "Stanford/outputs/zh-03-02.hv"	"Stanford"	$RPM
+			
 			fi
 		fi
 	fi
