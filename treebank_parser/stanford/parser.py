@@ -63,46 +63,43 @@ class parser:
 		return f"At sentence {self.m_sentence_number}, starting at line {self.m_sentence_starting_line}"
 
 	def _num_unique_ids(self):
+		r"""
+		Returns the number of unique ids found in self.m_sentence_deps.
+		"""
 		unique_ids = []
 		for dep in self.m_sentence_deps:
 			unique_ids.append( dep.get_parent_id() )
 			unique_ids.append( dep.get_dependent_id() )
 		return len(set(unique_ids))
 	
+	def _unique_dependencies(self):
+		r"""
+		Returns the list of unique edges from the dependencies in self.m_sentence_deps.
+		These are returned in the order they are found in self.m_sentence_deps.
+		Each edge is a pair (governor, dependent).
+		"""
+		deps = []
+		for dep in self.m_sentence_deps:
+			u = dep.get_parent_id()
+			v = dep.get_dependent_id()
+			if (u,v) not in deps:
+				deps.append( (u,v) )
+		return deps
+
 	def _should_discard_tree(self, rt):
 		r"""
 		Returns whether or not a rooted tree `rt` should be discarded according
 		to the functions in `self.m_sentence_discard_functions`.
-		
-		Parameters
-		==========
-		- `rt`: rooted tree.
 		"""
 		if rt.get_num_nodes() == 0: return True
 		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
-	
-	def _build_full_tree(self):
+
+	def _build_full_tree(self, edge_list):
 		r"""
-		This function is used to convert the contents of the member 'm_current_tree'
-		into an object of type `lal.graphs.rooted_tree`.
+		Build the tree structure out of the edge list 'edge_list'
 		"""
 		
-		# retrieve the head vector from the lines while ensuring
-		# that all heads are numerical
-		head_vector = []
-		for dep in self.m_sentence_deps:
-			try:
-				head_int = int(dep.get_parent_id())
-				
-			except Exception as e:
-				tbp_logging.error(self._location())
-				tbp_logging.error(f"    Head: '{dep.get_parent_id()}'")
-				tbp_logging.error(f"    Within line: '{dep.get_line()}'")
-				tbp_logging.error(f"    {self.m_donotknow_msg}")
-				tbp_logging.error(f"    Exception: '{e}'")
-				return None
-			
-			head_vector.append(head_int)
+		head_vector = [edge[0] for edge in edge_list]
 		
 		# make sure there aren't errors in the head vector (do this with LAL)
 		tbp_logging.info("Checking mistakes in head vector...")
@@ -124,7 +121,7 @@ class parser:
 		tbp_logging.debug(f"the graph has {rt.get_num_nodes()} nodes")
 		tbp_logging.debug(f"the graph has {rt.get_num_edges()} edges")
 		tbp_logging.debug(f"Is the graph a rooted tree? {rt.is_rooted_tree()}")
-
+	
 		return rt
 		
 	def _remove_words_tree(self, rt):
@@ -229,14 +226,15 @@ class parser:
 		tbp_logging.debug("Build the tree...")
 
 		n = self._num_unique_ids()
-		m = len(self.m_sentence_deps)
+		edges = self._unique_dependencies()
+		m = len(edges)
 		if m != n - 1:
 			tbp_logging.warning(self._location())
 			tbp_logging.warning(f"The syntactic dependency structure of sentence '{self.m_sentence_number}' is not a tree.")
 			tbp_logging.debug(f"The graph has {n} nodes and {m} edges")
 			return
 		
-		rt = self._build_full_tree()
+		rt = self._build_full_tree(edges)
 		if rt is None:
 			return
 
