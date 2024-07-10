@@ -41,30 +41,53 @@ This object is to be used by the main command line interface.
 import argparse
 
 from treebank_parser import treebank_formats as formats
-from treebank_parser.conllu import action_type as conllu_action_type
 
 from cli.argument_parser_CoNLLU import add_arguments_CoNLLU_parser
 from cli.argument_parser_head_vector import add_arguments_head_vector_parser
 from cli.argument_parser_Stanford import add_arguments_Stanford_parser
+
+class ConditionallyRequired(argparse.Action):
+	def __call__(self, parser, namespace, values, option_string = None):
+		if not getattr(namespace, 'input_treebank_collection', False):
+			parser.error(f"{option_string} can only be used when -t/--input-treebank-collection is specified")
+		setattr(namespace, self.dest, True)
 
 def add_arguments_main_parser(parser):
 	r"""
 	Adds the necessary arguments to the main CLI parser (not for the
 	subcommands).
 	"""
-	parser.add_argument(
-		'-i', '--inputfile',
-		metavar = 'infile',
+	
+	group = parser.add_mutually_exclusive_group(required = True)
+	group.add_argument(
+		'-i', '--input-treebank-file',
+		metavar = 'input_treebank_file',
 		type = str,
-		required = True,
 		help = 'Name of the input treebank file to be parsed.'
 	)
+	group.add_argument(
+		'-t', '--input-treebank-collection',
+		metavar = 'input_treebank_collection',
+		type = str,
+		help = 'Name of the input treebank collection to be parsed.'
+	)
+
 	parser.add_argument(
-		'-o', '--outputfile',
-		metavar = 'outfile',
+		'-c', '--consistency-in-sentences',
+		type = bool,
+		required = False,
+		default = False,
+		nargs = 0,
+		action = ConditionallyRequired,
+		help = 'When processing a treebank collection, a sentence of a treebank will not be written to the output if the equivalent sentence in another treebank is discarded.'
+	)
+
+	parser.add_argument(
+		'-o', '--output',
+		metavar = 'output',
 		type = str,
 		required = True,
-		help = 'Name of the output .heads file.'
+		help = 'If a single treebank file was passed, this is the name of the output .heads file. If a treebank collection was passed, this is the output directory.'
 	)
 	parser.add_argument(
 		'--verbose',

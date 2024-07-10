@@ -48,7 +48,7 @@ to read the usage of this script. Run with
 
 	python3 cli/main.py FORMAT --help
 
-Usage examples:
+to see the usage of the command line for the specific format FORMAT. Usage examples:
 
 	python3 cli/main.py -i catalan.conllu -o catalan.heads --lal CoNLLU
 	python3 cli/main.py -i catalan.conllu -o catalan.heads --verbose 2 --lal CoNLLU
@@ -67,8 +67,6 @@ del os, pathlib
 # finish setting up path
 
 import argument_parser
-
-from treebank_parser.conllu import action_type as conllu_action_type
 
 from cli import run_parser
 

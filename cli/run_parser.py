@@ -32,11 +32,9 @@
 # 
 ################################################################################
 
-import sys
 import logging
 
-from cli import argument_parser
-from treebank_parser import treebank_formats, output_log
+from treebank_parser import treebank_formats, output_log, treebank_collection_parser
 from treebank_parser.conllu import action_type as conllu_action_type
 from treebank_parser.stanford import action_type as stanford_action_type
 from treebank_parser.head_vector import action_type as head_vector_action_type
@@ -98,8 +96,14 @@ def configure_logging(args):
 	# Print some debugging information regarding parameters
 	if not args.quiet:
 		print("--------------------------------------")
-		print(f"File to be parsed:   '{args.inputfile}'")
-		print(f"File to create:      '{args.outputfile}'")
+
+		if args.input_treebank_file is not None:
+			print(f"Treebank file to be parsed: '{args.input_treebank_file}'")
+			print(f"Head vector file to create: '{args.output}'")
+		else:
+			print(f"Treebank collection to be parsed:      '{args.input_treebank_collection}'")
+			print(f"Head vector colleciton file to create: '{args.output}'")
+
 		print(f"Input file's format: '{args.treebank_format}'")
 		print(f"Verbosity level:     '{args.verbose}'")
 		logging.critical("Critical messages will be shown.")
@@ -137,8 +141,20 @@ def run(args, lal_module):
 		logging.error(f"Unhandled format '{args.treebank_format}'")
 		proceed_to_run_parser = False
 
-	if proceed_to_run_parser:
-		# the treebank format was handled correctly
-		p = parser.parser(args, lal_module)
+	if not proceed_to_run_parser: return
+
+	print(args)
+	print("--------------------------------------")
+	if args.input_treebank_file is not None:
+		p = parser.parser(args.input_treebank_file, args.output, args, lal_module)
 		p.parse()
 		p.dump_contents()
+
+	if args.input_treebank_collection is not None:
+		treebank_collection_parser.parse_treebank_collection(
+			parser.parser,
+			args.input_treebank_collection,
+			args.output,
+			args,
+			lal_module
+		)
