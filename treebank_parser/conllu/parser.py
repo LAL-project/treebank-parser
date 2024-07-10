@@ -170,6 +170,7 @@ class parser:
 			# 'rt' is not a valid rooted tree. We do not know how to store this
 			# as a head vector.
 			tbp_logging.warning(f"This graph is not a rooted tree. Ignored.")
+			self.m_head_vector_collection.append(None)
 		
 		elif not self._should_discard_tree(rt):
 			# The rooted tree should not be discarded. Its number of vertices
@@ -177,7 +178,7 @@ class parser:
 
 			tbp_logging.debug("Apply postprocess functions to the tree")
 
-			if not rt.check_normalised():
+			if not rt.check_normalized():
 				rt.normalise()
 
 			# apply sentence postprocess functions
@@ -189,6 +190,9 @@ class parser:
 			# Store the head vector of this rooted tree
 			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 			self.m_head_vector_collection.append(hv)
+		
+		else:
+			self.m_head_vector_collection.append(None)
 
 	def _make_token_discard_functions(self, args):
 		
@@ -254,7 +258,7 @@ class parser:
 		tbp_logging.info("Store the head vector...")
 		self._store_head_vector(rt)
 
-	def __init__(self, args, lal_module):
+	def __init__(self, input_file, output_file, args, lal_module):
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
 		"""
@@ -269,8 +273,8 @@ class parser:
 		# all the head vectors to dump into the output file
 		self.m_head_vector_collection = []
 		# input and output files
-		self.m_input_file = args.inputfile
-		self.m_output_file = args.outputfile
+		self.m_input_file = input_file
+		self.m_output_file = output_file
 
 		self.m_remove_function_words = False
 		
@@ -287,6 +291,18 @@ class parser:
 		self._make_sentence_discard_functions(args)
 		self.m_sentence_postprocess_functions = []
 		self._make_sentence_postprocess_functions(args)
+	
+	def get_num_sentences(self):
+		r"""
+		Returns the number of sentences parsed.
+		"""
+		return len(self.m_head_vector_collection)
+	
+	def is_sentence_ok(self, i):
+		r"""
+		Returns true if the i-th sentence was not discarded.
+		"""
+		return self.m_head_vector_collection[i] is not None
 	
 	def parse(self):
 		r"""
@@ -361,9 +377,32 @@ class parser:
 			tbp_logging.info(f"    Dumping data...")
 			
 			begin_time = time.perf_counter()
-			for hv in self.m_head_vector_collection:
+			for hv in filter(lambda s: s is not None, self.m_head_vector_collection):
 				f.write(hv + '\n')
 			end_time = time.perf_counter()
 			
 			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
 			tbp_logging.info(f"    In {end_time - begin_time:.3f} s.")
+	
+	def dump_contents_conditionally(self, condition):
+		r"""
+		Dump all the head vectors to the output file conditioned to the values in
+		`condition`, which is just an array of as many Boolean values as values
+		in `self.m_head_vector_collection`.
+
+		pre: condition[i] must be false if self.m_head_vector_collection[i] is None
+		"""
+		
+		with open(self.m_output_file, 'w') as f:
+			tbp_logging.info(f"Output file {self.m_output_file} has been opened correctly.")
+			tbp_logging.info(f"    Dumping data...")
+			
+			begin = time.perf_counter()
+			for i in range(0, len(self.m_head_vector_collection)):
+				if condition[i]:
+					hv = self.m_head_vector_collection[i]
+					f.write(hv + '\n')
+			end = time.perf_counter()
+			
+			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
+			tbp_logging.info(f"    In {end - begin:.3f} s.")
