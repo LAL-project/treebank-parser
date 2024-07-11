@@ -51,15 +51,18 @@ The application is built on (and thus, depends on) the [Linear Arrangement libra
 
 The GUI was designed with simplicity in mind. Here is a screenshot.
 
-![](figures/gui.png)
+![View of the GUI when processing a single treebank](figures/gui_treebank.png)
+
+![View of the GUI when processing a treebank collection](figures/gui_treebank_collection.png)
 
 The usage can be read by clicking, on the menu bar, `Help` > `How to`. A small pop up window will show up on your screen with the following message:
 
 	How to use this GUI:
 	
-	First, find the treebank input file using the appropriate 'select' button to
-	the right of the intreface. Then, select the output file. You can give any
-	name you want to this file.
+	First, find the treebank input file (when working with a single treebank) or the
+	treebank collection main file (when working with a treebank collection) by using
+	the appropriate 'select' button to the right of the interface in the appropriate
+	tab. Then, select the output file or directory.
 	
 	After this, select the correct format of the input treebank file. If the input
 	file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown button below
@@ -134,8 +137,15 @@ In the following examples, the input file is always the `CoNLL-U`-formatted file
 
 Required parameters:
 
-- `-i infile, --inputfile infile`: specifies the input treebank file that is to be parsed.
-- `-o outfile, --outputfile outfile`: specifies the name of the output file, namely, the file containing the head vectors.
+- When processing a single treebank:
+
+	- `-i input, --input-treebank-file input`: specifies the input treebank file that is to be parsed.
+	- `-o outfile, --output outfile`: specifies the name of the output file, namely, the file that will contain the result of parsing the treebank.
+
+- When processing a treebank collection
+
+	- `-t input, --inputfile input`: specifies the input treebank collection main file that is to be parsed.
+	- `-o directory, --output directory`: specifies the name of the output directory, namely, the directory where the head vector files will be stored.
 
 Format parameters:
 
@@ -144,6 +154,7 @@ Format parameters:
 
 Optional interesting parameters:
 
+- `-c, --consistency-in-sentences`: When processing a treebank collection, a sentence of a treebank will not be written to the output if the equivalent sentence in another treebank is discarded.
 - `--lal`: execute the program using the debug compilation of LAL.
 - `--verbose l`: set the level of verbosity of the program; the higher the value, the more messages the application will output. These messages are of X kinds:
 	- `CRITICAL` error messages (always displayed),
@@ -156,38 +167,46 @@ Optional interesting parameters:
 
 All the parameters that the application needs can be queried using the `--help` parameter. The output is the following:
 
-	usage: main.py [-h] -i infile -o outfile [--verbose VERBOSE] [--lal] [--quiet]
-				   {CoNLL-U,Stanford,Head-Vector} ...
-
+	usage: main.py [-h] (-i input_treebank_file | -t input_treebank_collection) [-c] -o output
+	               [--verbose VERBOSE] [--lal] [--quiet]
+	               {CoNLL-U,Stanford,Head-Vector} ...
+	
 	Parse a treebank file and extract the sentences as head vectors. The format of the treebank file is
 	specified with a positional parameter (see the list of positional arguments within "{}" below).
-
+	
 	positional arguments:
 	  {CoNLL-U,Stanford,Head-Vector}
-							Choose a format command for the input treebank file.
-		CoNLL-U             Command to parse a CoNLL-U-formatted file. For further information on this
-							format's detailed specification, see
-							https://universaldependencies.org/format.html.
-		Stanford            Command to parse a Stanford-formatted file. For further information on this
-							format's detailed specification, see
-							https://nlp.stanford.edu/software/stanford-dependencies.html.
-		Head-Vector         Command to parse a head vector-formatted file. For further information on this
-							format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.
-
-	optional arguments:
+	                        Choose a format command for the input treebank file.
+	    CoNLL-U             Command to parse a CoNLL-U-formatted file. For further information on this
+	                        format's detailed specification, see
+	                        https://universaldependencies.org/format.html.
+	    Stanford            Command to parse a Stanford-formatted file. For further information on this
+	                        format's detailed specification, see
+	                        https://nlp.stanford.edu/software/stanford-dependencies.html.
+	    Head-Vector         Command to parse a head vector-formatted file. For further information on this
+	                        format's detailed specification, see https://cqllab.upc.edu/lal/data-formats/.
+	
+	options:
 	  -h, --help            show this help message and exit
-	  -i infile, --inputfile infile
-							Name of the input treebank file to be parsed.
-	  -o outfile, --outputfile outfile
-							Name of the output .heads file.
+	  -i input_treebank_file, --input-treebank-file input_treebank_file
+	                        Name of the input treebank file to be parsed.
+	  -t input_treebank_collection, --input-treebank-collection input_treebank_collection
+	                        Name of the input treebank collection to be parsed.
+	  -c, --consistency-in-sentences
+	                        When processing a treebank collection, a sentence of a treebank will not be
+	                        written to the output if the equivalent sentence in another treebank is
+	                        discarded.
+	  -o output, --output output
+	                        If a single treebank file was passed, this is the name of the output .heads
+	                        file. If a treebank collection was passed, this is the output directory.
 	  --verbose VERBOSE     Output logging messages showing the progress of the script. The higher the
-							debugging level the more messages will be displayed. Default level: 0 --
-							display only 'error' and 'critical' messages. Debugging levels: * 1 -- messages
-							from 0 plus 'warning' messages; * 2 -- messages from 1 plus 'info' messages; *
-							3 -- messages from 2 plus 'debug' messages;
+	                        debugging level the more messages will be displayed. Default level: 0 --
+	                        display only 'error' and 'critical' messages. Debugging levels: * 1 -- messages
+	                        from 0 plus 'warning' messages; * 2 -- messages from 1 plus 'info' messages; *
+	                        3 -- messages from 2 plus 'debug' messages;
 	  --lal                 Use the debug compilation of LAL ('import lal'). The script will run more
-							slowly, but errors will be more likely to be caught. Default: 'import
-							laloptimized as lal'.
+	                        slowly, but errors will be more likely to be caught. Default: 'import
+	                        laloptimized as lal'.
 	  --quiet               Disable non-logging messages.
 
 #### CoNLL-U parameter documentation
