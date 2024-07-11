@@ -32,6 +32,8 @@
 #
 ################################################################################
 
+import os
+
 from PySide6.QtWidgets import QPushButton, QFileDialog, QLineEdit
 
 
@@ -41,19 +43,26 @@ class FileChooserButton(QPushButton):
 
 	def set_type(self, type):
 		self.m_type = type
-		if self.m_type == "choose_input":
-			self.clicked.connect(self.choose_input_file)
-		elif self.m_type == "choose_output":
-			self.clicked.connect(self.choose_output_file)
+		if self.m_type == "choose_treebank_input":
+			self.clicked.connect(self.choose_treebank_input_file)
+		elif self.m_type == "choose_treebank_output":
+			self.clicked.connect(self.choose_treebank_output_head_vector)
+		elif self.m_type == "choose_treebank_collection_input":
+			self.clicked.connect(self.choose_treebank_collection_input)
+		elif self.m_type == "choose_treebank_collection_output":
+			self.clicked.connect(self.choose_treebank_collection_output_directory)
 		else:
-			print(f"Wrong type '{type}'")
+			print(f"Wrong type '{type}' for FileChooserButton")
 
-	def choose_input_file(self):
+	def find_line(self, name):
+		return self.parentWidget().findChild(QLineEdit, name)
+
+	def choose_treebank_input_file(self):
 		# choose an input file
-		dialog = QFileDialog(None, "Choose input treebank file")
-		selected_file = dialog.getOpenFileName()
+		dialog = QFileDialog()
+		selected_file = dialog.getOpenFileName(self, "Choose input treebank file")
 
-		inputTreebankFile = self.parentWidget().findChild(QLineEdit, "inputTreebankFile")
+		inputTreebankFile = self.find_line("inputTreebankFile")
 		assert(inputTreebankFile is not None)
 
 		# show selected file in the interface
@@ -61,14 +70,40 @@ class FileChooserButton(QPushButton):
 
 		print(f"Input file chosen '{selected_file[0]}'")
 
-	def choose_output_file(self):
-		dialog = QFileDialog(None, "Choose output heads file")
-		selected_file = dialog.getSaveFileName()
+	def choose_treebank_output_head_vector(self):
+		dialog = QFileDialog()
+		selected_file = dialog.getSaveFileName(self, "Choose output heads file")
 
-		outputHeadsFile = self.parentWidget().findChild(QLineEdit, "outputHeadsFile")
-		assert(outputHeadsFile is not None)
+		outputTreebankFile = self.find_line("outputTreebankFile")
+		assert(outputTreebankFile is not None)
 
 		# show selected file in the interface
-		outputHeadsFile.setText(selected_file[0])
+		outputTreebankFile.setText(selected_file[0])
 
 		print(f"Output file chosen '{selected_file[0]}'")
+
+	def choose_treebank_collection_input(self):
+		# choose an input file
+		dialog = QFileDialog()
+		selected_file = dialog.getOpenFileName(self, "Choose input treebank collection main file")
+
+		inputTreebankCollectionFile = self.find_line("inputTreebankCollectionFile")
+		assert(inputTreebankCollectionFile is not None)
+
+		# show selected file in the interface
+		inputTreebankCollectionFile.setText(selected_file[0])
+
+		print(f"Input treebank collection file chosen '{selected_file[0]}'")
+
+	def choose_treebank_collection_output_directory(self):
+		dialog = QFileDialog()
+		dialog.setFileMode(QFileDialog.Directory)
+		dialog.setOption(QFileDialog.ShowDirsOnly)
+		selected_directory = dialog.getExistingDirectory(self, "Choose output directory", os.path.curdir)
+
+		outputTreebankCollectionDirectory = self.find_line("outputTreebankCollectionDirectory")
+		assert(outputTreebankCollectionDirectory is not None)
+
+		# show selected file in the interface
+		outputTreebankCollectionDirectory.setText(selected_directory)
+		print(f"Output directory chosen '{selected_directory}'")

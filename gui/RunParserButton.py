@@ -32,7 +32,7 @@
 #
 ################################################################################
 
-from PySide6.QtWidgets import QPushButton, QLineEdit, QSpinBox
+from PySide6.QtWidgets import QPushButton, QLineEdit, QSpinBox, QTabWidget, QCheckBox
 
 from typing import cast
 
@@ -48,7 +48,12 @@ from gui.actions.ActionsTableComboBox import ActionsTableComboBox
 from gui.actions.TreebankFormatComboBox import TreebankFormatComboBox
 
 
+TREEBANK_TAB = 0
+TREEBANK_COLLECTION_TAB = 1
+
+
 class RunParserButton(QPushButton):
+
 	def __init__(self, parent=None):
 		super(RunParserButton, self).__init__(parent)
 		self.clicked.connect(self.run_treebank)
@@ -59,29 +64,69 @@ class RunParserButton(QPushButton):
 
 		argument_list = []
 
-		# input treebank file
-		inputTreebankFile = parent.findChild(QLineEdit, "inputTreebankFile")
-		assert(inputTreebankFile is not None)
-		MyOut.info("Retrieving the input treebank file...")
-		input_file = inputTreebankFile.text()
-		if input_file == "":
-			MyOut.error("No input file selected.")
-			MyOut.log_separator()
-			return
-		argument_list += ["-i"]
-		argument_list += [input_file]
+		inputTabSelector = parent.findChild(QTabWidget, "inputTabSelector")
+		if inputTabSelector.currentIndex() == TREEBANK_TAB:
+			# input treebank file
+			inputTreebankFile = parent.findChild(QLineEdit, "inputTreebankFile")
+			assert(inputTreebankFile is not None)
 
-		# output heads file
-		outputHeadsFile = parent.findChild(QLineEdit, "outputHeadsFile")
-		assert(outputHeadsFile is not None)
-		MyOut.info("Retrieving the output heads file...")
-		output_file = outputHeadsFile.text()
-		if output_file == "":
-			MyOut.error("No output file selected.")
-			MyOut.log_separator()
-			return
-		argument_list += ["-o"]
-		argument_list += [output_file]
+			MyOut.info("Retrieving the input treebank file...")
+			input_treebank = inputTreebankFile.text()
+			if input_treebank == "":
+				MyOut.error("No input file selected.")
+				MyOut.log_separator()
+				return
+			argument_list += ["-i"]
+			argument_list += [input_treebank]
+
+			# output heads file
+			output_treebank = parent.findChild(QLineEdit, "outputTreebankFile")
+			assert(outputHeadsFile is not None)
+
+			MyOut.info("Retrieving the output heads file...")
+			output_treebank = outputHeadsFile.text()
+			if output_treebank == "":
+				MyOut.error("No output file selected.")
+				MyOut.log_separator()
+				return
+			argument_list += ["-o"]
+			argument_list += [output_treebank]
+
+		elif inputTabSelector.currentIndex() == TREEBANK_COLLECTION_TAB:
+
+			# input treebank file
+			inputTreebankCollectionFile = parent.findChild(QLineEdit, "inputTreebankCollectionFile")
+			assert(inputTreebankCollectionFile is not None)
+
+			MyOut.info("Retrieving the input treebank collection file...")
+			input_treebank_collection = inputTreebankCollectionFile.text()
+			if input_treebank_collection == "":
+				MyOut.error("No input file selected.")
+				MyOut.log_separator()
+				return
+			argument_list += ["-t"]
+			argument_list += [input_treebank_collection]
+
+			# output heads file
+			outputTreebankCollectionDirectory = parent.findChild(QLineEdit, "outputTreebankCollectionDirectory")
+			assert(outputTreebankCollectionDirectory is not None)
+
+			MyOut.info("Retrieving the output directory...")
+			output_treebank_collection = outputTreebankCollectionDirectory.text()
+			if output_treebank_collection == "":
+				MyOut.error("No output directory selected.")
+				MyOut.log_separator()
+				return
+			argument_list += ["-o"]
+			argument_list += [output_treebank_collection]
+
+			# check consistency of sentences
+			sentenceConsistencyCheckBox = parent.findChild(QCheckBox, "sentenceConsistencyCheckBox")
+			assert(sentenceConsistencyCheckBox is not None)
+
+			MyOut.info("Checking if we should keep consistency among sentences...")
+			if sentenceConsistencyCheckBox.isChecked():
+				argument_list += ["-c"]
 
 		# retrieve format selector
 		treebankFormatSelector = parent.findChild(TreebankFormatComboBox, "treebankFormatSelector")

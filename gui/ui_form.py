@@ -19,8 +19,8 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QHBoxLayout, QHeaderView,
     QLabel, QLineEdit, QListWidget, QListWidgetItem,
     QMainWindow, QMenuBar, QPushButton, QSizePolicy,
-    QSpacerItem, QSpinBox, QStatusBar, QTableWidgetItem,
-    QTextEdit, QVBoxLayout, QWidget)
+    QSpacerItem, QSpinBox, QStatusBar, QTabWidget,
+    QTableWidgetItem, QTextEdit, QVBoxLayout, QWidget)
 
 from gui.FileChooserButton import FileChooserButton
 from gui.HelpMenu import HelpMenu
@@ -33,7 +33,7 @@ class Ui_gui_treebank_parser(object):
     def setupUi(self, gui_treebank_parser):
         if not gui_treebank_parser.objectName():
             gui_treebank_parser.setObjectName(u"gui_treebank_parser")
-        gui_treebank_parser.resize(1173, 609)
+        gui_treebank_parser.resize(1139, 725)
         self.how_to = QAction(gui_treebank_parser)
         self.how_to.setObjectName(u"how_to")
         self.about = QAction(gui_treebank_parser)
@@ -46,24 +46,30 @@ class Ui_gui_treebank_parser(object):
         self.check_LAL_reachable.setObjectName(u"check_LAL_reachable")
         self.centralwidget = QWidget(gui_treebank_parser)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout_6 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_7 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.inputTabSelector = QTabWidget(self.centralwidget)
+        self.inputTabSelector.setObjectName(u"inputTabSelector")
+        self.treebankTab = QWidget()
+        self.treebankTab.setObjectName(u"treebankTab")
+        self.verticalLayout_6 = QVBoxLayout(self.treebankTab)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.label_5 = QLabel(self.centralwidget)
+        self.label_5 = QLabel(self.treebankTab)
         self.label_5.setObjectName(u"label_5")
         self.label_5.setMinimumSize(QSize(100, 0))
         self.label_5.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
         self.horizontalLayout.addWidget(self.label_5)
 
-        self.inputTreebankFile = QLineEdit(self.centralwidget)
+        self.inputTreebankFile = QLineEdit(self.treebankTab)
         self.inputTreebankFile.setObjectName(u"inputTreebankFile")
         self.inputTreebankFile.setMinimumSize(QSize(350, 0))
 
         self.horizontalLayout.addWidget(self.inputTreebankFile)
 
-        self.inputTreebankButton = FileChooserButton(self.centralwidget)
+        self.inputTreebankButton = FileChooserButton(self.treebankTab)
         self.inputTreebankButton.setObjectName(u"inputTreebankButton")
 
         self.horizontalLayout.addWidget(self.inputTreebankButton)
@@ -73,26 +79,94 @@ class Ui_gui_treebank_parser(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_6 = QLabel(self.centralwidget)
+        self.label_6 = QLabel(self.treebankTab)
         self.label_6.setObjectName(u"label_6")
         self.label_6.setMinimumSize(QSize(100, 0))
         self.label_6.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
         self.horizontalLayout_2.addWidget(self.label_6)
 
-        self.outputHeadsFile = QLineEdit(self.centralwidget)
-        self.outputHeadsFile.setObjectName(u"outputHeadsFile")
-        self.outputHeadsFile.setMinimumSize(QSize(350, 0))
+        self.outputTreebankFile = QLineEdit(self.treebankTab)
+        self.outputTreebankFile.setObjectName(u"outputTreebankFile")
+        self.outputTreebankFile.setMinimumSize(QSize(350, 0))
 
-        self.horizontalLayout_2.addWidget(self.outputHeadsFile)
+        self.horizontalLayout_2.addWidget(self.outputTreebankFile)
 
-        self.outputHeadsButton = FileChooserButton(self.centralwidget)
-        self.outputHeadsButton.setObjectName(u"outputHeadsButton")
+        self.outputTreebankButton = FileChooserButton(self.treebankTab)
+        self.outputTreebankButton.setObjectName(u"outputTreebankButton")
 
-        self.horizontalLayout_2.addWidget(self.outputHeadsButton)
+        self.horizontalLayout_2.addWidget(self.outputTreebankButton)
 
 
         self.verticalLayout_6.addLayout(self.horizontalLayout_2)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 65, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_6.addItem(self.verticalSpacer_3)
+
+        self.inputTabSelector.addTab(self.treebankTab, "")
+        self.treebankCollectionTab = QWidget()
+        self.treebankCollectionTab.setObjectName(u"treebankCollectionTab")
+        self.verticalLayout_8 = QVBoxLayout(self.treebankCollectionTab)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.label_9 = QLabel(self.treebankCollectionTab)
+        self.label_9.setObjectName(u"label_9")
+        self.label_9.setMinimumSize(QSize(140, 0))
+        self.label_9.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.horizontalLayout_6.addWidget(self.label_9)
+
+        self.inputTreebankCollectionFile = QLineEdit(self.treebankCollectionTab)
+        self.inputTreebankCollectionFile.setObjectName(u"inputTreebankCollectionFile")
+        self.inputTreebankCollectionFile.setMinimumSize(QSize(350, 0))
+
+        self.horizontalLayout_6.addWidget(self.inputTreebankCollectionFile)
+
+        self.inputTreebankCollectionButton = FileChooserButton(self.treebankCollectionTab)
+        self.inputTreebankCollectionButton.setObjectName(u"inputTreebankCollectionButton")
+
+        self.horizontalLayout_6.addWidget(self.inputTreebankCollectionButton)
+
+
+        self.verticalLayout_8.addLayout(self.horizontalLayout_6)
+
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.label_8 = QLabel(self.treebankCollectionTab)
+        self.label_8.setObjectName(u"label_8")
+        self.label_8.setMinimumSize(QSize(140, 0))
+        self.label_8.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.horizontalLayout_7.addWidget(self.label_8)
+
+        self.outputTreebankCollectionDirectory = QLineEdit(self.treebankCollectionTab)
+        self.outputTreebankCollectionDirectory.setObjectName(u"outputTreebankCollectionDirectory")
+        self.outputTreebankCollectionDirectory.setMinimumSize(QSize(350, 0))
+
+        self.horizontalLayout_7.addWidget(self.outputTreebankCollectionDirectory)
+
+        self.outputTreebankCollectionButton = FileChooserButton(self.treebankCollectionTab)
+        self.outputTreebankCollectionButton.setObjectName(u"outputTreebankCollectionButton")
+
+        self.horizontalLayout_7.addWidget(self.outputTreebankCollectionButton)
+
+
+        self.verticalLayout_8.addLayout(self.horizontalLayout_7)
+
+        self.sentenceConsistencyCheckBox = QCheckBox(self.treebankCollectionTab)
+        self.sentenceConsistencyCheckBox.setObjectName(u"sentenceConsistencyCheckBox")
+
+        self.verticalLayout_8.addWidget(self.sentenceConsistencyCheckBox)
+
+        self.verticalSpacer_4 = QSpacerItem(20, 36, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_8.addItem(self.verticalSpacer_4)
+
+        self.inputTabSelector.addTab(self.treebankCollectionTab, "")
+
+        self.verticalLayout_7.addWidget(self.inputTabSelector)
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
@@ -182,7 +256,7 @@ class Ui_gui_treebank_parser(object):
         self.horizontalLayout_4.addLayout(self.verticalLayout_4)
 
 
-        self.verticalLayout_6.addLayout(self.horizontalLayout_4)
+        self.verticalLayout_7.addLayout(self.horizontalLayout_4)
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -231,7 +305,7 @@ class Ui_gui_treebank_parser(object):
         self.verticalLayout_2.addWidget(self.msgLogger)
 
 
-        self.verticalLayout_6.addLayout(self.verticalLayout_2)
+        self.verticalLayout_7.addLayout(self.verticalLayout_2)
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
@@ -245,12 +319,12 @@ class Ui_gui_treebank_parser(object):
         self.horizontalLayout_5.addWidget(self.pushButton)
 
 
-        self.verticalLayout_6.addLayout(self.horizontalLayout_5)
+        self.verticalLayout_7.addLayout(self.horizontalLayout_5)
 
         gui_treebank_parser.setCentralWidget(self.centralwidget)
         self.menu_bar = QMenuBar(gui_treebank_parser)
         self.menu_bar.setObjectName(u"menu_bar")
-        self.menu_bar.setGeometry(QRect(0, 0, 1173, 22))
+        self.menu_bar.setGeometry(QRect(0, 0, 1139, 22))
         self.only_menu = HelpMenu(self.menu_bar)
         self.only_menu.setObjectName(u"only_menu")
         gui_treebank_parser.setMenuBar(self.menu_bar)
@@ -266,6 +340,9 @@ class Ui_gui_treebank_parser(object):
         self.retranslateUi(gui_treebank_parser)
         self.pushButton.clicked.connect(self.msgLogger.clear)
 
+        self.inputTabSelector.setCurrentIndex(0)
+
+
         QMetaObject.connectSlotsByName(gui_treebank_parser)
     # setupUi
 
@@ -279,7 +356,14 @@ class Ui_gui_treebank_parser(object):
         self.label_5.setText(QCoreApplication.translate("gui_treebank_parser", u"Treebank File", None))
         self.inputTreebankButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
         self.label_6.setText(QCoreApplication.translate("gui_treebank_parser", u"Heads File", None))
-        self.outputHeadsButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
+        self.outputTreebankButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
+        self.inputTabSelector.setTabText(self.inputTabSelector.indexOf(self.treebankTab), QCoreApplication.translate("gui_treebank_parser", u"Single treebank", None))
+        self.label_9.setText(QCoreApplication.translate("gui_treebank_parser", u"Treebank collection", None))
+        self.inputTreebankCollectionButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
+        self.label_8.setText(QCoreApplication.translate("gui_treebank_parser", u"Output directory", None))
+        self.outputTreebankCollectionButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
+        self.sentenceConsistencyCheckBox.setText(QCoreApplication.translate("gui_treebank_parser", u"Keep consistency of sentences", None))
+        self.inputTabSelector.setTabText(self.inputTabSelector.indexOf(self.treebankCollectionTab), QCoreApplication.translate("gui_treebank_parser", u"Treebank collection", None))
         self.label.setText(QCoreApplication.translate("gui_treebank_parser", u"Choose a format", None))
         self.treebankFormatSelector.setItemText(0, "")
 

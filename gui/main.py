@@ -128,12 +128,25 @@ class GuiTreebankParser(QMainWindow):
 		print("Setup 'inputTreebankButton'")
 		inputTreebankButton = self.findChild(FileChooserButton, "inputTreebankButton")
 		assert(inputTreebankButton is not None)
-		inputTreebankButton.set_type("choose_input")
+		inputTreebankButton.set_type("choose_treebank_input")
 
-		print("Setup 'outputHeadsButton'")
-		outputHeadsButton = self.findChild(FileChooserButton, "outputHeadsButton")
-		assert(outputHeadsButton is not None)
-		outputHeadsButton.set_type("choose_output")
+		print("Setup 'outputTreebankButton'")
+		outputTreebankButton = self.findChild(FileChooserButton, "outputTreebankButton")
+		assert(outputTreebankButton is not None)
+		outputTreebankButton.set_type("choose_treebank_output")
+
+		print("Setup 'inputTreebankCollectionButton'")
+		inputTreebankCollectionButton = self.findChild(
+			FileChooserButton,
+			"inputTreebankCollectionButton"
+		)
+		assert(inputTreebankCollectionButton is not None)
+		inputTreebankCollectionButton.set_type("choose_treebank_collection_input")
+
+		print("Setup 'outputTreebankCollectionButton'")
+		outputTreebankCollectionButton = self.findChild(FileChooserButton, "outputTreebankCollectionButton")
+		assert(outputTreebankCollectionButton is not None)
+		outputTreebankCollectionButton.set_type("choose_treebank_collection_output")
 
 		# set type of add/remove action buttons
 		print("Setup 'actionAddButton'")
