@@ -198,14 +198,23 @@
         </item>
         <item>
          <widget class="QCheckBox" name="sentenceConsistencyCheckBox">
+          <property name="cursor">
+           <cursorShape>ArrowCursor</cursorShape>
+          </property>
           <property name="toolTip">
-           <string extracomment="Ensure a sentence is written to the output only if none of the equivalent sentences in the other treebanks have been discarded."/>
+           <string>Ensure a sentence is written to the output only if none of the equivalent sentences in the other treebanks have been discarded.</string>
           </property>
           <property name="toolTipDuration">
-           <number>5000</number>
+           <number>-1</number>
+          </property>
+          <property name="statusTip">
+           <string/>
           </property>
           <property name="text">
            <string>Keep consistency of sentences</string>
+          </property>
+          <property name="shortcut">
+           <string extracomment="qrerwe"/>
           </property>
           <property name="checked">
            <bool>true</bool>

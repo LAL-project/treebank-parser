@@ -157,7 +157,8 @@ class Ui_gui_treebank_parser(object):
 
         self.sentenceConsistencyCheckBox = QCheckBox(self.treebankCollectionTab)
         self.sentenceConsistencyCheckBox.setObjectName(u"sentenceConsistencyCheckBox")
-        self.sentenceConsistencyCheckBox.setToolTipDuration(5000)
+        self.sentenceConsistencyCheckBox.setCursor(QCursor(Qt.ArrowCursor))
+        self.sentenceConsistencyCheckBox.setToolTipDuration(-1)
         self.sentenceConsistencyCheckBox.setChecked(True)
 
         self.verticalLayout_8.addWidget(self.sentenceConsistencyCheckBox)
@@ -342,7 +343,7 @@ class Ui_gui_treebank_parser(object):
         self.retranslateUi(gui_treebank_parser)
         self.pushButton.clicked.connect(self.msgLogger.clear)
 
-        self.inputTabSelector.setCurrentIndex(0)
+        self.inputTabSelector.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(gui_treebank_parser)
@@ -368,9 +369,15 @@ class Ui_gui_treebank_parser(object):
         self.label_8.setText(QCoreApplication.translate("gui_treebank_parser", u"Output directory", None))
         self.outputTreebankCollectionButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
 #if QT_CONFIG(tooltip)
-        self.sentenceConsistencyCheckBox.setToolTip("")
+        self.sentenceConsistencyCheckBox.setToolTip(QCoreApplication.translate("gui_treebank_parser", u"Ensure a sentence is written to the output only if none of the equivalent sentences in the other treebanks have been discarded.", None))
 #endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        self.sentenceConsistencyCheckBox.setStatusTip("")
+#endif // QT_CONFIG(statustip)
         self.sentenceConsistencyCheckBox.setText(QCoreApplication.translate("gui_treebank_parser", u"Keep consistency of sentences", None))
+#if QT_CONFIG(shortcut)
+        self.sentenceConsistencyCheckBox.setShortcut("")
+#endif // QT_CONFIG(shortcut)
         self.inputTabSelector.setTabText(self.inputTabSelector.indexOf(self.treebankCollectionTab), QCoreApplication.translate("gui_treebank_parser", u"Treebank collection", None))
         self.label.setText(QCoreApplication.translate("gui_treebank_parser", u"Choose a format", None))
         self.treebankFormatSelector.setItemText(0, "")
