@@ -35,9 +35,10 @@
 HOW_TO_STR = "\
 How to use this GUI:\n\
 \n\
-First, find the treebank input file using the appropriate 'select' button to the\n\
-right of the intreface. Then, select the output file. You can give any name you\n\
-want to this file.\n\
+First, find the treebank input file (when working with a single treebank) or the\n\
+treebank collection main file (when working with a treebank collection) by using\n\
+the appropriate 'select' button to the right of the interface in the appropriate\n\
+tab. Then, select the output file or directory.\n\
 \n\
 After this, select the correct format of the input treebank file. If the input\n\
 file is in CoNLL-U format, then choose 'CoNLL-U' in the dropdown button below\n\
