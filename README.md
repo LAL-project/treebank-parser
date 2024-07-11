@@ -139,12 +139,12 @@ Required parameters:
 
 - When processing a single treebank:
 
-	- `-i input, --input-treebank-file input`: specifies the input treebank file that is to be parsed.
+	- `-i input_treebank_file, --input-treebank-file input_treebank_file`: specifies the input treebank file that is to be parsed.
 	- `-o outfile, --output outfile`: specifies the name of the output file, namely, the file that will contain the result of parsing the treebank.
 
 - When processing a treebank collection
 
-	- `-t input, --inputfile input`: specifies the input treebank collection main file that is to be parsed.
+	- `-t input_treebank_collection, --input-treebank-collection input_treebank_collection`: specifies the input treebank collection main file that is to be parsed.
 	- `-o directory, --output directory`: specifies the name of the output directory, namely, the directory where the head vector files will be stored.
 
 Format parameters:
