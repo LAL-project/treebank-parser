@@ -157,6 +157,8 @@ class Ui_gui_treebank_parser(object):
 
         self.sentenceConsistencyCheckBox = QCheckBox(self.treebankCollectionTab)
         self.sentenceConsistencyCheckBox.setObjectName(u"sentenceConsistencyCheckBox")
+        self.sentenceConsistencyCheckBox.setToolTipDuration(5000)
+        self.sentenceConsistencyCheckBox.setChecked(True)
 
         self.verticalLayout_8.addWidget(self.sentenceConsistencyCheckBox)
 
@@ -353,6 +355,9 @@ class Ui_gui_treebank_parser(object):
         self.actionq1.setText(QCoreApplication.translate("gui_treebank_parser", u"q1", None))
         self.actionq2.setText(QCoreApplication.translate("gui_treebank_parser", u"q2", None))
         self.check_LAL_reachable.setText(QCoreApplication.translate("gui_treebank_parser", u"Is LAL reachable?", None))
+#if QT_CONFIG(tooltip)
+        self.inputTabSelector.setToolTip("")
+#endif // QT_CONFIG(tooltip)
         self.label_5.setText(QCoreApplication.translate("gui_treebank_parser", u"Treebank File", None))
         self.inputTreebankButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
         self.label_6.setText(QCoreApplication.translate("gui_treebank_parser", u"Heads File", None))
@@ -362,6 +367,9 @@ class Ui_gui_treebank_parser(object):
         self.inputTreebankCollectionButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
         self.label_8.setText(QCoreApplication.translate("gui_treebank_parser", u"Output directory", None))
         self.outputTreebankCollectionButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Select", None))
+#if QT_CONFIG(tooltip)
+        self.sentenceConsistencyCheckBox.setToolTip("")
+#endif // QT_CONFIG(tooltip)
         self.sentenceConsistencyCheckBox.setText(QCoreApplication.translate("gui_treebank_parser", u"Keep consistency of sentences", None))
         self.inputTabSelector.setTabText(self.inputTabSelector.indexOf(self.treebankCollectionTab), QCoreApplication.translate("gui_treebank_parser", u"Treebank collection", None))
         self.label.setText(QCoreApplication.translate("gui_treebank_parser", u"Choose a format", None))
