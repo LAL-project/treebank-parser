@@ -143,8 +143,6 @@ def run(args, lal_module):
 
 	if not proceed_to_run_parser: return
 
-	print(args)
-	print("--------------------------------------")
 	if args.input_treebank_file is not None:
 		p = parser.parser(args.input_treebank_file, args.output, args, lal_module)
 		p.parse()
