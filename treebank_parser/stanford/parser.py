@@ -42,7 +42,6 @@ import time
 
 from treebank_parser.stanford import line_parser
 from treebank_parser.stanford import line_type
-from treebank_parser.stanford import action_type
 import treebank_parser.output_log as tbp_logging
 
 class parser:
