@@ -1,0 +1,19 @@
+# FROM: UD-2.6/Turkish-PUD/tr_pud-ud-test.conllu
+# sent_id = n01087039
+# text = Yeni yetenekleri belirlemek için Northampton Üniversitesi'ndeki derece programlarını ziyaret ediyorum. dedi.
+# text_en = “I visit the degree shows at Northampton University to spot new talent,” he says.
+1	Yeni	yeni	ADJ	JJ	Number=Sing	2	amod	_	_
+2	yetenekleri	yetenek	NOUN	NN	Case=Acc|Number=Plur	3	obj	_	_
+3	belirlemek	belirle	NOUN	VN	Aspect=Perf|Mood=Ind|Number=Sing|Person=3|Tense=Fut	10	advcl	_	_
+4	için	için	ADP	IN	_	3	case	_	_
+5	Northampton	Northampton	PROPN	PROPN	Number=Sing	6	nmod:poss	_	Proper=True
+6-7	Üniversitesi'ndeki	_	_	_	_	_	_	_	_
+6	Üniversitesi'nde	üniversite	NOUN	NN	Case=Loc|Number=Sing|Number[psor]=Sing|Person[psor]=3	9	amod	_	Proper=True
+7	ki	ki	ADP	JJ	_	6	case	_	_
+8	derece	derece	NOUN	NN	Number=Sing	9	nmod:poss	_	_
+9	programlarını	program	NOUN	NN	Case=Acc|Number=Plur|Number[psor]=Sing|Person[psor]=3	10	obj	_	_
+10	ziyaret	ziyaret	NOUN	NN	Number=Sing	13	xcomp	_	_
+11	ediyorum	et	VERB	VB	Aspect=Prog|Mood=Ind|Number=Sing|Person=1|Tense=Pres	10	compound:lvc	_	SpaceAfter=No
+12	.	.	PUNCT	.	_	10	punct	_	_
+13	dedi	de	PUNCT	.	Aspect=Perf|Mood=Ind|Number=Sing|Person=3|Tense=Past	0	root	_	SpaceAfter=No
+14	.	.	PUNCT	.	_	13	punct	_	_

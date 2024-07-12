@@ -156,6 +156,15 @@ function run_tests {
 				run_test "fr-02-05" "CoNLL-U/inputs/fr-02.conllu" "CoNLL-U/outputs/fr-02-05.hv"	"CoNLL-U" $RPM $RFW
 			
 			fi
+		elif [ "$LANG" == "tr" ]; then
+			if [ "$ID" == "01" ]; then
+				run_test "tr-01-01" "CoNLL-U/inputs/tr-01.conllu" "CoNLL-U/outputs/tr-01-01.hv"	"CoNLL-U"
+				run_test "tr-01-02" "CoNLL-U/inputs/tr-01.conllu" "CoNLL-U/outputs/tr-01-02.hv"	"CoNLL-U" $RPM
+				run_test "tr-01-03" "CoNLL-U/inputs/tr-01.conllu" "CoNLL-U/outputs/tr-01-03.hv"	"CoNLL-U" $RFW
+				run_test "tr-01-04" "CoNLL-U/inputs/tr-01.conllu" "CoNLL-U/outputs/tr-01-04.hv"	"CoNLL-U" $RFW $RPM
+				run_test "tr-01-05" "CoNLL-U/inputs/tr-01.conllu" "CoNLL-U/outputs/tr-01-05.hv"	"CoNLL-U" $RPM $RFW
+				
+			fi
 		fi
 	elif [ "$FORMAT" == "Stanford" ]; then
 		
@@ -238,7 +247,7 @@ fi
 if [ $all == 1 ]; then
 	echo "$(date +"%Y/%m/%d.%T") Run all tests" >> $LOG_FILE
 	for f in "CoNLL-U" "Stanford"; do
-		for l in "ca" "en" "es" "fr" "zh"; do
+		for l in "ca" "en" "es" "fr" "tr" "zh"; do
 			for i in "01" "02"; do
 				run_tests $f $l $i
 			done
@@ -254,7 +263,7 @@ else
 	if [ "$format" != "0" ] && [ "$lang" == "0" ]; then
 		echo "$(date +"%Y/%m/%d.%T") Run specific tests for format: $format" >> $LOG_FILE
 
-		for l in "ca" "en" "es" "fr" "zh"; do
+		for l in "ca" "en" "es" "fr" "tr" "zh"; do
 			for i in "01" "02"; do
 				run_tests $format $l $i
 			done
