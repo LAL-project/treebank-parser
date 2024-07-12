@@ -33,16 +33,17 @@
 ######################################################################
 
 r"""
-Parser of CoNLLU-formatted files.
+Parser of head vector-formatted files.
 
-This module contains a single class `CoNLLU_parser`.
+This module contains a single class `parser`.
 """
 
 import time
 
+from treebank_parser.generic_parser import generic_parser
 import treebank_parser.output_log as tbp_logging
 
-class parser:
+class parser(generic_parser):
 	r"""
 	This class implements a parsing algorithm for CoNLLU-formatted files. It uses
 	the modules `conllu.line_parser` and `conllu.line_type` to easily parse the
@@ -55,18 +56,6 @@ class parser:
 	This class also applies some preprocessing specified by the user via arguments
 	(see main CLI).
 	"""
-	
-	def _should_discard_tree(self, rt):
-		r"""
-		Returns whether or not a rooted tree `rt` should be discarded according
-		to the functions in `self.m_sentence_discard_functions`.
-		
-		Parameters
-		==========
-		- `rt`: rooted tree.
-		"""
-		if rt.get_num_nodes() == 0: return True
-		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
 	
 	def _make_head_vector(self, line, linenumber):
 		# retrieve the head vector from the lines while ensuring
@@ -121,30 +110,9 @@ class parser:
 
 		return rt
 
-	def _store_head_vector(self, rt):
-		
-		# -- store the head vector --
-		
-		if not rt.is_rooted_tree():
-			# 'rt' is not a valid rooted tree. We do not know how to store this
-			# as a head vector.
-			tbp_logging.warning(f"This graph is not a rooted tree. Ignored.")
-			self.m_head_vector_collection.append(None)
-		
-		elif not self._should_discard_tree(rt):
-			# The rooted tree should not be discarded. Its number of vertices
-			# (words) is 1 or more and is not too short, nor too long.
-			
-			for f in self.m_sentence_postprocess_functions:
-				rt = f(rt)
-			
-			# Store the head vector of this rooted tree
-			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
-			self.m_head_vector_collection.append(hv)
-		
-		else:
-			self.m_head_vector_collection.append(None)
-	
+	def _make_token_discard_functions(self, args):
+		pass
+
 	def _make_sentence_remove_functions(self, args):
 		# make lambdas for all actions that discard sentences
 		self.m_sentence_discard_functions = []
@@ -182,31 +150,8 @@ class parser:
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
 		"""
-		self.m_head_vector_collection = []
-		self.m_input_file = input_file
-		self.m_output_file = output_file
 		
-		# utilities for logging
-		self.m_donotknow_msg = "Do not know how to process this. This line will be ignored."
-		
-		# keep LAL module
-		self.LAL_module = lal_module
-		
-		# make all functions
-		self._make_sentence_remove_functions(args)
-		self._make_sentence_postprocess_functions(args)
-	
-	def get_num_sentences(self):
-		r"""
-		Returns the number of sentences parsed.
-		"""
-		return len(self.m_head_vector_collection)
-	
-	def is_sentence_ok(self, i):
-		r"""
-		Returns true if the i-th sentence was not discarded.
-		"""
-		return self.m_head_vector_collection[i] is not None
+		super().__init__(input_file, output_file, args, lal_module)
 	
 	def parse(self):
 		r"""
@@ -225,7 +170,7 @@ class parser:
 				head_vector = self._make_head_vector(line, linenumber)
 				if head_vector is not None:
 					rt = self._build_tree(head_vector)
-					self._store_head_vector(rt)
+					self._store_tree(rt)
 				
 				linenumber += 1
 			
@@ -234,42 +179,3 @@ class parser:
 			tbp_logging.info(f"Finished parsing the whole input file {self.m_input_file}.")
 			tbp_logging.info(f"    In {end - begin:.3f} s.")
 	
-	def dump_contents(self):
-		r"""
-		Dump all the head vectors to the output file.
-		"""
-		
-		with open(self.m_output_file, 'w') as f:
-			tbp_logging.info(f"Output file {self.m_output_file} has been opened correctly.")
-			tbp_logging.info(f"    Dumping data...")
-			
-			begin = time.perf_counter()
-			for hv in filter(lambda s: s is not None, self.m_head_vector_collection):
-				f.write(hv + '\n')
-			end = time.perf_counter()
-			
-			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
-			tbp_logging.info(f"    In {end - begin:.3f} s.")
-	
-	def dump_contents_conditionally(self, condition):
-		r"""
-		Dump all the head vectors to the output file conditioned to the values in
-		`condition`, which is just an array of as many Boolean values as values
-		in `self.m_head_vector_collection`.
-
-		pre: condition[i] must be false if self.m_head_vector_collection[i] is None
-		"""
-		
-		with open(self.m_output_file, 'w') as f:
-			tbp_logging.info(f"Output file {self.m_output_file} has been opened correctly.")
-			tbp_logging.info(f"    Dumping data...")
-			
-			begin = time.perf_counter()
-			for i in range(0, len(self.m_head_vector_collection)):
-				if condition[i]:
-					hv = self.m_head_vector_collection[i]
-					f.write(hv + '\n')
-			end = time.perf_counter()
-			
-			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
-			tbp_logging.info(f"    In {end - begin:.3f} s.")

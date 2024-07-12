@@ -40,11 +40,12 @@ This module contains a single class `parser`.
 
 import time
 
+from treebank_parser.generic_parser import generic_parser
 from treebank_parser.stanford import line_parser
 from treebank_parser.stanford import line_type
 import treebank_parser.output_log as tbp_logging
 
-class parser:
+class parser(generic_parser):
 	r"""
 	This class implements a parsing algorithm for Stanford-formatted files. It uses
 	the modules `stanford.line_parser` and `stanford.line_type` to easily parse the
@@ -88,14 +89,6 @@ class parser:
 				deps.append( (u,v) )
 		return deps
 
-	def _should_discard_tree(self, rt):
-		r"""
-		Returns whether or not a rooted tree `rt` should be discarded according
-		to the functions in `self.m_sentence_discard_functions`.
-		"""
-		if rt.get_num_nodes() == 0: return True
-		return any(map(lambda f: f(rt), self.m_sentence_discard_functions))
-
 	def _build_full_tree(self, edge_list):
 		r"""
 		Build the tree structure out of the edge list 'edge_list'
@@ -134,7 +127,7 @@ class parser:
 		
 		for dep in reversed(self.m_sentence_deps):
 			
-			if not any(map(lambda f: f(dep), self.m_word_functions)):
+			if not any(map(lambda f: f(dep), self.m_token_discard_functions)):
 				# word does not meet any criterion for removal
 				continue
 			
@@ -180,41 +173,12 @@ class parser:
 			tbp_logging.error("Expect problems in the output data.")
 
 		return rt
-		
-	def _store_head_vector(self, rt):
-		r"""
-		This function converts whatever is left from applying the actions into
-		a head vector, which is then stored in the variable 'm_head_vector_collection'.
-		"""
-		
-		if not rt.is_rooted_tree():
-			# 'rt' is not a valid rooted tree. We do not know how to store this
-			# as a head vector.
-			tbp_logging.warning(f"This graph is not a rooted tree. Ignored.")
-			self.m_head_vector_collection.append(None)
-		
-		elif not self._should_discard_tree(rt):
-			# The rooted tree should not be discarded. Its number of vertices
-			# (words) is 1 or more and is not too short, nor too long.
-			
-			if not rt.check_normalized():
-				rt.normalize()
-
-			for f in self.m_sentence_postprocess_functions:
-				rt = f(rt)
-		
-			# Store the head vector of this rooted tree
-			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
-			self.m_head_vector_collection.append(hv)
-		
-		else:
-			self.m_head_vector_collection.append(None)
 	
 	def _make_token_discard_functions(self, args):
 		
 		# Remove punctuation marks
 		if args.RemovePunctuationMarks:
-			self.m_word_functions.append( lambda d: d.is_punctuation_mark() )
+			self.m_token_discard_functions.append( lambda d: d.is_punctuation_mark() )
 		
 	def _make_sentence_discard_functions(self, args):
 		
@@ -271,51 +235,19 @@ class parser:
 		rt = self._remove_words_tree(rt)
 
 		tbp_logging.info("Store the head vector...")
-		self._store_head_vector(rt)
+		self._store_tree(rt)
 
 	def __init__(self, input_file, output_file, args, lal_module):
 		r"""
 		Initialises the Stanford parser with the arguments passed as parameter.
 		"""
+		super().__init__(input_file, output_file, args, lal_module)
+
 		# all the dependencies in the current sentence
 		self.m_sentence_deps = []
-		# the number of the sentence in the file, in the order in which they appear
+		# number of sentence in the file
 		self.m_sentence_number = 0
-		self.m_sentence_starting_line = 0
-
-		# all the head vectors to dump into the output file
-		self.m_head_vector_collection = []
-
-		# input and output files
-		self.m_input_file = input_file
-		self.m_output_file = output_file
-		
-		# utilities for logging
-		self.m_donotknow_msg = "Do not know how to process this. This will be ignored."
-		
-		# keep LAL module
-		self.LAL_module = lal_module
-		
-		# make all functions
-		self.m_word_functions = []
-		self._make_token_discard_functions(args)
-		self.m_sentence_discard_functions = []
-		self._make_sentence_discard_functions(args)
-		self.m_sentence_postprocess_functions = []
-		self._make_sentence_postprocess_functions(args)
 	
-	def get_num_sentences(self):
-		r"""
-		Returns the number of sentences parsed.
-		"""
-		return len(self.m_head_vector_collection)
-
-	def is_sentence_ok(self, i):
-		r"""
-		Returns true if the i-th sentence was not discarded.
-		"""
-		return self.m_head_vector_collection[i] is not None
-
 	def parse(self):
 		r"""
 		Open the input file and read its contents.
@@ -367,44 +299,4 @@ class parser:
 			end = time.perf_counter()
 			
 			tbp_logging.info(f"Finished parsing the whole input file {self.m_input_file}.")
-			tbp_logging.info(f"    In {end - begin:.3f} s.")
-	
-	def dump_contents(self):
-		r"""
-		Dump all the head vectors to the output file.
-		"""
-		
-		with open(self.m_output_file, 'w') as f:
-			tbp_logging.info(f"Output file {self.m_output_file} has been opened correctly.")
-			tbp_logging.info(f"    Dumping data...")
-			
-			begin = time.perf_counter()
-			for hv in filter(lambda s: s is not None, self.m_head_vector_collection):
-				f.write(hv + '\n')
-			end = time.perf_counter()
-			
-			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
-			tbp_logging.info(f"    In {end - begin:.3f} s.")
-
-	def dump_contents_conditionally(self, condition):
-		r"""
-		Dump all the head vectors to the output file conditioned to the values in
-		`condition`, which is just an array of as many Boolean values as values
-		in `self.m_head_vector_collection`.
-
-		pre: condition[i] must be false if self.m_head_vector_collection[i] is None
-		"""
-		
-		with open(self.m_output_file, 'w') as f:
-			tbp_logging.info(f"Output file {self.m_output_file} has been opened correctly.")
-			tbp_logging.info(f"    Dumping data...")
-			
-			begin = time.perf_counter()
-			for i in range(0, len(self.m_head_vector_collection)):
-				if condition[i]:
-					hv = self.m_head_vector_collection[i]
-					f.write(hv + '\n')
-			end = time.perf_counter()
-			
-			tbp_logging.info(f"Finished writing the head vectors into {self.m_output_file}.")
 			tbp_logging.info(f"    In {end - begin:.3f} s.")
