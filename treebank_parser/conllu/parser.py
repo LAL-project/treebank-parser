@@ -142,10 +142,12 @@ class parser:
 			tbp_logging.debug(f"Remove {token_id}. Original ID: {token.get_ID()} -- '{token.get_FORM()}'")
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
 			
+			going_to_remove_root = False
 			if rt.has_root() and rt.get_root() == token_id:
 				tbp_logging.warning(self._location())
 				tbp_logging.warning(f"    Removing the root of the tree.")
 				tbp_logging.warning(f"    This will make the structure become a forest.")
+				going_to_remove_root = True
 			
 			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
 			if token_id >= rt.get_num_nodes():
@@ -153,10 +155,29 @@ class parser:
 				tbp_logging.critical(f"    Trying to remove a non-existent vertex. The program should crash now.")
 				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
 			
+			next_root = None
+			if going_to_remove_root:
+				# find the first child that is not to be removed and make it
+				# the new root of the tree
+				for u in rt.get_out_neighbors(token_id):
+					token_u = self.m_sentence_tokens[u]
+					if not any(map(lambda f: f(token_u), self.m_token_discard_functions)):
+						next_root = u
+						break
+				pass
+
 			# remove the node -- connect the children of the node with its parent
 			rt.remove_node(token_id)
+
+			if next_root is not None:
+				rt.set_root(next_root)
 		
 		tbp_logging.debug("All actions have been applied")
+
+		if not rt.has_root():
+			tbp_logging.error("The tree resulting from applying all actions is not a rooted tree.")
+			tbp_logging.error("This is likely to have happened due to errors in your data.")
+			tbp_logging.error("Expect problems in the output data.")
 
 		return rt
 
