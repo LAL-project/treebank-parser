@@ -181,16 +181,10 @@ class parser:
 					lambda rt: self.LAL_module.linarr.chunk_syntactic_dependency_tree(rt, Macutek)
 				)
 
-	def _reset_state(self):
-		# it is ¡very! important to reset the state of the parser:
-		# clear the current tree's contents and finish reading the tree.
-		self.m_current_tree.clear()
-
 	def __init__(self, input_file, output_file, args, lal_module):
 		r"""
 		Initialises the CoNLL-U parser with the arguments passed as parameter.
 		"""
-		self.m_current_tree = {}
 		self.m_head_vector_collection = []
 		self.m_input_file = input_file
 		self.m_output_file = output_file
@@ -235,7 +229,6 @@ class parser:
 				if head_vector is not None:
 					rt = self._build_tree(head_vector)
 					self._store_head_vector(rt)
-					self._reset_state()
 				
 				linenumber += 1
 			
