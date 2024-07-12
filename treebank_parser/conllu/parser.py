@@ -200,7 +200,7 @@ class parser:
 			tbp_logging.debug("Apply postprocess functions to the tree")
 
 			if not rt.check_normalized():
-				rt.normalise()
+				rt.normalize()
 
 			# apply sentence postprocess functions
 			for f in self.m_sentence_postprocess_functions:

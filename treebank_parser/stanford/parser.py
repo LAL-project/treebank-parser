@@ -198,7 +198,7 @@ class parser:
 			# (words) is 1 or more and is not too short, nor too long.
 			
 			if not rt.check_normalized():
-				rt.normalise()
+				rt.normalize()
 
 			for f in self.m_sentence_postprocess_functions:
 				rt = f(rt)
