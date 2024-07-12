@@ -74,6 +74,10 @@ class generic_parser:
 			for f in self.m_sentence_postprocess_functions:
 				rt = f(rt)
 
+			if not rt.is_rooted_tree():
+				tbp_logging.error("The tree resulting from applying the postprocessing functions is not a rooted tree.")
+				tbp_logging.error("Expect errors in your data.")
+
 			tbp_logging.debug("Transform into a head vector and store it")
 
 			# Store the head vector of this rooted tree
