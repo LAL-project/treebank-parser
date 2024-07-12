@@ -40,9 +40,6 @@ This module contains a single class `CoNLLU_parser`.
 
 import time
 
-from treebank_parser.conllu import line_parser
-from treebank_parser.conllu import line_type
-from treebank_parser.conllu import action_type
 import treebank_parser.output_log as tbp_logging
 
 class parser:
