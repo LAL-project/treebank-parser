@@ -25,8 +25,8 @@
 #   Contact:
 #
 #       Lluís Alemany Puig (lluis.alemany.puig@upc.edu)
-#           LARCA (Laboratory for Relational Algorithmics, Complexity and Learning)
-#           CQL (Complexity and Quantitative Linguistics Lab)
+#           LQMC (Lingüística Quantitativa, Matemàtica i Computacional)
+#           Webpage: https://lqmc.upc.edu/
 #           Jordi Girona St 1-3, Campus Nord UPC, 08034 Barcelona.   CATALONIA, SPAIN
 #           Webpage: https://cqllab.upc.edu/people/lalemany/
 #
