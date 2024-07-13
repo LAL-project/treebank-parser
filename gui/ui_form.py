@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -157,7 +157,7 @@ class Ui_gui_treebank_parser(object):
 
         self.sentenceConsistencyCheckBox = QCheckBox(self.treebankCollectionTab)
         self.sentenceConsistencyCheckBox.setObjectName(u"sentenceConsistencyCheckBox")
-        self.sentenceConsistencyCheckBox.setCursor(QCursor(Qt.ArrowCursor))
+        self.sentenceConsistencyCheckBox.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.sentenceConsistencyCheckBox.setToolTipDuration(-1)
         self.sentenceConsistencyCheckBox.setChecked(True)
 
@@ -343,7 +343,7 @@ class Ui_gui_treebank_parser(object):
         self.retranslateUi(gui_treebank_parser)
         self.pushButton.clicked.connect(self.msgLogger.clear)
 
-        self.inputTabSelector.setCurrentIndex(1)
+        self.inputTabSelector.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(gui_treebank_parser)
