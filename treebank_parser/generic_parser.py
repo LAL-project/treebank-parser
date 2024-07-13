@@ -51,15 +51,16 @@ class generic_parser:
 
 	def _store_tree(self, rt):
 		r"""
-		This function converts whatever is left from applying the actions into
-		a head vector, which is then stored in the variable 'm_head_vector_collection'.
+		This function converts whatever is left from applying the actions to the
+		sentence into a head vector, which is then (possibly) stored in the variable
+		'm_head_vector_collection'.
 		"""
 		
+		hv = None
 		if not rt.is_rooted_tree():
 			# 'rt' is not a valid rooted tree. We do not know how to store this
 			# as a head vector.
 			tbp_logging.warning(f"This graph is not a rooted tree. Ignored.")
-			self.m_head_vector_collection.append(None)
 		
 		elif not self._should_discard_tree(rt):
 			# The rooted tree should not be discarded. Its number of vertices
@@ -74,18 +75,14 @@ class generic_parser:
 			for f in self.m_sentence_postprocess_functions:
 				rt = f(rt)
 
-			if not rt.is_rooted_tree():
-				tbp_logging.error("The tree resulting from applying the postprocessing functions is not a rooted tree.")
-				tbp_logging.error("Expect errors in your data.")
+			# make head vector only if 'rt' is a rooted tree
+			if rt.is_rooted_tree():
+				tbp_logging.debug("Transform rooted tree into a head vector and store it")
 
-			tbp_logging.debug("Transform into a head vector and store it")
-
-			# Store the head vector of this rooted tree
-			hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
-			self.m_head_vector_collection.append(hv)
+				# Store the head vector of this rooted tree
+				hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
 		
-		else:
-			self.m_head_vector_collection.append(None)
+		self.m_head_vector_collection.append(hv)
 
 	def _make_token_discard_functions(self, args):
 		raise NotImplementedError("You need to define a '_make_token_discard_functions' method!")
