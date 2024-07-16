@@ -102,16 +102,16 @@ def configure_logging(args):
 			print(f"Head vector file to create: '{args.output}'")
 			print(f"Keep consistency among sentences? {args.consistency_in_sentences}")
 		else:
-			print(f"Treebank collection to be parsed:      '{args.input_treebank_collection}'")
+			print(f"Treebank collection to be parsed: '{args.input_treebank_collection}'")
 			print(f"Head vector colleciton file to create: '{args.output}'")
 
 		print(f"Input file's format: '{args.treebank_format}'")
-		print(f"Verbosity level:     '{args.verbose}'")
+		print(f"Verbosity level: '{args.verbose}'")
 		logging.critical("Critical messages will be shown.")
-		logging.error("   Error messages will be shown.")
-		logging.warning(" Warning messages will be shown.")
-		logging.info("    Info messages will be shown.")
-		logging.debug("   Debug messages will be shown.")
+		logging.error("Error messages will be shown.")
+		logging.warning("Warning messages will be shown.")
+		logging.info("Info messages will be shown.")
+		logging.debug("Debug messages will be shown.")
 	
 	output_log.info = logging.info
 	output_log.debug = logging.debug
