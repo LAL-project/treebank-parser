@@ -81,6 +81,8 @@ def parse_treebank_collection(
 		treebank_file = tbreader.get_treebank_filename()
 		treebank_id = tbreader.get_treebank_identifier()
 
+		tbp_logging.info(f"Parsing treebank {treebank_file}")
+
 		p = parser(
 			treebank_file,
 			output_directory + "/" + treebank_id + ".hv",
@@ -89,18 +91,21 @@ def parse_treebank_collection(
 		)
 		p.parse()
 		
-		all_parsers.append(p)
-		all_ids.append(treebank_id)
-		total_num_sentences.append(p.get_num_sentences())
+		if not args.consistency_in_sentences:
+			tbp_logging.info(f"Dumping data from treebank {treebank_file}")
+			p.dump_contents()
+
+		else:
+			all_parsers.append(p)
+			all_ids.append(treebank_id)
+			total_num_sentences.append(p.get_num_sentences())
 
 		tbcolreader.next_treebank()
 
-	if not args.consistency_in_sentences:
-		for p in all_parsers:
-			p.dump()
-	else:
+	if args.consistency_in_sentences:
+
 		if len(set(total_num_sentences)) != 1:
-			tbp_logging.warning("Number of sentences parsed is different among the parsers")
+			tbp_logging.error("Number of sentences parsed is different among the treebank files")
 			for (id, num_sents) in zip(all_ids, total_num_sentences):
 				print(f"Treebank {id} contains {num_sents} sentences")
 
