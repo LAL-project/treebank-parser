@@ -100,6 +100,7 @@ def configure_logging(args):
 		if args.input_treebank_file is not None:
 			print(f"Treebank file to be parsed: '{args.input_treebank_file}'")
 			print(f"Head vector file to create: '{args.output}'")
+			print(f"Keep consistency among sentences? {args.consistency_in_sentences}")
 		else:
 			print(f"Treebank collection to be parsed:      '{args.input_treebank_collection}'")
 			print(f"Head vector colleciton file to create: '{args.output}'")
