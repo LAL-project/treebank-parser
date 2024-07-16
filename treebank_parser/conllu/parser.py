@@ -100,11 +100,11 @@ class parser(generic_parser):
 			return None
 		
 		# make the lal.graphs.rooted_tree() object
-		tbp_logging.debug(f"make a rooted tree from the head vector {head_vector=}")
+		tbp_logging.debug(f"Make a rooted tree from the head vector {head_vector=}")
 		rt = self.LAL_module.graphs.from_head_vector_to_rooted_tree(head_vector)
 		
-		tbp_logging.debug(f"the graph has {rt.get_num_nodes()} nodes")
-		tbp_logging.debug(f"the graph has {rt.get_num_edges()} edges")
+		tbp_logging.debug(f"The graph has {rt.get_num_nodes()} nodes")
+		tbp_logging.debug(f"The graph has {rt.get_num_edges()} edges")
 		tbp_logging.debug(f"Is the graph a rooted tree? {rt.is_rooted_tree()}")
 
 		return rt
@@ -115,18 +115,32 @@ class parser(generic_parser):
 		punctuation marks, function words, ...).
 		"""
 		
+		n = rt.get_num_nodes()
+		for u in range(0, n):
+			if self.m_sentence_tokens[u].is_punctuation_mark() and rt.get_out_degree(u) > 0:
+				tbp_logging.warning("There are words with a punctuation mark as parent. Your data is malformed.")
+
 		if len(self.m_token_discard_functions) == 0:
 			# nothing to do
 			return rt
 		
+		total_deleted = 0
+		id_map = dict( [ (x,x) for x in range(0,n) ] )
+
 		for token in reversed(self.m_sentence_tokens):
 
+			# if word does not meet any criteria for removal
 			if not any(map(lambda f: f(token), self.m_token_discard_functions)):
-				# word does not meet any criterion for removal
 				continue
-			
+
 			# calculate the (actual) id of the word to be removed
 			token_id = int(token.get_ID()) - 1
+
+			total_deleted += 1
+			for u in range(token_id, n - total_deleted):
+				id_map[u] = id_map[u + 1]
+
+			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
 			
 			tbp_logging.debug(f"Remove {token_id}. Original ID: {token.get_ID()} -- '{token.get_FORM()}'")
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
@@ -134,38 +148,56 @@ class parser(generic_parser):
 			going_to_remove_root = False
 			if rt.has_root() and rt.get_root() == token_id:
 				tbp_logging.warning(self._location())
-				tbp_logging.warning(f"    Removing the root of the tree.")
+				tbp_logging.warning(f"    Going to remove the root of the tree.")
 				tbp_logging.warning(f"    This may make the structure become a forest.")
 				going_to_remove_root = True
 			
-			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
 			if token_id >= rt.get_num_nodes():
 				tbp_logging.critical(self._location())
-				tbp_logging.critical(f"    Trying to remove a non-existent vertex. The program should crash now.")
-				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
+				tbp_logging.critical(f"    Going to remove a non-existent vertex. The program should crash now.")
+				tbp_logging.critical(f"    Rerun the program with '--lal --verbose 3' for further debugging.")
 			
-			next_root = None
 			if going_to_remove_root:
-				# find the first child that is not to be removed and make it
-				# the new root of the tree
+				# The root is going to be removed. We need to find a root for the
+				# rest of the tree. This is going to be the first child that is
+				# not to be removed.
+
+				tbp_logging.debug(f"Search over children of {token_id}")
+				
+				new_root = None
 				for u in rt.get_out_neighbors(token_id):
-					token_u = self.m_sentence_tokens[u]
+					tbp_logging.debug(f"Child {u}")
+					token_u = self.m_sentence_tokens[id_map[u]]
 					if not any(map(lambda f: f(token_u), self.m_token_discard_functions)):
-						next_root = u
+						new_root = u
+						tbp_logging.debug(f"New root is {new_root=}")
 						break
-				pass
+				
+				rt.remove_node(token_id)
 
-			# remove the node -- connect the children of the node with its parent
-			rt.remove_node(token_id)
+				if new_root is not None:
+					if new_root > token_id:
+						new_root = new_root - 1
+						tbp_logging.debug(f"Since we have removed a vertex, the new root index is {new_root=}")
 
-			if next_root is not None:
-				rt.set_root(next_root)
-		
+					rt.set_root(new_root)
+
+			else:
+				join_children = False
+				if self.m_sentence_tokens[token_id].is_punctuation_mark():
+					join_children = rt.get_out_degree(token_id) > 0
+
+				tbp_logging.debug(f"Remove vertex while joining parent and children? {join_children}")
+				rt.remove_node(token_id, join_children)
+
 		tbp_logging.debug("All actions have been applied")
 
 		if not rt.is_rooted_tree():
 			tbp_logging.warning("The tree resulting from applying all actions is not a rooted tree.")
 			tbp_logging.warning("Expect possible errors in future operations.")
+			tbp_logging.debug(f"Number of vertices: {rt.get_num_nodes()}")
+			tbp_logging.debug(f"Number of edges: {rt.get_num_edges()}")
+			tbp_logging.debug(f"Has root? {rt.has_root()}")
 
 		return rt
 
