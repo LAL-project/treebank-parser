@@ -97,7 +97,7 @@ class parser(generic_parser):
 		head_vector = [edge[0] for edge in edge_list]
 		
 		# make sure there aren't errors in the head vector (do this with LAL)
-		tbp_logging.info("    Checking mistakes in head vector...")
+		tbp_logging.debug("    Checking mistakes in head vector...")
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
 			
@@ -140,7 +140,7 @@ class parser(generic_parser):
 			going_to_remove_root = False
 			if rt.has_root() and rt.get_root() == word_id:
 				tbp_logging.warning(f"Removing the root of the tree.")
-				tbp_logging.warning(f"This will make the structure become a forest.")
+				tbp_logging.warning(f"This may make the structure become a forest.")
 				going_to_remove_root = True
 			
 			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
@@ -157,7 +157,6 @@ class parser(generic_parser):
 					if not any(map(lambda f: f(token_u), self.m_token_discard_functions)):
 						next_root = u
 						break
-				pass
 
 			# remove the node
 			rt.remove_node(word_id)
@@ -167,10 +166,9 @@ class parser(generic_parser):
 		
 		tbp_logging.debug("All actions have been applied")
 
-		if not rt.has_root():
-			tbp_logging.error("The tree resulting from applying all actions is not a rooted tree.")
-			tbp_logging.error("This is likely to have happened due to errors in your data.")
-			tbp_logging.error("Expect problems in the output data.")
+		if not rt.is_rooted_tree():
+			tbp_logging.warning("The tree resulting from applying all actions is not a rooted tree.")
+			tbp_logging.warning("Expect possible errors in future operations.")
 
 		return rt
 	
@@ -214,7 +212,7 @@ class parser(generic_parser):
 
 	def _finish_reading_sentence(self):
 		tbp_logging.debug(self._location())
-		tbp_logging.info("Building the tree...")
+		tbp_logging.debug("Building the tree...")
 
 		n = self._num_unique_ids()
 		edges = self._unique_dependencies()
@@ -231,10 +229,10 @@ class parser(generic_parser):
 			tbp_logging.warning("The tree is not a rooted tree")
 			return
 
-		tbp_logging.info("Remove words if needed...")
+		tbp_logging.debug("Remove words if needed...")
 		rt = self._remove_words_tree(rt)
 
-		tbp_logging.info("Store the head vector...")
+		tbp_logging.debug("Store the head vector...")
 		self._store_tree(rt)
 
 	def __init__(self, input_file, output_file, args, lal_module):
