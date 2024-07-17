@@ -102,6 +102,12 @@ def add_arguments_main_parser(parser):
 	* 1 -- messages from 0 plus 'warning' messages; \
 	* 2 -- messages from 1 plus 'info' messages; \
 	* 3 -- messages from 2 plus 'debug' messages;\
+	The meaning of the messages is the following:\
+	* Critical: these are errors that will surely make the application crash.\
+	* Error: these indicate situations from which we cannot recover. Either some data is ignored for safety, or it is not ignored and the application may crash in subsequent steps.\
+	* Warning: these describe situations from which the app will try to recover from, but may fail to do so. An error message may be issued afterwards.\
+	* Info: these are progress messages.\
+	* Debug: these are for developers only.\
 	"
 	)
 	parser.add_argument(
