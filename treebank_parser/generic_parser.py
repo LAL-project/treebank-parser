@@ -60,7 +60,7 @@ class generic_parser:
 		if not rt.is_rooted_tree():
 			# 'rt' is not a valid rooted tree. We do not know how to store this
 			# as a head vector.
-			tbp_logging.warning(f"This graph is not a rooted tree. Ignored.")
+			tbp_logging.error(f"This graph is not a rooted tree. Ignored.")
 		
 		elif not self._should_discard_tree(rt):
 			# The rooted tree should not be discarded. Its number of vertices
@@ -68,6 +68,7 @@ class generic_parser:
 
 			tbp_logging.debug("Apply postprocess functions to the tree")
 
+			# ensure the tree is normalized
 			if not rt.check_normalized():
 				rt.normalize()
 
@@ -75,12 +76,15 @@ class generic_parser:
 			for f in self.m_sentence_postprocess_functions:
 				rt = f(rt)
 
-			# make head vector only if 'rt' is a rooted tree
+			# store the head vector only if 'rt' is a rooted tree
 			if rt.is_rooted_tree():
 				tbp_logging.debug("Transform rooted tree into a head vector and store it")
 
 				# Store the head vector of this rooted tree
 				hv = str(rt.get_head_vector()).replace('(', '').replace(')', '').replace(',', '')
+
+			else:
+				tbp_logging.error("The tree resulting from applying all the transformations is not a rooted tree. Ignored.")
 		
 		self.m_head_vector_collection.append(hv)
 
@@ -103,7 +107,7 @@ class generic_parser:
 		self.m_output_file = output_file
 		
 		# utilities for logging
-		self.m_donotknow_msg = "Do not know how to process this. This line will be ignored."
+		self.m_donotknow_msg = "Do not know how to process this. This tree will be ignored."
 		
 		# keep LAL module
 		self.LAL_module = lal_module

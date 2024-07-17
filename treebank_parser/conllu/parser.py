@@ -90,12 +90,10 @@ class parser(generic_parser):
 		tbp_logging.debug("    Checking mistakes in head vector...")
 		err_list = self.LAL_module.io.check_correctness_head_vector(head_vector)
 		if len(err_list) > 0:
-			
 			tbp_logging.error(self._location())
 			tbp_logging.error(f"There were errors within head vector '{head_vector}'")
 			for err in err_list:
 				tbp_logging.error(f"    {err}")
-				
 			tbp_logging.error(self.m_donotknow_msg)
 			return None
 		
@@ -109,6 +107,9 @@ class parser(generic_parser):
 
 		return rt
 	
+	def _should_remove_token(self, token):
+		return any(map(lambda f: f(token), self.m_token_discard_functions))
+
 	def _remove_words_tree(self, rt):
 		r"""
 		This function applies the actions passed as parameters (removal of
@@ -118,30 +119,29 @@ class parser(generic_parser):
 		n = rt.get_num_nodes()
 		for u in range(0, n):
 			if self.m_sentence_tokens[u].is_punctuation_mark() and rt.get_out_degree(u) > 0:
-				tbp_logging.warning("There are words with a punctuation mark as parent. Your data is malformed.")
+				tbp_logging.warning("There are words with a punctuation mark as parent. Your data may be malformed.")
 
 		if len(self.m_token_discard_functions) == 0:
 			# nothing to do
 			return rt
 		
 		total_deleted = 0
-		id_map = dict( [ (x,x) for x in range(0,n) ] )
+		tree_vertices__to__tokens = dict( [ (x,x) for x in range(0,n) ] )
 
 		for token in reversed(self.m_sentence_tokens):
 
 			# if word does not meet any criteria for removal
-			if not any(map(lambda f: f(token), self.m_token_discard_functions)):
-				continue
+			if not self._should_remove_token(token): continue
 
 			# calculate the (actual) id of the word to be removed
 			token_id = int(token.get_ID()) - 1
 
+			# update mapping of actual vertices of the tree to tokens in the sentence
 			total_deleted += 1
 			for u in range(token_id, n - total_deleted):
-				id_map[u] = id_map[u + 1]
+				tree_vertices__to__tokens[u] = tree_vertices__to__tokens[u + 1]
 
 			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
-			
 			tbp_logging.debug(f"Remove {token_id}. Original ID: {token.get_ID()} -- '{token.get_FORM()}'")
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
 			
@@ -167,13 +167,13 @@ class parser(generic_parser):
 				new_root = None
 				for u in rt.get_out_neighbors(token_id):
 					tbp_logging.debug(f"Child {u}")
-					token_u = self.m_sentence_tokens[id_map[u]]
-					if not any(map(lambda f: f(token_u), self.m_token_discard_functions)):
+					token_u = self.m_sentence_tokens[tree_vertices__to__tokens[u]]
+					if not self._should_remove_token(token_u):
 						new_root = u
 						tbp_logging.debug(f"New root is {new_root=}")
 						break
 				
-				rt.remove_node(token_id)
+				rt.remove_node(token_id, False)
 
 				if new_root is not None:
 					if new_root > token_id:
@@ -183,18 +183,17 @@ class parser(generic_parser):
 					rt.set_root(new_root)
 
 			else:
-				join_children = False
-				if self.m_sentence_tokens[token_id].is_punctuation_mark():
-					join_children = rt.get_out_degree(token_id) > 0
+				# reattach the children of this token to this token's parent when
+				# the token is a punctuation mark
+				join_children = self.m_sentence_tokens[token_id].is_punctuation_mark()
 
-				tbp_logging.debug(f"Remove vertex while joining parent and children? {join_children}")
+				tbp_logging.debug(f"Remove token while joining its parent to its children? {join_children}")
 				rt.remove_node(token_id, join_children)
 
 		tbp_logging.debug("All actions have been applied")
 
 		if not rt.is_rooted_tree():
-			tbp_logging.warning("The tree resulting from applying all actions is not a rooted tree.")
-			tbp_logging.warning("Expect possible errors in future operations.")
+			tbp_logging.debug("The tree resulting from applying all actions is not a rooted tree.")
 			tbp_logging.debug(f"Number of vertices: {rt.get_num_nodes()}")
 			tbp_logging.debug(f"Number of edges: {rt.get_num_edges()}")
 			tbp_logging.debug(f"Has root? {rt.has_root()}")
@@ -256,7 +255,7 @@ class parser(generic_parser):
 		rt = self._build_full_tree()
 		if rt is None: return
 		if not rt.is_rooted_tree():
-			tbp_logging.warning("The tree is not a rooted tree")
+			tbp_logging.error("The tree is not a rooted tree. Ignored.")
 			return
 
 		tbp_logging.debug("Remove words if needed...")

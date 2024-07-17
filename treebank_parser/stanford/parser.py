@@ -118,51 +118,89 @@ class parser(generic_parser):
 		tbp_logging.debug(f"Is the graph a rooted tree? {rt.is_rooted_tree()}")
 	
 		return rt
-		
+	
+	def _should_remove_token(self, dep):
+		return any(map(lambda f: f(dep), self.m_token_discard_functions))
+
 	def _remove_words_tree(self, rt):
 		r"""
 		This function applies the actions passed as parameters (removal of punctuation
 		marks, function words, ...).
 		"""
 		
+		n = rt.get_num_nodes()
+		for u in range(0, n):
+			if self.m_sentence_deps[u].is_punctuation_mark() and rt.get_out_degree(u) > 0:
+				tbp_logging.warning("There are words with a punctuation mark as parent. Your data may be malformed.")
+
+		if len(self.m_token_discard_functions) == 0:
+			# nothing to do
+			return rt
+
+		total_deleted = 0
+		tree_vertices__to__tokens = dict( [ (x,x) for x in range(0,n) ] )
+
 		for dep in reversed(self.m_sentence_deps):
 			
-			if not any(map(lambda f: f(dep), self.m_token_discard_functions)):
+			if not self._should_remove_token(dep):
 				# word does not meet any criterion for removal
 				continue
 			
 			# calculate the (actual) id of the word to be removed
-			word_id = int(dep.get_dependent_id()) - 1
+			token_id = int(dep.get_dependent_id()) - 1
 			
-			tbp_logging.debug(f"Remove {word_id}. Original ID: {dep.get_dependent_id()}")
+			# update mapping of actual vertices of the tree to tokens in the sentence
+			total_deleted += 1
+			for u in range(token_id, n - total_deleted):
+				tree_vertices__to__tokens[u] = tree_vertices__to__tokens[u + 1]
+
+			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {token_id=}")
+			tbp_logging.debug(f"Remove {token_id}. Original ID: {dep.get_dependent_id()}")
 			tbp_logging.debug(f"Tree has root? {rt.has_root()}.")
 			
 			going_to_remove_root = False
-			if rt.has_root() and rt.get_root() == word_id:
+			if rt.has_root() and rt.get_root() == token_id:
+				tbp_logging.warning(self._location())
 				tbp_logging.warning(f"Removing the root of the tree.")
 				tbp_logging.warning(f"This may make the structure become a forest.")
 				going_to_remove_root = True
 			
-			tbp_logging.debug(f"Tree has {rt.get_num_nodes()} nodes. Word to be removed: {word_id=}")
-			if word_id >= rt.get_num_nodes():
+			if token_id >= rt.get_num_nodes():
 				tbp_logging.critical(f"Trying to remove a non-existent vertex. The program should crash now.")
 				tbp_logging.critical(f"    Please, rerun the program with '--lal --verbose 3' for further debugging.")
 			
-			next_root = None
 			if going_to_remove_root:
-				# find the first child that is not to be removed and make it
-				# the new root of the tree
-				for u in rt.get_out_neighbors(dep):
-					token_u = self.m_sentence_tokens[u]
-					if not any(map(lambda f: f(token_u), self.m_token_discard_functions)):
-						next_root = u
+				# The root is going to be removed. We need to find a root for the
+				# rest of the tree. This is going to be the first child that is
+				# not to be removed.
+
+				tbp_logging.debug(f"Search over children of {token_id}")
+				
+				new_root = None
+				for u in rt.get_out_neighbors(token_id):
+					tbp_logging.debug(f"Child {u}")
+					token_u = self.m_sentence_deps[tree_vertices__to__tokens[u]]
+					if not self._should_remove_token(token_u):
+						new_root = u
+						tbp_logging.debug(f"New root is {new_root=}")
 						break
+				
+				rt.remove_node(token_id, False)
 
-			# remove the node
-			rt.remove_node(word_id)
+				if new_root is not None:
+					if new_root > token_id:
+						new_root = new_root - 1
+						tbp_logging.debug(f"Since we have removed a vertex, the new root index is {new_root=}")
 
-			if next_root is not None:
-				rt.set_root(next_root)
+					rt.set_root(new_root)
+
+			else:
+				# reattach the children of this token to this token's parent when
+				# the token is a punctuation mark
+				join_children = self.m_sentence_deps[token_id].is_punctuation_mark()
+
+				tbp_logging.debug(f"Remove token while joining its parent to its children? {join_children}")
+				rt.remove_node(token_id, join_children)
 		
 		tbp_logging.debug("All actions have been applied")
 
