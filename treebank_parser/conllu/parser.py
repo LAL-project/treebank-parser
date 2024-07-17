@@ -117,10 +117,7 @@ class parser(generic_parser):
 		"""
 		
 		n = rt.get_num_nodes()
-		for u in range(0, n):
-			if self.m_sentence_tokens[u].is_punctuation_mark() and rt.get_out_degree(u) > 0:
-				tbp_logging.warning("There are words with a punctuation mark as parent. Your data may be malformed.")
-
+		
 		if len(self.m_token_discard_functions) == 0:
 			# nothing to do
 			return rt
@@ -173,6 +170,8 @@ class parser(generic_parser):
 						tbp_logging.debug(f"New root is {new_root=}")
 						break
 				
+				if new_root is None: tbp_logging.debug("No new root was found...")
+
 				rt.remove_node(token_id, False)
 
 				if new_root is not None:
@@ -180,7 +179,8 @@ class parser(generic_parser):
 						new_root = new_root - 1
 						tbp_logging.debug(f"Since we have removed a vertex, the new root index is {new_root=}")
 
-					rt.set_root(new_root)
+					if new_root < rt.get_num_nodes():
+						rt.set_root(new_root)
 
 			else:
 				# reattach the children of this token to this token's parent when
