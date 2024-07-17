@@ -71,7 +71,7 @@ def parse_treebank_collection(
 	tbcolreader = lal_module.io.treebank_collection_reader()
 	error = tbcolreader.init(treebank_collection_main_file)
 	
-	if error.get_error_type() != lal_module.io.treebank_error_type.no_error:
+	if error.is_error():
 		tbp_logging.critical(error.get_error_message())
 		return
 
