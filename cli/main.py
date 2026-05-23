@@ -89,10 +89,10 @@ else:
 # configure logging
 run_parser.configure_logging(args)
 
-if args.lal:
-	import lal
-else:
+if args.laloptimized:
 	import laloptimized as lal
+else:
+	import lal
 
 from treebank_parser import version_lal
 r = version_lal.is_version_of_LAL_correct(lal)
