@@ -57,7 +57,7 @@ def add_arguments_main_parser(parser):
 	Adds the necessary arguments to the main CLI parser (not for the
 	subcommands).
 	"""
-	
+
 	group = parser.add_mutually_exclusive_group(required = True)
 	group.add_argument(
 		'-i', '--input-treebank-file',
@@ -111,11 +111,11 @@ def add_arguments_main_parser(parser):
 	"
 	)
 	parser.add_argument(
-		'--lal',
+		'--laloptimized',
 		default = False,
-		action = 'store_true',
+		action = 'store_false',
 		required = False,
-		help = f"Use the debug compilation of LAL ('import lal'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import laloptimized as lal'."
+		help = f"Use the release compilation of LAL ('import laloptimized'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import lal'."
 	)
 	parser.add_argument(
 		'--quiet',
@@ -127,7 +127,7 @@ def add_arguments_main_parser(parser):
 
 def create_format_subparsers(subparser):
 	r"""
-	Adds to the subparser the necessary subparsers 
+	Adds to the subparser the necessary subparsers
 	"""
 	# create a subparser for CoNLL
 	parser_CoNLLU = subparser.add_parser(
@@ -136,7 +136,7 @@ def create_format_subparsers(subparser):
 		help = formats.CoNLLU_help_str
 	)
 	add_arguments_CoNLLU_parser(parser_CoNLLU)
-	
+
 	# create a subparser for Stanford
 	parser_Stanford = subparser.add_parser(
 		name = formats.Stanford_key_str,
@@ -144,7 +144,7 @@ def create_format_subparsers(subparser):
 		help = formats.Stanford_help_str
 	)
 	add_arguments_Stanford_parser(parser_Stanford)
-	
+
 	# create a subparser for head vector
 	parser_head_vector = subparser.add_parser(
 		name = formats.head_vector_key_str,
@@ -173,7 +173,7 @@ def create_parser():
 		required = True,
 		dest = 'treebank_format'
 	)
-	
+
 	# create the necessary subparsers for every treebank format implemented
 	create_format_subparsers(subparsers)
 
