@@ -115,7 +115,7 @@ def add_arguments_main_parser(parser):
 		default = False,
 		action = 'store_false',
 		required = False,
-		help = f"Use the release compilation of LAL ('import laloptimized'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import lal'."
+		help = f"Use the release compilation of LAL ('import laloptimized'). The script will run faster, but errors in the internal computations will not be caught. Default: 'import lal'."
 	)
 	parser.add_argument(
 		'--quiet',
