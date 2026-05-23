@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.11.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -388,11 +388,11 @@ class Ui_gui_treebank_parser(object):
         self.actionRemoveButton.setText(QCoreApplication.translate("gui_treebank_parser", u"Remove", None))
         self.label_3.setText(QCoreApplication.translate("gui_treebank_parser", u"Actions to be applied", None))
         ___qtablewidgetitem = self.chosenActionTable.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("gui_treebank_parser", u"Option", None));
+        ___qtablewidgetitem.setText(QCoreApplication.translate("gui_treebank_parser", u"Option", None))
         ___qtablewidgetitem1 = self.chosenActionTable.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("gui_treebank_parser", u"Value", None));
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("gui_treebank_parser", u"Value", None))
         ___qtablewidgetitem2 = self.chosenActionTable.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("gui_treebank_parser", u"Value Type", None));
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("gui_treebank_parser", u"Value Type", None))
         self.runTreebankParser.setText(QCoreApplication.translate("gui_treebank_parser", u"Run", None))
         self.lalReleaseCheckBox.setText(QCoreApplication.translate("gui_treebank_parser", u"Use laloptimized", None))
         self.lalDebugCheckBox.setText(QCoreApplication.translate("gui_treebank_parser", u"Use lal", None))
