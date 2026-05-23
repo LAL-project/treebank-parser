@@ -4,3 +4,4 @@ __pycache__
 
 *.heads
 *.html
+.venv
