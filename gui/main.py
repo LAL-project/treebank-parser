@@ -174,24 +174,24 @@ class GuiTreebankParser(QMainWindow):
 		self.setWindowIcon(QtGui.QIcon(icon_pixmap))
 
 		# keep LAL module in a variable
-		if args.laldebug:
-			self.findChild(QCheckBox, "lalDebugCheckBox").setChecked(True)
-			self.findChild(QCheckBox, "lalReleaseCheckBox").setChecked(False)
-		else:
+		if args.laloptimized:
 			self.findChild(QCheckBox, "lalDebugCheckBox").setChecked(False)
 			self.findChild(QCheckBox, "lalReleaseCheckBox").setChecked(True)
+		else:
+			self.findChild(QCheckBox, "lalDebugCheckBox").setChecked(True)
+			self.findChild(QCheckBox, "lalReleaseCheckBox").setChecked(False)
 		self.LAL_module = lal
 
 if __name__ == "__main__":
 	parser = argument_parser.create_parser()
 	args = parser.parse_args(sys.argv[1:])
 	
-	if args.laldebug:
-		import lal
-		print("Loaded LAL")
-	else:
+	if args.laloptimized:
 		import laloptimized as lal
 		print("Loaded LAL (optimized)")
+	else:
+		import lal
+		print("Loaded LAL")
 	
 	from treebank_parser import version_lal
 	r = version_lal.is_version_of_LAL_correct(lal)

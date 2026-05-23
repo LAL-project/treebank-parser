@@ -46,12 +46,11 @@ def add_arguments_main_parser(parser):
 	subcommands).
 	"""
 	parser.add_argument(
-		'--laldebug',
+		'--laloptimized',
 		default = False,
-		action = 'store_true',
+		action = 'store_false',
 		required = False,
-		help = "Use the debug compilation of LAL ('import lal'). The script will run more slowly, but errors will be more\
-		        likely to be caught. By default, the optimized compilation of LAL is imported ('import laloptimized as lal')."
+		help = f"Use the release compilation of LAL ('import laloptimized'). The script will run more slowly, but errors will be more likely to be caught. Default: 'import lal'."
 	)
 
 # ------------------------------------------------------------------------------
