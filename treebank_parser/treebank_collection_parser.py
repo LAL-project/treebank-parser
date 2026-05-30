@@ -32,6 +32,7 @@
 #
 ################################################################################
 
+import os
 
 import treebank_parser.output_log as tbp_logging
 
@@ -63,11 +64,15 @@ def parse_treebank_collection(
 	- args: the arguments as parsed by the cli parser.
 	- lal_module: the LAL module to use (either debug or release compilations)
 	"""
-
+	
+	if not os.path.isdir(output_directory):
+		tbp_logging.critical(f"Output path '{output_directory}' is not a directory")
+		return
+	
 	all_parsers = []
 	all_ids = []
 	total_num_sentences = []
-
+	
 	tbcolreader = lal_module.io.treebank_collection_reader()
 	error = tbcolreader.init(treebank_collection_main_file)
 	
@@ -77,7 +82,7 @@ def parse_treebank_collection(
 
 	while not tbcolreader.end():
 		tbreader = tbcolreader.get_treebank_reader()
-
+		
 		treebank_file = tbreader.get_treebank_filename()
 		treebank_id = tbreader.get_treebank_identifier()
 
@@ -100,7 +105,10 @@ def parse_treebank_collection(
 			all_ids.append(treebank_id)
 			total_num_sentences.append(p.get_num_sentences())
 
-		tbcolreader.next_treebank()
+		error = tbcolreader.next_treebank()
+		if error.is_error():
+			tbp_logging.critical(error.get_error_message())
+			return
 
 	if args.consistency_in_sentences:
 
