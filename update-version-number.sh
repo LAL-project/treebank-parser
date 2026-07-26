@@ -8,4 +8,5 @@ fi
 
 echo "Updating version number to $newvernum"
 
+sed -i "s/(development) 99.99/$newvernum/g" treebank_parser/version_lal.py
 sed -i "s/99.99/$newvernum/g" treebank_parser/version_lal.py
